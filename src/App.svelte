@@ -1,31 +1,45 @@
-<script>
+<script lang="ts">
   import svelteLogo from './assets/svelte.svg';
   import AudioPlayer from './lib/AudioPlayer.svelte';
   import Autocomplete from './lib/Autocomplete.svelte';
   import Counter from './lib/Counter.svelte';
   import Guesses from './lib/Guesses.svelte';
+  import type { IGuess } from './lib/types/IGuess';
 
   const lengthSteps = [1, 2, 4, 7, 11, 16];
-  let stepIndex = 0;
-  function goToNextStep() {
-    if (stepIndex < lengthSteps.length - 1) {
-      stepIndex = stepIndex + 1;
-    }
+  function skipToNextStep() {
+    guesses.push({ type: 'skipped' });
+    guesses = guesses;
   }
+
+  $: stepIndex = guesses.length;
   $: stepGap = lengthSteps[stepIndex + 1] - lengthSteps[stepIndex];
+
+  let guesses: IGuess[] = [];
+  $: paddedGuesses = padArrayEnd(guesses, lengthSteps.length, {
+    type: 'empty',
+  });
+
+  function padArrayEnd<T>(arr: T[], maxLength: number, fillItem: T) {
+    const newArr = [...arr];
+    while (newArr.length < maxLength) {
+      newArr.push(fillItem);
+    }
+    return newArr;
+  }
 </script>
 
 <main>
-  <Guesses />
+  <Guesses guesses={paddedGuesses} />
   <Autocomplete />
   <div id="buttons">
     <div id="skip">skip</div>
     <div id="submit">submit</div>
   </div>
   <AudioPlayer maxLength={lengthSteps[stepIndex]} {lengthSteps} />
-  <button on:click={goToNextStep}>Skip{stepGap ? ` (+${stepGap}s)` : ''}</button
-  >
-
+  <button on:click={skipToNextStep}>
+    Skip{stepGap ? ` (+${stepGap}s)` : ''}
+  </button>
   <div id="playlist" />
   <ul>
     <li><input type="checkbox" />Search all songs</li>
