@@ -6,4 +6,8 @@
 <div>option 2</div>
 
 <style>
+  input {
+    padding: 15px;
+    width: 100%;
+  }
 </style>
