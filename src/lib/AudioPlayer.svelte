@@ -1,7 +1,7 @@
 <script lang="ts">
   import { getSong } from './get-song';
   export let maxLength: number;
-  export let lengthSteps = [1, 2, 4, 7, 11, 16];
+  export let lengthSteps: number[];
   let src = '';
   let duration: number;
   let currentTime = 0;
@@ -12,8 +12,8 @@
     src = song.items[0].track.preview_url;
     audio = audio;
   });
-  $: progressPercentage = currentTime / duration;
-  $: maxPercentage = maxLength / duration;
+  $: progressPercentage = currentTime / absoluteMaxLength;
+  $: maxPercentage = maxLength / absoluteMaxLength;
   $: absoluteMaxLength = lengthSteps[lengthSteps.length - 1];
 
   $: if (currentTime > maxLength) {
@@ -60,7 +60,7 @@
   {#each lengthSteps as step}
     <div
       class="progress-inner-step"
-      class:inverted={step < absoluteMaxLength}
+      class:inverted={step < maxLength}
       style="left: {(100 * step) / absoluteMaxLength}%;"
     />
   {/each}

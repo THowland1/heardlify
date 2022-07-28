@@ -4,6 +4,15 @@
   import Autocomplete from './lib/Autocomplete.svelte';
   import Counter from './lib/Counter.svelte';
   import Guesses from './lib/Guesses.svelte';
+
+  const lengthSteps = [1, 2, 4, 7, 11, 16];
+  let stepIndex = 0;
+  function goToNextStep() {
+    if (stepIndex < lengthSteps.length - 1) {
+      stepIndex = stepIndex + 1;
+    }
+  }
+  $: stepGap = lengthSteps[stepIndex + 1] - lengthSteps[stepIndex];
 </script>
 
 <main>
@@ -13,7 +22,9 @@
     <div id="skip">skip</div>
     <div id="submit">submit</div>
   </div>
-  <AudioPlayer maxLength={4} />
+  <AudioPlayer maxLength={lengthSteps[stepIndex]} {lengthSteps} />
+  <button on:click={goToNextStep}>Skip{stepGap ? ` (+${stepGap}s)` : ''}</button
+  >
 
   <div id="playlist" />
   <ul>
