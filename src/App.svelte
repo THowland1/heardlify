@@ -13,7 +13,7 @@
     <div id="skip">skip</div>
     <div id="submit">submit</div>
   </div>
-  <AudioPlayer />
+  <AudioPlayer maxLength={4} />
 
   <div id="playlist" />
   <ul>
