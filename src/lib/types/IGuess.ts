@@ -1,9 +1,10 @@
-export type IGuess =
-  | { type: 'empty' }
-  | { type: 'skipped' }
-  | {
-      type: 'guessed';
-      artists: string;
-      name: string;
-      isCorrectArtist: boolean;
-    };
+export type ISkippedGuess = { type: 'skipped' };
+export type IEmptyGuess = { type: 'empty' };
+export type IGuessedGuess = {
+  type: 'guessed';
+  artists: string;
+  name: string;
+  isCorrectArtist: boolean;
+};
+
+export type IGuess = IEmptyGuess | ISkippedGuess | IGuessedGuess;

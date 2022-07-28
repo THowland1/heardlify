@@ -4,13 +4,28 @@
   import Autocomplete from './lib/Autocomplete.svelte';
   import Counter from './lib/Counter.svelte';
   import Guesses from './lib/Guesses.svelte';
-  import type { IGuess } from './lib/types/IGuess';
+  import type { IGuess, IGuessedGuess } from './lib/types/IGuess';
 
   const lengthSteps = [1, 2, 4, 7, 11, 16];
   function skipToNextStep() {
     guesses.push({ type: 'skipped' });
     guesses = guesses;
   }
+  function guessToNextStep() {
+    if (!currentGuess) {
+      throw new Error('currentGuess must have a value to submit');
+    }
+    guesses.push(currentGuess);
+    guesses = guesses;
+    currentGuess = null;
+  }
+
+  let currentGuess: IGuessedGuess | null = {
+    artists: 'Me',
+    isCorrectArtist: false,
+    name: 'City of Stars',
+    type: 'guessed',
+  };
 
   $: stepIndex = guesses.length;
   $: stepGap = lengthSteps[stepIndex + 1] - lengthSteps[stepIndex];
@@ -32,14 +47,12 @@
 <main>
   <Guesses guesses={paddedGuesses} />
   <Autocomplete />
-  <div id="buttons">
-    <div id="skip">skip</div>
-    <div id="submit">submit</div>
-  </div>
+
   <AudioPlayer maxLength={lengthSteps[stepIndex]} {lengthSteps} />
   <button on:click={skipToNextStep}>
     Skip{stepGap ? ` (+${stepGap}s)` : ''}
   </button>
+  <button disabled={!currentGuess} on:click={guessToNextStep}> Submit </button>
   <div id="playlist" />
   <ul>
     <li><input type="checkbox" />Search all songs</li>
