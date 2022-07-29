@@ -24,25 +24,47 @@
     selectedOption = option;
     textvalue = formatOption(option);
   }
+  function clear() {
+    textvalue = '';
+    selectedOption = null;
+  }
 </script>
 
 <div class="container">
-  <div class="options">
-    {#each options as option}
-      <button on:click={() => selectOption(option)} class="option">
-        {formatOption(option)}
-      </button>
-    {/each}
+  {#if !!textvalue}
+    <div class="options">
+      {#each options as option}
+        <button
+          on:click={(e) => {
+            selectOption(option);
+            e.currentTarget.blur();
+          }}
+          class="option"
+        >
+          {formatOption(option)}
+        </button>
+      {/each}
+    </div>
+  {/if}
+  <div class="input-container">
+    <span class="hourglass-icon">🔎</span>
+    <input
+      bind:value={textvalue}
+      on:focus={clear}
+      class="input"
+      type="text"
+      placeholder="Know it? Search for the artist / title"
+    />
+    {#if !!textvalue}
+      <button on:click={clear} class="close-button">&times;</button>
+    {/if}
   </div>
-  <input
-    bind:value={textvalue}
-    class="input"
-    type="text"
-    placeholder="Know it? Search for the artist / title"
-  />
 </div>
 
 <style>
+  :root {
+    --input-height: 45px;
+  }
   .container {
     --options-display: none;
     border: solid 1px #999;
@@ -62,13 +84,45 @@
   }
   .option {
     cursor: pointer;
-  }
-  button {
     all: unset;
     display: block;
   }
-  input {
-    padding: 15px;
-    width: 100%;
+  .input {
+    padding-left: var(--input-height);
+    padding-right: var(--input-height);
+    flex: 1;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+  .input-container {
+    position: relative;
+    height: var(--input-height);
+  }
+  .hourglass-icon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--input-height);
+  }
+  .close-button {
+    position: absolute;
+    z-index: 1;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: var(--input-height);
+    color: #999;
+    background-color: transparent;
   }
 </style>
