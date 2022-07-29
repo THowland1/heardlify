@@ -72,7 +72,7 @@
 <div>NEXT HEARDLE IN</div>
 <div>00:00:00</div>
 
-<AudioPlayer maxLength={30} lengthSteps={[30]} />
+<AudioPlayer src={correctOption.previewUrl} maxLength={30} lengthSteps={[30]} />
 
 <style>
   .dashes {

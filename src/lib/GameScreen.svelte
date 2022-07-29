@@ -3,14 +3,14 @@
   import Autocomplete from './Autocomplete.svelte';
   import Guesses from './Guesses.svelte';
   import type { IGuess, IGuessedGuess } from './types/IGuess';
-  import type { IOption } from './types/IOption';
+  import type { IDetailedOption, IOption } from './types/IOption';
   import type { IStage } from './types/IStage';
 
   function arraysIntersect<T>(a: T[], b: T[]) {
     return a.some((aa) => b.includes(aa));
   }
 
-  export let correctOption: IOption;
+  export let correctOption: IDetailedOption;
   export let stages: IStage[] = [];
 
   function skipToNextStep() {
@@ -51,6 +51,7 @@
 <Autocomplete bind:selectedOption />
 
 <AudioPlayer
+  src={correctOption.previewUrl}
   maxLength={currentStage?.duration}
   lengthSteps={stages.map((s) => s.duration)}
 />

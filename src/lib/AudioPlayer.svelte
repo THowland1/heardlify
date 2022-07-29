@@ -2,16 +2,12 @@
   import { getSong } from './get-song';
   export let maxLength: number;
   export let lengthSteps: number[];
-  let src = '';
+  export let src: string;
   let duration: number;
   let currentTime = 0;
   let audio: HTMLAudioElement;
   let paused = true;
 
-  const song = getSong().then((song) => {
-    src = song.items[0].track.preview_url;
-    audio = audio;
-  });
   $: progressPercentage = currentTime / absoluteMaxLength;
   $: maxPercentage = maxLength / absoluteMaxLength;
   $: absoluteMaxLength = lengthSteps[lengthSteps.length - 1];

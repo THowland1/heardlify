@@ -13,4 +13,5 @@ export type IOption = {
 export type IDetailedOption = IOption & {
   imgSrc: string;
   year: number;
+  previewUrl: string;
 };

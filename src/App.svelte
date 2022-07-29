@@ -4,18 +4,9 @@
   import type { IDetailedOption, IOption } from './lib/types/IOption';
   import type { IStage } from './lib/types/IStage';
   import GameOverScreen from './lib/GameOverScreen.svelte';
-  const correctOption: IDetailedOption = {
-    id: '1',
-    name: 'Moo',
-    artists: {
-      list: [{ id: 'a', name: 'The Moo band' }],
-      formatted: 'The Moo band',
-    },
-    formatted: 'Moo - The Moo band',
-    imgSrc: 'https://i.scdn.co/image/ab67616d00004851996d684d91fc08b6ec715dbb',
-    year: 2012,
-  };
+  import { getSong } from './lib/get-song';
 
+  const correctOptionTask = getSong();
   let gameOver: { guesses: IGuess[] };
   const lengthSteps = [1, 2, 4, 7, 11, 16];
   let stages: IStage[] = [
@@ -102,26 +93,13 @@
 </script>
 
 <main>
-  {#if gameIsOver}
-    <GameOverScreen {correctOption} {stages} />
-  {:else}
-    <GameScreen {correctOption} bind:stages />
-  {/if}
+  {#await correctOptionTask}
+    ...
+  {:then correctOption}
+    {#if gameIsOver}
+      <GameOverScreen {correctOption} {stages} />
+    {:else}
+      <GameScreen {correctOption} bind:stages />
+    {/if}
+  {/await}
 </main>
-
-<style>
-  .logo {
-    height: 6em;
-    padding: 1.5em;
-    will-change: filter;
-  }
-  .logo:hover {
-    filter: drop-shadow(0 0 2em #646cffaa);
-  }
-  .logo.svelte:hover {
-    filter: drop-shadow(0 0 2em #ff3e00aa);
-  }
-  .read-the-docs {
-    color: #888;
-  }
-</style>

@@ -15,6 +15,7 @@ export type IOption = {
 export type IDetailedOption = IOption & {
   imgSrc: string;
   year: number;
+  previewUrl: string;
 };
 
 export const handler: Handler = async (event, context) => {
@@ -25,7 +26,6 @@ export const handler: Handler = async (event, context) => {
   );
 
   const song = boo.items[0].track;
-  const artists = song.artists;
   const result: IDetailedOption = {
     artists: {
       list: song.artists.map((a) => ({
@@ -39,6 +39,7 @@ export const handler: Handler = async (event, context) => {
     imgSrc: song.album.images.at(-1).url,
     name: song.name,
     year: Number(song.album.release_date.split('-')[0]),
+    previewUrl: song.preview_url,
   };
 
   return {
