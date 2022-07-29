@@ -5,6 +5,7 @@ export type IGuessedGuess = {
   artists: string;
   name: string;
   isCorrectArtist: boolean;
+  isCorrectSong: boolean;
 };
 
 export type IGuess = IEmptyGuess | ISkippedGuess | IGuessedGuess;

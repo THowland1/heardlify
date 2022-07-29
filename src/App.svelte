@@ -5,6 +5,25 @@
   import Counter from './lib/Counter.svelte';
   import Guesses from './lib/Guesses.svelte';
   import type { IGuess, IGuessedGuess } from './lib/types/IGuess';
+  import type { IOption } from './lib/types/IOption';
+
+  function areArraysTheSame<T extends string>(a: T[], b: T[]): boolean {
+    if (a.length !== b.length) {
+      return false;
+    }
+    for (let index = 0; index < a.length; index++) {
+      if (a[index] !== b[index]) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  const correctOption: IOption = {
+    id: '1',
+    name: 'Moo',
+    artists: [{ id: 'a', name: 'The Moo band' }],
+  };
 
   const lengthSteps = [1, 2, 4, 7, 11, 16];
   function skipToNextStep() {
@@ -12,20 +31,29 @@
     guesses = guesses;
   }
   function guessToNextStep() {
-    if (!currentGuess) {
-      throw new Error('currentGuess must have a value to submit');
+    if (!selectedOption) {
+      throw new Error('selectedOption must have a value to submit');
     }
-    guesses.push(currentGuess);
+    const guess = evaluateGuess(selectedOption);
+    guesses.push(guess);
     guesses = guesses;
-    currentGuess = null;
+    selectedOption = null;
   }
 
-  let currentGuess: IGuessedGuess | null = {
-    artists: 'Me',
-    isCorrectArtist: false,
-    name: 'City of Stars',
-    type: 'guessed',
-  };
+  function evaluateGuess(option: IOption): IGuessedGuess {
+    return {
+      artists: option.artists.map((o) => o.name).join(', '),
+      isCorrectArtist: areArraysTheSame(
+        option.artists.map((a) => a.id),
+        correctOption.artists.map((a) => a.id)
+      ),
+      isCorrectSong: option.id === correctOption.id,
+      name: option.name,
+      type: 'guessed',
+    };
+  }
+
+  let autocomplete: Autocomplete;
 
   $: stepIndex = guesses.length;
   $: stepGap = lengthSteps[stepIndex + 1] - lengthSteps[stepIndex];
@@ -42,17 +70,21 @@
     }
     return newArr;
   }
+
+  let selectedOption: IOption | null = null;
 </script>
 
 <main>
   <Guesses guesses={paddedGuesses} />
-  <Autocomplete />
+  <Autocomplete bind:selectedOption />
 
   <AudioPlayer maxLength={lengthSteps[stepIndex]} {lengthSteps} />
   <button on:click={skipToNextStep}>
     Skip{stepGap ? ` (+${stepGap}s)` : ''}
   </button>
-  <button disabled={!currentGuess} on:click={guessToNextStep}> Submit </button>
+  <button disabled={!selectedOption} on:click={guessToNextStep}>
+    Submit
+  </button>
   <div id="playlist" />
   <ul>
     <li><input type="checkbox" />Search all songs</li>
