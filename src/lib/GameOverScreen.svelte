@@ -43,7 +43,7 @@
 <div class="track">
   <img src={correctOption.imgSrc} alt="Album artwork" class="image" />
   <div class="description">
-    <div>{correctOption.artists.map((a) => a.name).join(', ')}</div>
+    <div>{correctOption.artists.formatted}</div>
     <div>{correctOption.name}</div>
     <div>{correctOption.year}</div>
   </div>

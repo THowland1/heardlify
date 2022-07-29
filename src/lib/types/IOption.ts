@@ -1,8 +1,12 @@
 export type IOption = {
   artists: {
-    id: string;
-    name: string;
-  }[];
+    list: {
+      id: string;
+      name: string;
+    }[];
+    formatted: string;
+  };
+  formatted: string;
   name: string;
   id: string;
 };

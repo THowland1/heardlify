@@ -5,35 +5,60 @@
     {
       id: '1',
       name: 'Moo',
-      artists: [{ id: 'a', name: 'The Moo band' }],
+      artists: {
+        list: [{ id: 'a', name: 'The Moo band' }],
+        formatted: 'The Moo band',
+      },
+      formatted: 'Moo - The Moo band',
     },
     {
       id: '2',
       name: 'Boo',
-      artists: [{ id: 'b', name: 'The Boop band' }],
+      artists: {
+        list: [{ id: 'b', name: 'The Boop band' }],
+        formatted: 'The Boop band',
+      },
+      formatted: 'Boo - The Boop band',
     },
   ];
   let textvalue = '';
   export let selectedOption: IOption | null;
 
-  function formatOption(option: IOption): string {
-    return `${option.artists.map((a) => a.name).join(', ')} - ${option.name}`;
-  }
   function selectOption(option: IOption): void {
     console.log(textvalue);
     selectedOption = option;
-    textvalue = formatOption(option);
+    textvalue = option.formatted;
   }
   function clear() {
     textvalue = '';
     selectedOption = null;
+  }
+  function getFilteredOptions(unfilteredOptions: IOption[], filter: string) {
+    const filtered = unfilteredOptions.filter((o) =>
+      o.formatted.toLowerCase().includes(filter.toLowerCase())
+    );
+    return {
+      options: filtered.slice(0, 6),
+      totalCount: filtered.length,
+    };
+  }
+  $: filteredOptions = getFilteredOptions(options, textvalue);
+  function wrapMatchingText(str: string, searchStr: string) {
+    const index = str.toLowerCase().indexOf(searchStr.toLowerCase());
+    if (index < 0) {
+      return str;
+    }
+    const before = str.slice(0, index);
+    const match = str.slice(index, index + searchStr.length);
+    const after = str.slice(index + searchStr.length);
+    return `${before}<em>${match}</em>${after}`;
   }
 </script>
 
 <div class="container">
   {#if !!textvalue}
     <div class="options">
-      {#each options as option}
+      {#each filteredOptions.options as option}
         <button
           on:click={(e) => {
             selectOption(option);
@@ -41,9 +66,16 @@
           }}
           class="option"
         >
-          {formatOption(option)}
+          {@html wrapMatchingText(option.formatted, textvalue)}
         </button>
       {/each}
+      <div>
+        {#if filteredOptions.options.length > 0}
+          {filteredOptions.options.length} of {filteredOptions.totalCount} for "{textvalue}"
+        {:else}
+          No results for "{textvalue}". Maybe it's something else...
+        {/if}
+      </div>
     </div>
   {/if}
   <div class="input-container">
@@ -70,6 +102,12 @@
     border: solid 1px #999;
     position: relative;
   }
+
+  :global(em) {
+    font-style: normal;
+    background-color: yellow;
+  }
+
   .container:focus-within {
     --options-display: block;
   }

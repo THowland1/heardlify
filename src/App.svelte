@@ -7,7 +7,11 @@
   const correctOption: IDetailedOption = {
     id: '1',
     name: 'Moo',
-    artists: [{ id: 'a', name: 'The Moo band' }],
+    artists: {
+      list: [{ id: 'a', name: 'The Moo band' }],
+      formatted: 'The Moo band',
+    },
+    formatted: 'Moo - The Moo band',
     imgSrc: 'https://i.scdn.co/image/ab67616d00004851996d684d91fc08b6ec715dbb',
     year: 2012,
   };

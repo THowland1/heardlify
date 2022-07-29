@@ -6,16 +6,8 @@
   import type { IOption } from './types/IOption';
   import type { IStage } from './types/IStage';
 
-  function areArraysTheSame<T extends string>(a: T[], b: T[]): boolean {
-    if (a.length !== b.length) {
-      return false;
-    }
-    for (let index = 0; index < a.length; index++) {
-      if (a[index] !== b[index]) {
-        return false;
-      }
-    }
-    return true;
+  function arraysIntersect<T>(a: T[], b: T[]) {
+    return a.some((aa) => b.includes(aa));
   }
 
   export let correctOption: IOption;
@@ -37,10 +29,10 @@
 
   function evaluateGuess(option: IOption): IGuessedGuess {
     return {
-      artists: option.artists.map((o) => o.name).join(', '),
-      isCorrectArtist: areArraysTheSame(
-        option.artists.map((a) => a.id),
-        correctOption.artists.map((a) => a.id)
+      artists: option.artists.formatted,
+      isCorrectArtist: arraysIntersect(
+        option.artists.list.map((o) => o.id),
+        correctOption.artists.list.map((o) => o.id)
       ),
       isCorrectSong: option.id === correctOption.id,
       name: option.name,
