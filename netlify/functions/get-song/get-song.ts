@@ -18,14 +18,46 @@ export type IDetailedOption = IOption & {
   previewUrl: string;
 };
 
-export const handler: Handler = async (event, context) => {
-  const moo = await getSpotifyToken();
-  const boo = await getSpotifyPlaylistById(
-    '0erQqpBCFFYj0gDam2pnp1',
-    moo.access_token
+function createDateAsUTC(date: Date) {
+  return new Date(
+    Date.UTC(
+      date.getFullYear(),
+      date.getMonth(),
+      date.getDate(),
+      date.getHours(),
+      date.getMinutes(),
+      date.getSeconds()
+    )
   );
+}
 
-  const song = boo.items[0].track;
+const DAY_0_UTC = createDateAsUTC(new Date(2022, 6, 29, 0, 0, 0));
+const nowUTC = createDateAsUTC(new Date());
+const DAY_IN_MS = 24 * 60 * 60 * 1000;
+export const handler: Handler = async (event, context) => {
+  const authToken = await getSpotifyToken();
+  const playlist = await getSpotifyPlaylistById(
+    '0erQqpBCFFYj0gDam2pnp1',
+    authToken.access_token
+  );
+  const totalCount = playlist.total;
+  const fullDaysSinceStart = Math.floor(
+    (nowUTC.valueOf() - DAY_0_UTC.valueOf()) / DAY_IN_MS
+  );
+  const index = fullDaysSinceStart % totalCount;
+  const theSong = await getSpotifyPlaylistById(
+    '0erQqpBCFFYj0gDam2pnp1',
+    authToken.access_token,
+    index
+  );
+  console.warn(DAY_0_UTC);
+  console.warn(nowUTC);
+  console.warn(nowUTC.valueOf());
+  console.warn(DAY_0_UTC.valueOf());
+  console.warn(nowUTC.valueOf() - DAY_0_UTC.valueOf());
+  console.log(JSON.stringify(theSong, null, 2));
+
+  const song = theSong.items[0].track;
   const result: IDetailedOption = {
     artists: {
       list: song.artists.map((a) => ({
@@ -53,10 +85,11 @@ export const handler: Handler = async (event, context) => {
 
 async function getSpotifyPlaylistById(
   playlistId: string,
-  bearerToken: string
+  bearerToken: string,
+  offset = 0
 ): Promise<SpotifyApi.PlaylistTrackResponse> {
   const playlist = await fetch(
-    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=0&limit=1`,
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=1`,
     {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
