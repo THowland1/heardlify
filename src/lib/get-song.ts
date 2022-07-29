@@ -1,6 +1,11 @@
-import type { IDetailedOption } from './types/IOption';
+import type { IDetailedOption, IOption } from './types/IOption';
 
-export async function getSong(): Promise<IDetailedOption> {
+type IResponse = {
+  answer: IDetailedOption;
+  options: IOption[];
+};
+
+export async function getSong(): Promise<IResponse> {
   const response = await fetch('https://heardles.netlify.app/api/get-song');
   const body = await response.json();
   return body;

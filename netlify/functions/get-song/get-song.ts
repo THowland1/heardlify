@@ -18,6 +18,20 @@ export type IDetailedOption = IOption & {
   previewUrl: string;
 };
 
+function trackToOption(track: SpotifyApi.TrackObjectFull): IOption {
+  const artists = track.artists.map((a) => ({ id: a.id, name: a.name }));
+  const formattedArtists = artists.map((a) => a.name).join(', ');
+  return {
+    id: track.id,
+    name: track.name,
+    artists: {
+      list: artists,
+      formatted: formattedArtists,
+    },
+    formatted: `${track.name} - ${formattedArtists}`,
+  };
+}
+
 function createDateAsUTC(date: Date) {
   return new Date(
     Date.UTC(
@@ -36,29 +50,25 @@ const nowUTC = createDateAsUTC(new Date());
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 export const handler: Handler = async (event, context) => {
   const authToken = await getSpotifyToken();
-  const playlist = await getSpotifyPlaylistById(
+  const playlist = await getSpotifyPlaylistTracks(
     '0erQqpBCFFYj0gDam2pnp1',
-    authToken.access_token
+    authToken.access_token,
+    0,
+    1
   );
   const totalCount = playlist.total;
   const fullDaysSinceStart = Math.floor(
     (nowUTC.valueOf() - DAY_0_UTC.valueOf()) / DAY_IN_MS
   );
   const index = fullDaysSinceStart % totalCount;
-  const theSong = await getSpotifyPlaylistById(
+  const theSong = await getSpotifyPlaylistTracks(
     '0erQqpBCFFYj0gDam2pnp1',
     authToken.access_token,
-    index
+    index,
+    1
   );
-  console.warn(DAY_0_UTC);
-  console.warn(nowUTC);
-  console.warn(nowUTC.valueOf());
-  console.warn(DAY_0_UTC.valueOf());
-  console.warn(nowUTC.valueOf() - DAY_0_UTC.valueOf());
-  console.log(JSON.stringify(theSong, null, 2));
-
   const song = theSong.items[0].track;
-  const result: IDetailedOption = {
+  const answer: IDetailedOption = {
     artists: {
       list: song.artists.map((a) => ({
         id: a.id,
@@ -74,6 +84,16 @@ export const handler: Handler = async (event, context) => {
     previewUrl: song.preview_url,
   };
 
+  const options = await getAllSpotifyPlaylistTracks(
+    '0erQqpBCFFYj0gDam2pnp1',
+    authToken.access_token
+  );
+
+  const result = {
+    answer,
+    options,
+  };
+
   return {
     statusCode: 200,
     body: JSON.stringify(result, null, 2),
@@ -83,19 +103,49 @@ export const handler: Handler = async (event, context) => {
   };
 };
 
-async function getSpotifyPlaylistById(
+async function getAllSpotifyPlaylistTracks(
+  playlistId: string,
+  bearerToken: string
+): Promise<IOption[]> {
+  let offset = 0;
+  const limit = 100;
+  const sets: IOption[][] = [];
+  const first = await getSpotifyPlaylistTracks(
+    playlistId,
+    bearerToken,
+    offset,
+    limit
+  );
+  sets.push(first.items.map((i) => trackToOption(i.track)));
+  const total = first.total;
+  offset += limit;
+  while (offset < total) {
+    const next = await getSpotifyPlaylistTracks(
+      playlistId,
+      bearerToken,
+      offset,
+      limit
+    );
+    sets.push(first.items.map((i) => trackToOption(i.track)));
+  }
+  return sets.flat();
+}
+
+async function getSpotifyPlaylistTracks(
   playlistId: string,
   bearerToken: string,
-  offset = 0
+  offset: number,
+  limit: number
 ): Promise<SpotifyApi.PlaylistTrackResponse> {
-  const playlist = await fetch(
-    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=1`,
+  const playlist = (await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=${offset}&limit=${limit}`,
     {
       headers: {
         Authorization: `Bearer ${bearerToken}`,
       },
     }
-  ).then((o) => o.json());
+  ).then((o) => o.json())) as SpotifyApi.PlaylistTrackResponse;
+  const totalCount = playlist.total;
   return playlist as SpotifyApi.PlaylistTrackResponse;
 }
 

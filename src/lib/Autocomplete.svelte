@@ -1,26 +1,7 @@
 <script lang="ts">
   import type { IOption } from './types/IOption';
 
-  let options: IOption[] = [
-    {
-      id: '1',
-      name: 'Moo',
-      artists: {
-        list: [{ id: 'a', name: 'The Moo band' }],
-        formatted: 'The Moo band',
-      },
-      formatted: 'Moo - The Moo band',
-    },
-    {
-      id: '2',
-      name: 'Boo',
-      artists: {
-        list: [{ id: 'b', name: 'The Boop band' }],
-        formatted: 'The Boop band',
-      },
-      formatted: 'Boo - The Boop band',
-    },
-  ];
+  export let options: IOption[];
   let textvalue = '';
   export let selectedOption: IOption | null;
 

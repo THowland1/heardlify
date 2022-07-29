@@ -11,6 +11,7 @@
   }
 
   export let correctOption: IDetailedOption;
+  export let options: IOption[];
   export let stages: IStage[] = [];
 
   function skipToNextStep() {
@@ -48,7 +49,7 @@
 </script>
 
 <Guesses guesses={stages.map((s) => s.guess)} />
-<Autocomplete bind:selectedOption />
+<Autocomplete {options} bind:selectedOption />
 
 <AudioPlayer
   src={correctOption.previewUrl}

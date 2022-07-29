@@ -6,7 +6,7 @@
   import GameOverScreen from './lib/GameOverScreen.svelte';
   import { getSong } from './lib/get-song';
 
-  const correctOptionTask = getSong();
+  const dataTask = getSong();
   let gameOver: { guesses: IGuess[] };
   const lengthSteps = [1, 2, 4, 7, 11, 16];
   let stages: IStage[] = [
@@ -93,13 +93,17 @@
 </script>
 
 <main>
-  {#await correctOptionTask}
+  {#await dataTask}
     ...
-  {:then correctOption}
+  {:then data}
     {#if gameIsOver}
-      <GameOverScreen {correctOption} {stages} />
+      <GameOverScreen correctOption={data.answer} {stages} />
     {:else}
-      <GameScreen {correctOption} bind:stages />
+      <GameScreen
+        options={data.options}
+        correctOption={data.answer}
+        bind:stages
+      />
     {/if}
   {/await}
 </main>
