@@ -1,104 +1,108 @@
 <script lang="ts">
-  import svelteLogo from './assets/svelte.svg';
-  import AudioPlayer from './lib/AudioPlayer.svelte';
-  import Autocomplete from './lib/Autocomplete.svelte';
-  import Counter from './lib/Counter.svelte';
-  import Guesses from './lib/Guesses.svelte';
-  import type { IGuess, IGuessedGuess } from './lib/types/IGuess';
-  import type { IOption } from './lib/types/IOption';
-
-  function areArraysTheSame<T extends string>(a: T[], b: T[]): boolean {
-    if (a.length !== b.length) {
-      return false;
-    }
-    for (let index = 0; index < a.length; index++) {
-      if (a[index] !== b[index]) {
-        return false;
-      }
-    }
-    return true;
-  }
-
-  const correctOption: IOption = {
+  import GameScreen from './lib/GameScreen.svelte';
+  import type { IGuess } from './lib/types/IGuess';
+  import type { IDetailedOption, IOption } from './lib/types/IOption';
+  import type { IStage } from './lib/types/IStage';
+  import GameOverScreen from './lib/GameOverScreen.svelte';
+  const correctOption: IDetailedOption = {
     id: '1',
     name: 'Moo',
     artists: [{ id: 'a', name: 'The Moo band' }],
+    imgSrc: 'https://i.scdn.co/image/ab67616d00004851996d684d91fc08b6ec715dbb',
+    year: 2012,
   };
 
+  let gameOver: { guesses: IGuess[] };
   const lengthSteps = [1, 2, 4, 7, 11, 16];
-  function skipToNextStep() {
-    guesses.push({ type: 'skipped' });
-    guesses = guesses;
-  }
-  function guessToNextStep() {
-    if (!selectedOption) {
-      throw new Error('selectedOption must have a value to submit');
-    }
-    const guess = evaluateGuess(selectedOption);
-    guesses.push(guess);
-    guesses = guesses;
-    selectedOption = null;
-  }
-
-  function evaluateGuess(option: IOption): IGuessedGuess {
-    return {
-      artists: option.artists.map((o) => o.name).join(', '),
-      isCorrectArtist: areArraysTheSame(
-        option.artists.map((a) => a.id),
-        correctOption.artists.map((a) => a.id)
-      ),
-      isCorrectSong: option.id === correctOption.id,
-      name: option.name,
-      type: 'guessed',
-    };
-  }
-
-  let autocomplete: Autocomplete;
-
-  $: stepIndex = guesses.length;
-  $: stepGap = lengthSteps[stepIndex + 1] - lengthSteps[stepIndex];
-
-  let guesses: IGuess[] = [];
-  $: paddedGuesses = padArrayEnd(guesses, lengthSteps.length, {
-    type: 'empty',
-  });
-
-  function padArrayEnd<T>(arr: T[], maxLength: number, fillItem: T) {
-    const newArr = [...arr];
-    while (newArr.length < maxLength) {
-      newArr.push(fillItem);
-    }
-    return newArr;
-  }
-
-  let selectedOption: IOption | null = null;
+  let stages: IStage[] = [
+    {
+      duration: 1,
+      message: 'A VIRTUOSO PERFORMANCE!',
+      guess: { type: 'empty' },
+    },
+    { duration: 2, message: 'AN ACT OF GENIUS!', guess: { type: 'empty' } },
+    { duration: 4, message: "YOU'RE A STAR!", guess: { type: 'empty' } },
+    { duration: 7, message: 'WHAT A PRO!', guess: { type: 'empty' } },
+    { duration: 11, message: "YOU'RE A WINNER!", guess: { type: 'empty' } },
+    { duration: 16, message: 'GOOD RESULT!', guess: { type: 'empty' } },
+  ];
+  // let stages: IStage[] = [
+  //   {
+  //     duration: 1,
+  //     message: 'A VIRTUOSO PERFORMANCE!',
+  //     guess: { type: 'skipped' },
+  //   },
+  //   { duration: 2, message: 'AN ACT OF GENIUS!', guess: { type: 'skipped' } },
+  //   { duration: 4, message: "YOU'RE A STAR!", guess: { type: 'skipped' } },
+  //   {
+  //     duration: 7,
+  //     message: 'WHAT A PRO!',
+  //     guess: { type: 'skipped' },
+  //   },
+  //   {
+  //     duration: 11,
+  //     message: "YOU'RE A WINNER!",
+  //     guess: { type: 'skipped' },
+  //   },
+  //   {
+  //     duration: 16,
+  //     message: 'GOOD RESULT!',
+  //     guess: { type: 'skipped' },
+  //   },
+  // ];
+  // let stages: IStage[] = [
+  //   {
+  //     duration: 1,
+  //     message: 'A VIRTUOSO PERFORMANCE!',
+  //     guess: { type: 'skipped' },
+  //   },
+  //   { duration: 2, message: 'AN ACT OF GENIUS!', guess: { type: 'skipped' } },
+  //   { duration: 4, message: "YOU'RE A STAR!", guess: { type: 'skipped' } },
+  //   {
+  //     duration: 7,
+  //     message: 'WHAT A PRO!',
+  //     guess: {
+  //       type: 'guessed',
+  //       artists: 'Soo',
+  //       isCorrectArtist: false,
+  //       isCorrectSong: false,
+  //       name: 'soo',
+  //     },
+  //   },
+  //   {
+  //     duration: 11,
+  //     message: "YOU'RE A WINNER!",
+  //     guess: {
+  //       type: 'guessed',
+  //       artists: 'Soo',
+  //       isCorrectArtist: true,
+  //       isCorrectSong: false,
+  //       name: 'soo',
+  //     },
+  //   },
+  //   {
+  //     duration: 16,
+  //     message: 'GOOD RESULT!',
+  //     guess: {
+  //       type: 'guessed',
+  //       artists: 'Soo',
+  //       isCorrectArtist: true,
+  //       isCorrectSong: true,
+  //       name: 'soo',
+  //     },
+  //   },
+  // ];
+  $: gameIsOver =
+    stages.some((s) => s.guess.type === 'guessed' && s.guess.isCorrectSong) ||
+    stages.every((s) => s.guess.type !== 'empty');
 </script>
 
 <main>
-  <Guesses guesses={paddedGuesses} />
-  <Autocomplete bind:selectedOption />
-
-  <AudioPlayer maxLength={lengthSteps[stepIndex]} {lengthSteps} />
-  <button on:click={skipToNextStep}>
-    Skip{stepGap ? ` (+${stepGap}s)` : ''}
-  </button>
-  <button disabled={!selectedOption} on:click={guessToNextStep}>
-    Submit
-  </button>
-  <div id="playlist" />
-  <ul>
-    <li><input type="checkbox" />Search all songs</li>
-    <li><input type="checkbox" />Limit playback</li>
-    <li><input type="checkbox" />Guess logic</li>
-    <li>
-      <input type="checkbox" /> Endpoint
-      <ul>
-        <li><input type="checkbox" />Update auth</li>
-        <li><input type="checkbox" />Read playlist id</li>
-        <li><input type="checkbox" />Pick one at random</li>
-      </ul>
-    </li>
-  </ul>
+  {#if gameIsOver}
+    <GameOverScreen {correctOption} {stages} />
+  {:else}
+    <GameScreen {correctOption} bind:stages />
+  {/if}
 </main>
 
 <style>

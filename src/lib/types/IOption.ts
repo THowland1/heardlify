@@ -6,3 +6,7 @@ export type IOption = {
   name: string;
   id: string;
 };
+export type IDetailedOption = IOption & {
+  imgSrc: string;
+  year: number;
+};
