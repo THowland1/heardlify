@@ -1,14 +1,111 @@
 import { Handler } from '@netlify/functions';
+import fetch from 'node-fetch';
+export type IOption = {
+  artists: {
+    list: {
+      id: string;
+      name: string;
+    }[];
+    formatted: string;
+  };
+  formatted: string;
+  name: string;
+  id: string;
+};
+export type IDetailedOption = IOption & {
+  imgSrc: string;
+  year: number;
+};
 
 export const handler: Handler = async (event, context) => {
+  const moo = await getSpotifyToken();
+  const boo = await getSpotifyPlaylistById(
+    '0erQqpBCFFYj0gDam2pnp1',
+    moo.access_token
+  );
+
+  const song = boo.items[0].track;
+  const artists = song.artists;
+  const result: IDetailedOption = {
+    artists: {
+      list: song.artists.map((a) => ({
+        id: a.id,
+        name: a.name,
+      })),
+      formatted: song.artists.map((a) => a.name).join(', '),
+    },
+    formatted: `${song.artists.map((a) => a.name).join(', ')} - ${song.name}`,
+    id: song.id,
+    imgSrc: song.album.images.at(-1).url,
+    name: song.name,
+    year: Number(song.album.release_date.split('-')[0]),
+  };
+
   return {
     statusCode: 200,
-    body: JSON.stringify(await getSong()),
+    body: JSON.stringify(result, null, 2),
     headers: {
       'Access-Control-Allow-Origin': '*', // Allow from anywhere
     },
   };
 };
+
+async function getSpotifyPlaylistById(
+  playlistId: string,
+  bearerToken: string
+): Promise<SpotifyApi.PlaylistTrackResponse> {
+  const playlist = await fetch(
+    `https://api.spotify.com/v1/playlists/${playlistId}/tracks?offset=0&limit=1`,
+    {
+      headers: {
+        Authorization: `Bearer ${bearerToken}`,
+      },
+    }
+  ).then((o) => o.json());
+  return playlist as SpotifyApi.PlaylistTrackResponse;
+}
+
+type Token = {
+  access_token: string;
+  token_type: 'Bearer';
+  expires_in: number;
+};
+type BadToken = {
+  error: string;
+  error_description: string;
+};
+async function getSpotifyToken(): Promise<Token> {
+  var client_id = process.env.SPOTIFY_CLIENT_ID;
+  var client_secret = process.env.SPOTIFY_CLIENT_SECRET;
+
+  const form = new URLSearchParams();
+  form.append('grant_type', 'client_credentials');
+
+  // Post the payload using Fetch:
+  const moo = (await fetch('https://accounts.spotify.com/api/token', {
+    method: 'POST',
+    body: form,
+    headers: {
+      Authorization:
+        'Basic ' +
+        Buffer.from(client_id + ':' + client_secret).toString('base64'),
+    },
+  }).then((res) => res.json())) as Token | BadToken;
+
+  if (!moo.hasOwnProperty('access_token')) {
+    throw new Error(
+      'Must have access_token property when getting spotify auth token'
+    );
+  }
+
+  return moo as Token;
+
+  // request.post(authOptions, function (error, response, body) {
+  //   if (!error && response.statusCode === 200) {
+  //     var token = body.access_token;
+  //   }
+  // });
+}
 
 export async function getSong(): Promise<PlaylistTracks> {
   return {
