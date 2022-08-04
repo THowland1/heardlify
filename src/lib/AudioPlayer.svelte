@@ -1,6 +1,7 @@
 <script lang="ts">
   import { getSong } from './get-song';
   import Play from './Play.svg.svelte';
+  import Playing from './Playing.svelte';
   export let maxLength: number;
   export let lengthSteps: number[];
   export let src: string;
@@ -71,7 +72,7 @@
     {#if paused}
       <Play />
     {:else}
-      Pause
+      <Playing />
     {/if}
   </button>
   <span class="time"> {formatTime(absoluteMaxLength)}</span>
@@ -136,5 +137,8 @@
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+  .play {
+    padding-left: 9px;
   }
 </style>
