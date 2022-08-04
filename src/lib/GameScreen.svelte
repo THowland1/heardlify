@@ -48,15 +48,26 @@
   let selectedOption: IOption | null = null;
 </script>
 
-<Guesses guesses={stages.map((s) => s.guess)} />
-<Autocomplete {options} bind:selectedOption />
+<div class="game-screen">
+  <Guesses guesses={stages.map((s) => s.guess)} />
+  <Autocomplete {options} bind:selectedOption />
 
-<AudioPlayer
-  src={correctOption.previewUrl}
-  maxLength={currentStage?.duration}
-  lengthSteps={stages.map((s) => s.duration)}
-/>
-<button on:click={skipToNextStep}>
-  Skip{stepGap ? ` (+${stepGap}s)` : ''}
-</button>
-<button disabled={!selectedOption} on:click={guessToNextStep}> Submit </button>
+  <AudioPlayer
+    src={correctOption.previewUrl}
+    maxLength={currentStage?.duration}
+    lengthSteps={stages.map((s) => s.duration)}
+  />
+  <button on:click={skipToNextStep}>
+    Skip{stepGap ? ` (+${stepGap}s)` : ''}
+  </button>
+  <button disabled={!selectedOption} on:click={guessToNextStep}>
+    Submit
+  </button>
+</div>
+
+<style>
+  .game-screen {
+    display: flex;
+    flex-direction: column;
+  }
+</style>

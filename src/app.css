@@ -12,11 +12,24 @@
   --color-shade: rgba(0, 0, 0, 0.1);
   --color-highlight: rgba(255, 255, 255, 0.05);
 
+  --width-game: 640px;
+
   color: var(--color-fg);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 * {
   box-sizing: border-box;
+}
+
+body,
+html,
+#app {
+  margin: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
 }
 html {
   background-color: var(--color-bg);
