@@ -12,6 +12,22 @@
     q.get(PLAYLIST_ID_QUERYSTRING_KEY) ?? '0erQqpBCFFYj0gDam2pnp1';
 
   const dataTask = getSong(playlistId);
+
+  const premadePlaylists = [
+    { name: '60s', playlistId: '37i9dQZF1DXaKIA8E7WcJj' },
+    { name: '70s', playlistId: '37i9dQZF1DXdj82GcM2wq2' },
+    { name: '80s', playlistId: '37i9dQZF1DXb57FjYWz00c' },
+    { name: '90s', playlistId: '37i9dQZF1DXbTxeAdrVG2l' },
+    { name: '00s', playlistId: '37i9dQZF1DX4o1oenSJRJd' },
+    { name: '2010s', playlistId: '37i9dQZF1DX5Ejj0EkURtP' },
+  ];
+
+  function goToOtherPlaylist(playlistId: string) {
+    window.location.search = new URLSearchParams({
+      [PLAYLIST_ID_QUERYSTRING_KEY]: playlistId,
+    }).toString();
+  }
+
   let gameOver: { guesses: IGuess[] };
   const lengthSteps = [1, 2, 4, 7, 11, 16];
   let stages: IStage[] = [
@@ -111,4 +127,10 @@
       />
     {/if}
   {/await}
+  <h6>Try out another</h6>
+  {#each premadePlaylists as playlist}
+    <button on:click={() => goToOtherPlaylist(playlist.playlistId)}>
+      {playlist.name}
+    </button>
+  {/each}
 </main>
