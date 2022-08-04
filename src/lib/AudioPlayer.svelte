@@ -35,47 +35,65 @@
 
 <audio {src} bind:this={audio} bind:duration bind:currentTime bind:paused />
 
-{#if !paused}
-  <button on:click={pause}>pause</button>
-{:else}
-  <button on:click={play}>play</button>
-{/if}
 <!-- {paused}
 {currentTime}
 {duration}
 {progressPercentage} -->
-<div class="progress">
-  <div
-    class="progress-inner progress-inner-max"
-    style="width: {100 * maxPercentage}%;"
-  />
-  <div
-    class="progress-inner progress-inner-current"
-    style="width: {100 * progressPercentage}%;"
-  />
-  {#each lengthSteps as step}
+<div class="progress-container">
+  <div class="progress">
     <div
-      class="progress-inner-step"
-      class:inverted={step < maxLength}
-      style="left: {(100 * step) / absoluteMaxLength}%;"
+      class="progress-inner progress-inner-max"
+      style="width: {100 * maxPercentage}%;"
     />
-  {/each}
+    <div
+      class="progress-inner progress-inner-current"
+      style="width: {100 * progressPercentage}%;"
+    />
+    {#each lengthSteps as step}
+      <div
+        class="progress-inner-step"
+        class:inverted={step < maxLength}
+        style="left: {(100 * step) / absoluteMaxLength}%;"
+      />
+    {/each}
+  </div>
 </div>
-<div class="times">
-  <span> {formatTime(currentTime)}</span>
-  <span> {formatTime(absoluteMaxLength)}</span>
+
+<div class="button-bar">
+  <span class="time"> {formatTime(currentTime)}</span>
+  <button
+    class="play-pause"
+    class:play={paused}
+    class:pause={!paused}
+    on:click={paused ? play : pause}>{paused ? 'Play' : 'Pause'}</button
+  >
+  <span class="time"> {formatTime(absoluteMaxLength)}</span>
 </div>
 
 <style>
-  .times {
+  .button-bar {
     display: flex;
     justify-content: space-between;
+    padding: 8px 12px;
+
+    width: 100%;
+    max-width: var(--width-game);
+    margin: auto;
+  }
+
+  .progress-container {
+    width: 100%;
+    border-top: solid 1px var(--color-line);
+    border-bottom: solid 1px var(--color-line);
+    padding: 0 12px;
   }
   .progress {
+    width: 100%;
+    max-width: var(--width-game);
+    margin: auto;
+
     position: relative;
-    width: 300px;
-    height: 10px;
-    border: solid 1px #999;
+    height: 14px;
   }
   .progress-inner {
     position: absolute;

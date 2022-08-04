@@ -17,5 +17,8 @@
     gap: 8px;
     padding: 12px;
     flex: 1;
+    max-width: var(--width-game);
+    margin: auto;
+    width: 100%;
   }
 </style>

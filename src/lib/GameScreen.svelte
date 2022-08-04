@@ -50,19 +50,24 @@
 
 <div class="game-screen">
   <Guesses guesses={stages.map((s) => s.guess)} />
-  <Autocomplete {options} bind:selectedOption />
 
   <AudioPlayer
     src={correctOption.previewUrl}
     maxLength={currentStage?.duration}
     lengthSteps={stages.map((s) => s.duration)}
   />
-  <button on:click={skipToNextStep}>
-    Skip{stepGap ? ` (+${stepGap}s)` : ''}
-  </button>
-  <button disabled={!selectedOption} on:click={guessToNextStep}>
-    Submit
-  </button>
+  <div class="autocomplete-container">
+    <Autocomplete {options} bind:selectedOption />
+  </div>
+
+  <div class="buttons">
+    <button on:click={skipToNextStep}>
+      Skip{stepGap ? ` (+${stepGap}s)` : ''}
+    </button>
+    <button disabled={!selectedOption} on:click={guessToNextStep}>
+      Submit
+    </button>
+  </div>
 </div>
 
 <style>
@@ -70,5 +75,15 @@
     display: flex;
     flex-direction: column;
     flex: 1;
+  }
+  .autocomplete-container,
+  .buttons {
+    max-width: var(--width-game);
+    margin: auto;
+    width: 100%;
+  }
+  .buttons {
+    display: flex;
+    justify-content: space-between;
   }
 </style>

@@ -88,7 +88,6 @@
   }
   .game {
     flex: 1;
-    max-width: var(--width-game);
     width: 100%;
     margin: auto;
 
