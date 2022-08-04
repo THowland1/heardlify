@@ -14,6 +14,6 @@
   .guesses {
     display: flex;
     flex-direction: column;
-    gap: 5px;
+    gap: 8px;
   }
 </style>

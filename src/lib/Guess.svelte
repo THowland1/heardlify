@@ -31,10 +31,11 @@
 
 <style>
   .box {
-    border: solid 1px #999;
-    height: 32px;
+    border: solid 1px var(--color-mg);
+    height: 38px;
     display: flex;
     align-items: center;
+    padding: 8px;
   }
   .icon {
     display: flex;

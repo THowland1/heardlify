@@ -80,8 +80,13 @@
   }
   .container {
     --options-display: none;
-    border: solid 1px #999;
+    border: solid 1px var(--color-mg);
     position: relative;
+    color: var(--color-fg);
+  }
+
+  .container:focus-within {
+    border-color: var(--color-positive);
   }
 
   :global(em) {
@@ -115,7 +120,15 @@
     bottom: 0;
     left: 0;
     right: 0;
+    background: transparent;
+    border: none;
+    color: var(--color-fg);
   }
+
+  .input:focus {
+    outline: none;
+  }
+
   .input-container {
     position: relative;
     height: var(--input-height);
