@@ -22,7 +22,7 @@ const nowUTC = createDateAsUTC(new Date());
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const handler: Handler = async (event, context) => {
-  const playlistId = '0erQqpBCFFYj0gDam2pnp1';
+  const playlistId = event.queryStringParameters['playlist-id'];
   const authToken = await getSpotifyToken();
   const allPlaylistTracks = await getAllSpotifyPlaylistTracksExpensively(
     playlistId,
