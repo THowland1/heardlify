@@ -1,6 +1,7 @@
 <script lang="ts">
   import AudioPlayer from './AudioPlayer.svelte';
   import Autocomplete from './Autocomplete.svelte';
+  import Button from './Button.svelte';
   import Guesses from './Guesses.svelte';
   import type { IGuess, IGuessedGuess } from './types/IGuess';
   import type { IDetailedOption, IOption } from './types/IOption';
@@ -61,12 +62,16 @@
   </div>
 
   <div class="buttons">
-    <button on:click={skipToNextStep}>
-      Skip{stepGap ? ` (+${stepGap}s)` : ''}
-    </button>
-    <button disabled={!selectedOption} on:click={guessToNextStep}>
-      Submit
-    </button>
+    <Button on:click={skipToNextStep}>
+      SKIP{stepGap ? ` (+${stepGap}s)` : ''}
+    </Button>
+    <Button
+      color="primary"
+      disabled={!selectedOption}
+      on:click={guessToNextStep}
+    >
+      SUBMIT
+    </Button>
   </div>
 </div>
 
@@ -81,6 +86,9 @@
     max-width: var(--width-game);
     margin: auto;
     width: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+    padding-bottom: 12px;
   }
   .buttons {
     display: flex;

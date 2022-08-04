@@ -18,13 +18,15 @@
     <div class="icon">
       <EmptyBox color={colors.grey} />
     </div>
-    <div>SKIPPED</div>
+    <div class="skipped">SKIPPED</div>
   {:else if guess.type === 'guessed'}
     <div class="icon">
       <Cross color={guess.isCorrectArtist ? colors.warning : colors.negative} />
     </div>
-    <div>{guess.artists}</div>
-    <div>-</div>
+    <div class="artist" class:correct-artist={guess.isCorrectArtist}>
+      {guess.artists}
+    </div>
+    &nbsp;-&nbsp;
     <div>{guess.name}</div>
   {/if}
 </div>
@@ -32,6 +34,7 @@
 <style>
   .box {
     border: solid 1px var(--color-mg);
+    color: var(--color-line);
     height: 38px;
     display: flex;
     align-items: center;
@@ -42,5 +45,15 @@
 
     justify-content: center;
     width: 30px;
+    margin-left: 2px;
+    margin-right: 8px;
+  }
+  .correct-artist {
+    color: var(--color-fg);
+  }
+  .skipped {
+    color: var(--color-line);
+    letter-spacing: 2.7px;
+    font-weight: 700;
   }
 </style>

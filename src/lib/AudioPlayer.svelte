@@ -1,5 +1,6 @@
 <script lang="ts">
   import { getSong } from './get-song';
+  import Play from './Play.svg.svelte';
   export let maxLength: number;
   export let lengthSteps: number[];
   export let src: string;
@@ -65,8 +66,14 @@
     class="play-pause"
     class:play={paused}
     class:pause={!paused}
-    on:click={paused ? play : pause}>{paused ? 'Play' : 'Pause'}</button
+    on:click={paused ? play : pause}
   >
+    {#if paused}
+      <Play />
+    {:else}
+      Pause
+    {/if}
+  </button>
   <span class="time"> {formatTime(absoluteMaxLength)}</span>
 </div>
 
@@ -110,13 +117,24 @@
     z-index: 2;
   }
   .progress-inner-step.inverted {
-    background-color: #fff;
+    background-color: var(--color-bg);
   }
   .progress-inner-max {
-    background-color: #999;
+    background-color: var(--color-mg);
   }
   .progress-inner-current {
     z-index: 1;
-    background-color: red;
+    background-color: var(--color-positive);
+  }
+  .play-pause {
+    color: var(--color-fg);
+    border: solid 2px var(--color-fg);
+    height: 48px;
+    width: 48px;
+    border-radius: 48px;
+    background-color: var(--color-bg);
+    display: flex;
+    justify-content: center;
+    align-items: center;
   }
 </style>
