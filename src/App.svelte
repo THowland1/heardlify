@@ -1,12 +1,17 @@
 <script lang="ts">
   import GameScreen from './lib/GameScreen.svelte';
   import type { IGuess } from './lib/types/IGuess';
-  import type { IDetailedOption, IOption } from './lib/types/IOption';
   import type { IStage } from './lib/types/IStage';
   import GameOverScreen from './lib/GameOverScreen.svelte';
   import { getSong } from './lib/get-song';
 
-  const dataTask = getSong();
+  const PLAYLIST_ID_QUERYSTRING_KEY = 'playlist-id';
+
+  const q = new URLSearchParams(window.location.search);
+  const playlistId =
+    q.get(PLAYLIST_ID_QUERYSTRING_KEY) ?? '0erQqpBCFFYj0gDam2pnp1';
+
+  const dataTask = getSong(playlistId);
   let gameOver: { guesses: IGuess[] };
   const lengthSteps = [1, 2, 4, 7, 11, 16];
   let stages: IStage[] = [

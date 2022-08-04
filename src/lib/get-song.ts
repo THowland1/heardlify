@@ -5,8 +5,7 @@ type IResponse = {
   options: IOption[];
 };
 
-export async function getSong(): Promise<IResponse> {
-  const playlistId = '0erQqpBCFFYj0gDam2pnp1';
+export async function getSong(playlistId: string): Promise<IResponse> {
   const response = await fetch(
     `https://heardles.netlify.app/api/get-song?playlist-id=${playlistId}`
   );
