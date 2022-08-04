@@ -129,8 +129,31 @@
   {/await}
   <h6>Try out another</h6>
   {#each premadePlaylists as playlist}
-    <button on:click={() => goToOtherPlaylist(playlist.playlistId)}>
+    <a
+      class="other"
+      href={`/?playlist-id=${playlist.playlistId}`}
+      disabled={playlist.playlistId === playlistId}
+    >
       {playlist.name}
-    </button>
+    </a>
   {/each}
 </main>
+
+<style>
+  .other {
+    background: #ccc;
+    padding: 10px 15px;
+    border-radius: 5px;
+  }
+  .other:hover {
+    background: #bbb;
+  }
+  .other[disabled='true']:hover {
+    background: #ccc;
+  }
+
+  .other[disabled='true'] {
+    opacity: 0.5;
+    cursor: default;
+  }
+</style>
