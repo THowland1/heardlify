@@ -69,5 +69,6 @@
   .game-screen {
     display: flex;
     flex-direction: column;
+    flex: 1;
   }
 </style>
