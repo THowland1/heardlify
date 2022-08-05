@@ -40,7 +40,7 @@ export const handler: Handler = async (event, context) => {
   const result = {
     answer,
     options: allPlaylistTracks,
-    playlist: { name: playlist.name, image: playlist.images.at(-1).url },
+    playlist: { name: playlist.name, imageUrl: playlist.images.at(-1).url },
   };
 
   return {
