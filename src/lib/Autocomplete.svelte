@@ -44,7 +44,7 @@
       <div class="options">
         {#each filteredOptions.options as option}
           <button
-            on:click={(e) => {
+            on:pointerdown={(e) => {
               selectOption(option);
               e.currentTarget.blur();
             }}
