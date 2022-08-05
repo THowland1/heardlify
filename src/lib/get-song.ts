@@ -1,8 +1,12 @@
 import type { IDetailedOption, IOption } from './types/IOption';
 
-type IResponse = {
+export type IResponse = {
   answer: IDetailedOption;
   options: IOption[];
+  playlist: {
+    name: string;
+    imageUrl: string;
+  };
 };
 
 export async function getSong(playlistId: string): Promise<IResponse> {

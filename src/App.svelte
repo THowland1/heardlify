@@ -4,8 +4,9 @@
   import type { IStage } from './lib/types/IStage';
   import GameOverScreen from './lib/GameOverScreen.svelte';
   import Header from './lib/Header.svelte';
-  import { getSong } from './lib/get-song';
+  import { getSong, type IResponse } from './lib/get-song';
   import LinkThatLooksLikeButton from './lib/LinkThatLooksLikeButton.svelte';
+  import { onMount } from 'svelte';
 
   const PLAYLIST_ID_QUERYSTRING_KEY = 'playlist-id';
 
@@ -13,7 +14,12 @@
   const playlistId =
     q.get(PLAYLIST_ID_QUERYSTRING_KEY) ?? '0erQqpBCFFYj0gDam2pnp1';
 
-  const dataTask = getSong(playlistId);
+  let playlist: IResponse | null = null;
+  onMount(async () => {
+    const data = await getSong(playlistId);
+
+    playlist = data;
+  });
 
   const premadePlaylists = [
     { name: '60s', playlistId: '37i9dQZF1DXaKIA8E7WcJj' },
@@ -48,24 +54,29 @@
   $: gameIsOver =
     stages.some((s) => s.guess.type === 'guessed' && s.guess.isCorrectSong) ||
     stages.every((s) => s.guess.type !== 'empty');
+
+  $: bgImage = playlist ? `url(${playlist.playlist.imageUrl})` : undefined;
 </script>
+
+<div class="bg" style:--image-bg={bgImage} />
+<div class="bg-blur" />
 
 <div class="whole-thing">
   <Header />
   <main class="game">
-    {#await dataTask}
-      ...
-    {:then data}
+    {#if playlist}
       {#if gameIsOver}
-        <GameOverScreen correctOption={data.answer} {stages} />
+        <GameOverScreen correctOption={playlist.answer} {stages} />
       {:else}
         <GameScreen
-          options={data.options}
-          correctOption={data.answer}
+          options={playlist.options}
+          correctOption={playlist.answer}
           bind:stages
         />
       {/if}
-    {/await}
+    {:else}
+      ...
+    {/if}
   </main>
   <footer class="footer">
     <h6>Try out another</h6>
@@ -83,6 +94,29 @@
 </div>
 
 <style>
+  .bg {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    background-image: var(--color-bg);
+    background-image: var(--image-bg);
+    filter: blur(16px);
+    z-index: -2;
+    background-size: 100% 100%;
+    transition: background-image 2s ease-in-out;
+  }
+  .bg-blur {
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    z-index: 0;
+    background-color: var(--color-overlay);
+    z-index: -1;
+  }
   .whole-thing {
     display: flex;
     flex-direction: column;

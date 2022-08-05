@@ -11,6 +11,7 @@
   --color-line: #a7a7a7;
   --color-shade: rgba(0, 0, 0, 0.1);
   --color-highlight: rgba(255, 255, 255, 0.05);
+  --color-overlay: rgb(0 0 0 / 75%);
 
   --width-game: 640px;
 
