@@ -25,6 +25,7 @@
     letter-spacing: 0.1em;
     text-indent: 3.5px;
     display: flex;
+    user-select: none;
   }
   .button.primary {
     background-color: var(--color-positive);
