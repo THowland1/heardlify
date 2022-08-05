@@ -62,7 +62,7 @@
 <div class="bg-blur" />
 
 <div class="whole-thing">
-  <Header />
+  <Header playlistName={playlist?.playlist?.name} />
   <main class="game">
     {#if playlist}
       {#if gameIsOver}

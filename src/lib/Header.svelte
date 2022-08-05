@@ -1,16 +1,42 @@
 <script lang="ts">
+  import SpotifyWordmark from './SpotifyWordmark.svelte';
+
+  export let playlistName: string | null = null;
 </script>
 
-<nav class="nav">
-  <h1>HEARDLE</h1>
-</nav>
+<div class="nav-container">
+  <nav class="nav">
+    <h1>HEARDLE</h1>
+    <div>
+      {#if !!playlistName}
+        <div class="current-playlist">
+          {playlistName ?? ''}
+        </div>
+      {/if}
+    </div>
+  </nav>
+</div>
 
 <style>
-  .nav {
+  .nav-container {
     height: 57px;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
     border-bottom: solid 1px var(--color-line);
+  }
+  .nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    max-width: var(--width-game);
+    margin: auto;
+    height: 100%;
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .current-playlist {
+    background-color: var(--color-mg);
+    padding: 8px;
+    border-radius: 6px;
   }
 </style>
