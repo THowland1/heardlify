@@ -102,7 +102,7 @@
     right: 0;
     background-image: var(--color-bg);
     background-image: var(--image-bg);
-    filter: blur(16px);
+    filter: blur(32px);
     z-index: -2;
     background-size: 100% 100%;
     transition: background-image 2s ease-in-out;
