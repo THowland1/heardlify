@@ -5,6 +5,7 @@
   import GameOverScreen from './lib/GameOverScreen.svelte';
   import Header from './lib/Header.svelte';
   import { getSong } from './lib/get-song';
+  import LinkThatLooksLikeButton from './lib/LinkThatLooksLikeButton.svelte';
 
   const PLAYLIST_ID_QUERYSTRING_KEY = 'playlist-id';
 
@@ -66,17 +67,18 @@
       {/if}
     {/await}
   </main>
-  <footer>
+  <footer class="footer">
     <h6>Try out another</h6>
-    {#each premadePlaylists as playlist}
-      <a
-        class="other"
-        href={`/?playlist-id=${playlist.playlistId}`}
-        disabled={playlist.playlistId === playlistId}
-      >
-        {playlist.name}
-      </a>
-    {/each}
+    <div class="others">
+      {#each premadePlaylists as playlist}
+        <LinkThatLooksLikeButton
+          href={`/?playlist-id=${playlist.playlistId}`}
+          disabled={playlist.playlistId === playlistId}
+        >
+          {playlist.name}
+        </LinkThatLooksLikeButton>
+      {/each}
+    </div>
   </footer>
 </div>
 
@@ -94,20 +96,16 @@
     display: flex;
     flex-direction: column;
   }
-  .other {
-    background: #ccc;
-    padding: 10px 15px;
-    border-radius: 5px;
-  }
-  .other:hover {
-    background: #bbb;
-  }
-  .other[disabled='true']:hover {
-    background: #ccc;
-  }
 
-  .other[disabled='true'] {
-    opacity: 0.5;
-    cursor: default;
+  .footer {
+    width: 100%;
+    max-width: var(--width-game);
+    margin: auto;
+    text-align: center;
+  }
+  .others {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
   }
 </style>
