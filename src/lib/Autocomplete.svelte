@@ -1,4 +1,6 @@
 <script lang="ts">
+  import Search from './Search.svg.svelte';
+  import Times from './Times.svg.svelte';
   import type { IOption } from './types/IOption';
 
   export let options: IOption[];
@@ -37,40 +39,43 @@
 </script>
 
 <div class="container">
-  {#if !!textvalue}
-    <div class="options">
-      {#each filteredOptions.options as option}
-        <button
-          on:click={(e) => {
-            selectOption(option);
-            e.currentTarget.blur();
-          }}
-          class="option"
-        >
-          {@html wrapMatchingText(option.formatted, textvalue)}
-        </button>
-      {/each}
-      <div>
-        {#if filteredOptions.options.length > 0}
-          {filteredOptions.options.length} of {filteredOptions.totalCount} for "{textvalue}"
-        {:else}
-          No results for "{textvalue}". Maybe it's something else...
-        {/if}
+  <div class="box">
+    {#if !!textvalue || true}
+      <div class="options">
+        {#each filteredOptions.options as option}
+          <button
+            on:click={(e) => {
+              selectOption(option);
+              e.currentTarget.blur();
+            }}
+            class="option"
+          >
+            {@html wrapMatchingText(option.formatted, textvalue)}
+          </button>
+        {/each}
+        <div class="count">
+          {#if filteredOptions.options.length > 0}
+            {filteredOptions.options.length} of {filteredOptions.totalCount} for
+            "{textvalue}"
+          {:else}
+            No results for "{textvalue}". Maybe it's something else...
+          {/if}
+        </div>
       </div>
-    </div>
-  {/if}
-  <div class="input-container">
-    <span class="hourglass-icon">🔎</span>
-    <input
-      bind:value={textvalue}
-      on:focus={clear}
-      class="input"
-      type="text"
-      placeholder="Know it? Search for the artist / title"
-    />
-    {#if !!textvalue}
-      <button on:click={clear} class="close-button">&times;</button>
     {/if}
+    <div class="input-container">
+      <span class="hourglass-icon"><Search /></span>
+      <input
+        bind:value={textvalue}
+        on:focus={clear}
+        class="input"
+        type="text"
+        placeholder="Know it? Search for the artist / title"
+      />
+      {#if !!textvalue}
+        <button on:click={clear} class="close-button"><Times /></button>
+      {/if}
+    </div>
   </div>
 </div>
 
@@ -91,7 +96,7 @@
 
   :global(em) {
     font-style: normal;
-    background-color: yellow;
+    background-color: var(--color-mg);
   }
 
   .container:focus-within {
@@ -103,13 +108,23 @@
     left: 0;
     right: 0;
     bottom: 100%;
-    z-index: 1;
-    background-color: #999;
+    z-index: 2;
+    background-color: var(--color-bg);
+    overflow: hidden;
+
+    border: solid 1px var(--color-positive);
+    border-bottom: none;
   }
   .option {
     cursor: pointer;
     all: unset;
     display: block;
+
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--color-mg);
+    letter-spacing: 1px;
+    line-height: 1.3;
+    width: 100%;
   }
   .input {
     padding-left: var(--input-height);
@@ -154,7 +169,14 @@
     justify-content: center;
     align-items: center;
     width: var(--input-height);
-    color: #999;
+    color: var(--color-fg);
     background-color: transparent;
+    border: none;
+  }
+  .count {
+    color: var(--color-line);
+    padding: 0.5rem 0.75rem;
+    border-bottom: 1px solid var(--color-mg);
+    font-size: 12px;
   }
 </style>
