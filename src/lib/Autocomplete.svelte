@@ -40,7 +40,7 @@
 
 <div class="container">
   <div class="box">
-    {#if !!textvalue || true}
+    {#if !!textvalue}
       <div class="options">
         {#each filteredOptions.options as option}
           <button
