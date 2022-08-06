@@ -7,6 +7,7 @@
   import { getSong, type IResponse } from './lib/get-song';
   import LinkThatLooksLikeButton from './lib/LinkThatLooksLikeButton.svelte';
   import { onMount } from 'svelte';
+  import PlaylistSearchModal from './lib/PlaylistSearchModal.svelte';
 
   const PLAYLIST_ID_QUERYSTRING_KEY = 'playlist-id';
 
@@ -56,13 +57,20 @@
     stages.every((s) => s.guess.type !== 'empty');
 
   $: bgImage = playlist ? `url(${playlist.playlist.imageUrl})` : undefined;
+
+  let modalOpen = false;
 </script>
 
 <div class="bg" style:--image-bg={bgImage} />
 <div class="bg-blur" />
 
+<PlaylistSearchModal bind:open={modalOpen} />
+
 <div class="whole-thing">
-  <Header playlistName={playlist?.playlist?.name} />
+  <Header
+    playlistName={playlist?.playlist?.name}
+    on:click={() => (modalOpen = true)}
+  />
   <main class="game">
     {#if playlist}
       {#if gameIsOver}

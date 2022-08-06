@@ -9,10 +9,10 @@
     <h1>HEARDLE</h1>
     <div>
       {#if !!playlistName}
-        <div class="current-playlist">
+        <button class="current-playlist" on:click>
           <SpotifyLogo />
           {playlistName ?? ''}
-        </div>
+        </button>
       {/if}
     </div>
   </nav>
@@ -42,5 +42,8 @@
 
     display: flex;
     gap: 6px;
+
+    border: none;
+    color: inherit;
   }
 </style>
