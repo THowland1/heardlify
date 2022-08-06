@@ -1,5 +1,5 @@
 <script lang="ts">
-  import SpotifyWordmark from './SpotifyWordmark.svelte';
+  import SpotifyLogo from './SpotifyLogo.svg.svelte';
 
   export let playlistName: string | null = null;
 </script>
@@ -10,6 +10,7 @@
     <div>
       {#if !!playlistName}
         <div class="current-playlist">
+          <SpotifyLogo />
           {playlistName ?? ''}
         </div>
       {/if}
@@ -38,5 +39,8 @@
     background-color: var(--color-mg);
     padding: 8px;
     border-radius: 6px;
+
+    display: flex;
+    gap: 6px;
   }
 </style>
