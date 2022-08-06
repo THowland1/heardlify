@@ -1,9 +1,9 @@
 import { Handler } from '@netlify/functions';
-import { getAllSpotifyPlaylistTracksExpensively } from './get-all-spotify-playlist-tracks-expensively';
-import { getSpotifyPlaylist } from './get-spotify-playlist';
-import { getSpotifyPlaylistTracks } from './get-spotify-playlist-tracks';
-import { getSpotifyToken } from './get-spotify-token';
-import { IDetailedOption, IOption } from './option';
+import { getAllSpotifyPlaylistTracksExpensively } from '../../utils/get-all-spotify-playlist-tracks-expensively';
+import { getSpotifyPlaylist } from '../../utils/get-spotify-playlist';
+import { getSpotifyPlaylistTracks } from '../../utils/get-spotify-playlist-tracks';
+import { getSpotifyToken } from '../../utils/get-spotify-token';
+import { IDetailedOption, IOption } from '../../utils/option';
 
 function createDateAsUTC(date: Date) {
   return new Date(
