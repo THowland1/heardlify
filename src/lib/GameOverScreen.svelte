@@ -87,6 +87,11 @@
 </div>
 
 <style>
+  .top {
+    width: 100%;
+    max-width: var(--width-game);
+    margin: 0 auto;
+  }
   .game-over-screen {
     padding: 16px;
 
