@@ -142,12 +142,9 @@
     height: 48px;
     width: 48px;
     border-radius: 48px;
-    background-color: var(--color-bg);
+    background-color: transparent;
     display: flex;
     justify-content: center;
     align-items: center;
-  }
-  .play {
-    padding-left: 9px;
   }
 </style>
