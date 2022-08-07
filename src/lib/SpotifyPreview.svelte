@@ -17,10 +17,14 @@
   <div class="info">
     <div class="info__name">{song.name}</div>
     <div class="info__artists">{song.artists.formatted}</div>
-    <div class="info__year">{song.year}</div>
-  </div>
-  <div class="wordmark">
-    <SpotifyWordmark />
+    <div class="info__bottom">
+      <div class="info__year">
+        {song.year}
+      </div>
+      <div class="wordmark">
+        <SpotifyWordmark />
+      </div>
+    </div>
   </div>
 </a>
 
@@ -51,19 +55,28 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+    overflow: hidden;
   }
   .info__name {
     font-size: 16px;
     font-weight: 600;
     letter-spacing: 0.2px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .info__artists {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
   }
   .info__artists,
   .info__year {
     color: var(--color-line);
   }
-
-  .wordmark {
-    padding: 12px 8px;
-    align-self: flex-end;
+  .info__bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
   }
 </style>

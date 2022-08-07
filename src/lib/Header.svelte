@@ -1,4 +1,5 @@
 <script lang="ts">
+  import ChevronDown from './ChevronDown.svg.svelte';
   import SpotifyLogo from './SpotifyLogo.svg.svelte';
 
   export let playlistName: string | null = null;
@@ -7,11 +8,14 @@
 <div class="nav-container">
   <nav class="nav">
     <h1>HEARDLE</h1>
-    <div>
+    <div class="chip-container">
       {#if !!playlistName}
         <button class="current-playlist" on:click>
           <SpotifyLogo />
-          {playlistName ?? ''}
+          <span class="playlist-name">
+            {playlistName ?? ''}
+          </span>
+          <ChevronDown />
         </button>
       {/if}
     </div>
@@ -34,7 +38,11 @@
     padding-left: 12px;
     padding-right: 12px;
   }
-
+  .chip-container {
+    overflow: hidden;
+    padding-left: 8px;
+    display: flex;
+  }
   .current-playlist {
     background-color: var(--color-mg);
     padding: 8px;
@@ -45,5 +53,15 @@
 
     border: none;
     color: inherit;
+
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .playlist-name {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+    flex: 1;
   }
 </style>
