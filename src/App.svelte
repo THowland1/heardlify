@@ -74,7 +74,11 @@
   <main class="game">
     {#if playlist}
       {#if gameIsOver}
-        <GameOverScreen correctOption={playlist.answer} {stages} />
+        <GameOverScreen
+          playlistName={playlist.playlist.name}
+          correctOption={playlist.answer}
+          {stages}
+        />
       {:else}
         <GameScreen
           options={playlist.options}

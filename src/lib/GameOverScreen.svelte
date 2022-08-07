@@ -6,6 +6,8 @@
   import type { IDetailedOption, IOption } from './types/IOption';
   import type { IStage } from './types/IStage';
 
+  export let playlistName: string;
+  let shareFeedback: string | null;
   export let correctOption: IDetailedOption;
   export let stages: IStage[];
 
@@ -31,6 +33,49 @@
       time: correctStage.duration,
     };
   }
+  async function copyResultsToClipboard() {
+    const text = `
+    #Heardles
+    💿${playlistName}
+    📅${new Date().toLocaleDateString('en-GB', { dateStyle: 'short' })}
+
+    🔇${stages
+      .map(({ guess }) => {
+        if (guess.type === 'guessed') {
+          if (guess.isCorrectSong) {
+            return '🟩';
+          } else if (guess.isCorrectArtist) {
+            return '🟨';
+          } else {
+            return '🟥';
+          }
+        } else {
+          return '⬛️';
+        }
+      })
+      .join('')}
+
+    ${window.location.toString()}
+    `;
+
+    const shareData = { text };
+    if (
+      'canShare' in navigator &&
+      'share' in navigator &&
+      navigator.canShare(shareData)
+    ) {
+      await navigator.share(shareData);
+      shareFeedback = 'Shared!';
+    } else if ('clipboard' in navigator && 'writeText' in navigator.clipboard) {
+      await navigator.clipboard.writeText(text);
+      shareFeedback = 'Copied to clipboard!';
+    } else {
+      shareFeedback = 'Could not copy!';
+    }
+
+    setTimeout((_) => (shareFeedback = null), 3000);
+  }
+
   $: result = evaluateResult();
 
   $: headline = result.type === 'success' ? result.message : 'UNLUCKY!';
@@ -68,7 +113,12 @@
 
     <div class="message">{@html message}</div>
 
-    <Button color="primary">SHARE&nbsp;<Share /></Button>
+    <Button on:click={copyResultsToClipboard} color="primary"
+      >SHARE&nbsp;<Share /></Button
+    >
+    {#if shareFeedback}
+      <div class="share-feedback">{shareFeedback}</div>
+    {/if}
 
     <div class="next">
       <div>NEXT HEARDLE IN</div>
@@ -112,7 +162,8 @@
     font-size: 20px;
   }
   .message,
-  .next {
+  .next,
+  .share-feedback {
     color: var(--color-line);
     line-height: 2;
   }
