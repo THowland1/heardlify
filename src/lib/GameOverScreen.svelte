@@ -1,5 +1,4 @@
 <script lang="ts">
-  import { onMount } from 'svelte';
   import AudioPlayer from './AudioPlayer.svelte';
   import Button from './Button.svelte';
   import Share from './Share.svelte';
@@ -79,6 +78,7 @@
 
   <div class="bottom">
     <AudioPlayer
+      autoplay
       src={correctOption.previewUrl}
       maxLength={30}
       lengthSteps={[30]}

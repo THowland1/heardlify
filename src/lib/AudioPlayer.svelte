@@ -1,7 +1,10 @@
 <script lang="ts">
+  import { onMount } from 'svelte';
+
   import { getSong } from './get-song';
   import Play from './Play.svg.svelte';
   import Playing from './Playing.svelte';
+  export let autoplay = false;
   export let maxLength: number;
   export let lengthSteps: number[];
   export let src: string;
@@ -33,6 +36,12 @@
     const ss = Math.floor(seconds % 60);
     return `${mm}:${String(ss).padStart(2, '0')}`;
   }
+
+  onMount(() => {
+    if (autoplay) {
+      play();
+    }
+  });
 </script>
 
 <audio {src} bind:this={audio} bind:duration bind:currentTime bind:paused />
