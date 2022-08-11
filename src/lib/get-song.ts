@@ -9,9 +9,12 @@ export type IResponse = {
   };
 };
 
-export async function getSong(playlistId: string): Promise<IResponse> {
+export async function getSong(
+  playlistId: string,
+  date: Date
+): Promise<IResponse> {
   const response = await fetch(
-    `https://heardles.netlify.app/api/get-song?playlist-id=${playlistId}`
+    `https://heardles.netlify.app/api/get-song?playlist-id=${playlistId}&date=${date.toISOString()}`
   );
   const body = await response.json();
   return body;

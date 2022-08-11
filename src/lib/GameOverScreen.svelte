@@ -11,6 +11,32 @@
   export let correctOption: IDetailedOption;
   export let stages: IStage[];
 
+  function numberTo2Digit(val: number) {
+    return String(val).padStart(2, '0');
+  }
+
+  let now = new Date();
+  let clear: number | null = null;
+  $: {
+    clearInterval(clear);
+    clear = window.setInterval(() => (now = new Date()), 1000);
+  }
+  function getTimeToNextDayString(dateTime: Date) {
+    const nextMidnight = new Date(dateTime);
+    nextMidnight.setHours(24, 0, 0, 0);
+
+    var msec = nextMidnight.valueOf() - now.valueOf();
+    var hh = Math.floor(msec / 1000 / 60 / 60);
+    msec -= hh * 1000 * 60 * 60;
+    var mm = Math.floor(msec / 1000 / 60);
+    msec -= mm * 1000 * 60;
+    var ss = Math.floor(msec / 1000);
+    msec -= ss * 1000;
+
+    return `${numberTo2Digit(hh)}:${numberTo2Digit(mm)}:${numberTo2Digit(ss)}`;
+  }
+  $: timeToNextGameString = getTimeToNextDayString(now);
+
   type IResult =
     | {
         type: 'failure';
@@ -122,7 +148,7 @@
 
     <div class="next">
       <div>NEXT HEARDLE IN</div>
-      <div>00:00:00</div>
+      <div>{timeToNextGameString}</div>
     </div>
   </div>
 

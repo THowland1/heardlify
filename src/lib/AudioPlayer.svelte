@@ -1,7 +1,5 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-
-  import { getSong } from './get-song';
   import Play from './Play.svg.svelte';
   import Playing from './Playing.svelte';
   export let autoplay = false;

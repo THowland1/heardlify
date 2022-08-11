@@ -17,7 +17,7 @@
 
   let playlist: IResponse | null = null;
   onMount(async () => {
-    const data = await getSong(playlistId);
+    const data = await getSong(playlistId, new Date());
 
     playlist = data;
   });
