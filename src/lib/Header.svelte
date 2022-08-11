@@ -7,7 +7,7 @@
 
 <div class="nav-container">
   <nav class="nav">
-    <h1>HEARDLE</h1>
+    <h1>HEARDLES</h1>
     <div class="chip-container">
       {#if !!playlistName}
         <button class="current-playlist" on:click>
