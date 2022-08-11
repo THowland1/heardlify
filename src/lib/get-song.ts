@@ -14,7 +14,9 @@ export async function getSong(
   date: Date
 ): Promise<IResponse> {
   const response = await fetch(
-    `https://heardles.netlify.app/api/get-song?playlist-id=${playlistId}&date=${date.toISOString()}`
+    `https://heardles.netlify.app/api/get-song?playlist-id=${playlistId}&date=${
+      date.toISOString().split('T')[0]
+    }`
   );
   const body = await response.json();
   return body;

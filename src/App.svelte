@@ -17,7 +17,10 @@
 
   let playlist: IResponse | null = null;
   onMount(async () => {
-    const data = await getSong(playlistId, new Date());
+    const date = new Date();
+    var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
+    var correctDate = new Date(timestamp);
+    const data = await getSong(playlistId, correctDate);
 
     playlist = data;
   });
