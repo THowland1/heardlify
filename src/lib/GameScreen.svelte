@@ -14,6 +14,7 @@
   export let correctOption: IDetailedOption | null;
   export let options: IOption[] | null;
   export let stages: IStage[] = [];
+  let touched = false;
 
   function skipToNextStep() {
     if (!currentStage) {
@@ -62,28 +63,35 @@
   <Guesses guesses={stages.map((s) => s.guess)} />
 
   <AudioPlayer
+    on:play={() => (touched = true)}
     src={correctOption?.previewUrl ?? null}
     maxLength={currentStage?.duration ?? 0}
     lengthSteps={stages.map((s) => s.duration)}
   />
-  <div class="autocomplete-container">
-    {#if options}
+  {#if touched && options}
+    <div class="autocomplete-container">
       <Autocomplete {options} bind:selectedOption />
-    {/if}
-  </div>
+    </div>
 
-  <div class="buttons">
-    <Button on:click={skipToNextStep}>
-      SKIP{stepGap ? ` (+${stepGap}s)` : ''}
-    </Button>
-    <Button
-      color="primary"
-      disabled={!selectedOption}
-      on:click={guessToNextStep}
-    >
-      SUBMIT
-    </Button>
-  </div>
+    <div class="buttons">
+      <Button on:click={skipToNextStep}>
+        SKIP{stepGap ? ` (+${stepGap}s)` : ''}
+      </Button>
+      <Button
+        color="primary"
+        disabled={!selectedOption}
+        on:click={guessToNextStep}
+      >
+        SUBMIT
+      </Button>
+    </div>
+  {:else}
+    <div class="prompt">
+      <span> ^ </span>
+      <br />
+      <span> Turn up the volume and tap to start the track! </span>
+    </div>
+  {/if}
 </div>
 
 <style>
@@ -104,5 +112,12 @@
   .buttons {
     display: flex;
     justify-content: space-between;
+  }
+  .prompt {
+    color: var(--color-line);
+    text-align: center;
+    padding-left: 15px;
+    padding-right: 15px;
+    padding-bottom: 15px;
   }
 </style>

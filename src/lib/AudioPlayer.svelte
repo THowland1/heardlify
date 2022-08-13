@@ -1,15 +1,19 @@
 <script lang="ts">
   import { onMount } from 'svelte';
+  import LoadingSpinner from './LoadingSpinner.svg.svelte';
   import Play from './Play.svg.svelte';
   import Playing from './Playing.svelte';
+  import { createEventDispatcher } from 'svelte';
+  const dispatch = createEventDispatcher<'play'>();
   export let autoplay = false;
   export let maxLength: number;
   export let lengthSteps: number[];
   export let src: string | null;
   let duration: number;
   let currentTime = 0;
-  let audio: HTMLAudioElement;
+  let audio: HTMLAudioElement | null = null;
   let paused = true;
+  let tryingToPlay = false;
 
   $: progressPercentage = currentTime / absoluteMaxLength;
   $: maxPercentage = maxLength / absoluteMaxLength;
@@ -18,12 +22,24 @@
   $: if (currentTime > maxLength) {
     pause();
   }
+  $: if (tryingToPlay && audio) {
+    tryingToPlay = false;
+    play();
+  }
 
   function play() {
+    dispatch('play', {});
+    if (!audio) {
+      tryingToPlay = true;
+      return;
+    }
     audio.play();
     audio = audio;
   }
   function pause() {
+    if (!audio) {
+      return;
+    }
     audio.pause();
     audio.currentTime = 0;
     audio = audio;
@@ -78,7 +94,9 @@
     class:pause={!paused}
     on:click={paused ? play : pause}
   >
-    {#if paused}
+    {#if tryingToPlay}
+      <LoadingSpinner />
+    {:else if paused}
       <Play />
     {:else}
       <Playing />
