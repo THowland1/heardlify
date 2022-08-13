@@ -34,14 +34,6 @@
     { name: '2010s', playlistId: '37i9dQZF1DX5Ejj0EkURtP' },
   ];
 
-  function goToOtherPlaylist(playlistId: string) {
-    window.location.search = new URLSearchParams({
-      [PLAYLIST_ID_QUERYSTRING_KEY]: playlistId,
-    }).toString();
-  }
-
-  let gameOver: { guesses: IGuess[] };
-  const lengthSteps = [1, 2, 4, 7, 11, 16];
   let stages: IStage[] = [
     {
       duration: 1,
@@ -75,22 +67,18 @@
     on:click={() => (modalOpen = true)}
   />
   <main class="game">
-    {#if playlist}
-      {#if gameIsOver}
-        <GameOverScreen
-          playlistName={playlist.playlist.name}
-          correctOption={playlist.answer}
-          {stages}
-        />
-      {:else}
-        <GameScreen
-          options={playlist.options}
-          correctOption={playlist.answer}
-          bind:stages
-        />
-      {/if}
+    {#if gameIsOver && playlist}
+      <GameOverScreen
+        playlistName={playlist.playlist.name}
+        correctOption={playlist.answer}
+        {stages}
+      />
     {:else}
-      ...
+      <GameScreen
+        options={playlist?.options ?? null}
+        correctOption={playlist?.answer ?? null}
+        bind:stages
+      />
     {/if}
   </main>
   <footer class="footer">

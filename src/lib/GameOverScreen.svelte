@@ -18,7 +18,7 @@
   let now = new Date();
   let clear: number | null = null;
   $: {
-    clearInterval(clear);
+    if (clear) clearInterval(clear);
     clear = window.setInterval(() => (now = new Date()), 1000);
   }
   function getTimeToNextDayString(dateTime: Date) {

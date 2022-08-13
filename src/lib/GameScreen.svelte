@@ -11,16 +11,22 @@
     return a.some((aa) => b.includes(aa));
   }
 
-  export let correctOption: IDetailedOption;
-  export let options: IOption[];
+  export let correctOption: IDetailedOption | null;
+  export let options: IOption[] | null;
   export let stages: IStage[] = [];
 
   function skipToNextStep() {
+    if (!currentStage) {
+      throw new Error('Cannot skip - There is no currentStage');
+    }
     currentStage.guess = { type: 'skipped' };
     stages = stages;
     console.log(currentStage);
   }
   function guessToNextStep() {
+    if (!currentStage) {
+      throw new Error('Cannot skip - There is no currentStage');
+    }
     if (!selectedOption) {
       throw new Error('selectedOption must have a value to submit');
     }
@@ -30,6 +36,9 @@
   }
 
   function evaluateGuess(option: IOption): IGuessedGuess {
+    if (!correctOption) {
+      throw new Error('correctOption must have a value to submit');
+    }
     return {
       artists: option.artists.formatted,
       isCorrectArtist: arraysIntersect(
@@ -44,7 +53,7 @@
 
   $: currentStage = stages.find((s) => s.guess.type === 'empty');
   $: nextStage = stages[stages.findIndex((s) => s.guess.type === 'empty') + 1];
-  $: stepGap = nextStage?.duration - currentStage?.duration;
+  $: stepGap = nextStage?.duration - (currentStage?.duration ?? 0);
 
   let selectedOption: IOption | null = null;
 </script>
@@ -53,12 +62,14 @@
   <Guesses guesses={stages.map((s) => s.guess)} />
 
   <AudioPlayer
-    src={correctOption.previewUrl}
-    maxLength={currentStage?.duration}
+    src={correctOption?.previewUrl ?? null}
+    maxLength={currentStage?.duration ?? 0}
     lengthSteps={stages.map((s) => s.duration)}
   />
   <div class="autocomplete-container">
-    <Autocomplete {options} bind:selectedOption />
+    {#if options}
+      <Autocomplete {options} bind:selectedOption />
+    {/if}
   </div>
 
   <div class="buttons">

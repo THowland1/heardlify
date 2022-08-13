@@ -5,7 +5,7 @@
   export let autoplay = false;
   export let maxLength: number;
   export let lengthSteps: number[];
-  export let src: string;
+  export let src: string | null;
   let duration: number;
   let currentTime = 0;
   let audio: HTMLAudioElement;
@@ -42,7 +42,9 @@
   });
 </script>
 
-<audio {src} bind:this={audio} bind:duration bind:currentTime bind:paused />
+{#if src}
+  <audio {src} bind:this={audio} bind:duration bind:currentTime bind:paused />
+{/if}
 
 <!-- {paused}
 {currentTime}
