@@ -4,23 +4,29 @@
   import type { IStage } from './lib/types/IStage';
   import GameOverScreen from './lib/GameOverScreen.svelte';
   import Header from './lib/Header.svelte';
-  import { getSong, type IResponse } from './lib/get-song';
+  import { getTodaysAnswer, type IResponse } from './lib/get-todays-answer';
   import LinkThatLooksLikeButton from './lib/LinkThatLooksLikeButton.svelte';
   import { onMount } from 'svelte';
   import PlaylistSearchModal from './lib/PlaylistSearchModal.svelte';
+  import { getTodaysGuesses, setTodaysGuesses } from './lib/get-todays-guesses';
+
+  function getDate(date = new Date()) {
+    console.log(123);
+    var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
+    var correctDate = new Date(timestamp);
+    return correctDate;
+  }
 
   const PLAYLIST_ID_QUERYSTRING_KEY = 'playlist-id';
 
   const q = new URLSearchParams(window.location.search);
   const playlistId =
     q.get(PLAYLIST_ID_QUERYSTRING_KEY) ?? '0erQqpBCFFYj0gDam2pnp1';
+  const date = getDate();
 
   let playlist: IResponse | null = null;
   onMount(async () => {
-    const date = new Date();
-    var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
-    var correctDate = new Date(timestamp);
-    const data = await getSong(playlistId, correctDate);
+    const data = await getTodaysAnswer(playlistId, date);
 
     playlist = data;
   });
@@ -34,18 +40,10 @@
     { name: '2010s', playlistId: '37i9dQZF1DX5Ejj0EkURtP' },
   ];
 
-  let stages: IStage[] = [
-    {
-      duration: 1,
-      message: 'A VIRTUOSO PERFORMANCE!',
-      guess: { type: 'empty' },
-    },
-    { duration: 2, message: 'AN ACT OF GENIUS!', guess: { type: 'empty' } },
-    { duration: 4, message: "YOU'RE A STAR!", guess: { type: 'empty' } },
-    { duration: 7, message: 'WHAT A PRO!', guess: { type: 'empty' } },
-    { duration: 11, message: "YOU'RE A WINNER!", guess: { type: 'empty' } },
-    { duration: 16, message: 'GOOD RESULT!', guess: { type: 'empty' } },
-  ];
+  let stages: IStage[] = getTodaysGuesses(playlistId, date);
+  $: {
+    setTodaysGuesses(playlistId, date, stages);
+  }
 
   $: gameIsOver =
     stages.some((s) => s.guess.type === 'guessed' && s.guess.isCorrectSong) ||
