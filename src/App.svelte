@@ -17,7 +17,6 @@
   } from './lib/functions/get-todays-guesses';
 
   function getDate(date = new Date()) {
-    console.log(123);
     var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
     var correctDate = new Date(timestamp);
     return correctDate;
