@@ -56,6 +56,24 @@
 
 <svelte:window on:online={loadData} />
 
+<svelte:head>
+  {#if playlist}
+    <title>Heardles - {playlist.playlist.name}</title>
+    <meta property="og:title" content={`Heardles ${playlist.playlist.name}`} />
+  {:else}
+    <title>Heardles</title>
+    <meta property="og:title" content="Heardles" />
+  {/if}
+  <meta
+    property="og:image"
+    content={`https://files.tomhowland.com/youhavetoburntherope_1200x630.png?playlist-id=${playlistId}`}
+  />
+  <meta
+    name="twitter:image"
+    content={`https://files.tomhowland.com/youhavetoburntherope_1200x630.png?playlist-id=${playlistId}`}
+  />
+</svelte:head>
+
 <div class="bg" style:--image-bg={bgImage} />
 <div class="bg-blur" />
 
@@ -119,17 +137,5 @@
 
     display: flex;
     flex-direction: column;
-  }
-
-  .footer {
-    width: 100%;
-    max-width: var(--width-game);
-    margin: auto;
-    text-align: center;
-  }
-  .others {
-    display: flex;
-    justify-content: center;
-    gap: 8px;
   }
 </style>
