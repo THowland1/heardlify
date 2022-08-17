@@ -64,14 +64,6 @@
     <title>Heardles</title>
     <meta property="og:title" content="Heardles" />
   {/if}
-  <meta
-    property="og:image"
-    content={`https://files.tomhowland.com/youhavetoburntherope_1200x630.png?playlist-id=${playlistId}`}
-  />
-  <meta
-    name="twitter:image"
-    content={`https://files.tomhowland.com/youhavetoburntherope_1200x630.png?playlist-id=${playlistId}`}
-  />
 </svelte:head>
 
 <div class="bg" style:--image-bg={bgImage} />
