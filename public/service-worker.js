@@ -1,7 +1,7 @@
 'use strict';
 
 // Cache Name
-const CACHE_NAME = 'static-cache-v0.1';
+const CACHE_NAME = 'static-cache-v0.3';
 // Cache Files
 const FILES_TO_CACHE = ['index.html', '', '/'];
 const SEARCH_PARAM_TO_IGNORE = 'playlist-id';

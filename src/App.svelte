@@ -40,15 +40,6 @@
   }
   onMount(loadData);
 
-  const premadePlaylists = [
-    { name: '60s', playlistId: '37i9dQZF1DXaKIA8E7WcJj' },
-    { name: '70s', playlistId: '37i9dQZF1DXdj82GcM2wq2' },
-    { name: '80s', playlistId: '37i9dQZF1DXb57FjYWz00c' },
-    { name: '90s', playlistId: '37i9dQZF1DXbTxeAdrVG2l' },
-    { name: '00s', playlistId: '37i9dQZF1DX4o1oenSJRJd' },
-    { name: '2010s', playlistId: '37i9dQZF1DX5Ejj0EkURtP' },
-  ];
-
   let stages: IStage[] = getTodaysGuesses(playlistId, date);
   $: {
     setTodaysGuesses(playlistId, date, stages);
@@ -90,19 +81,6 @@
       />
     {/if}
   </main>
-  <footer class="footer">
-    <h6>Try out another</h6>
-    <div class="others">
-      {#each premadePlaylists as playlist}
-        <LinkThatLooksLikeButton
-          href={`/?playlist-id=${playlist.playlistId}`}
-          disabled={playlist.playlistId === playlistId}
-        >
-          {playlist.name}
-        </LinkThatLooksLikeButton>
-      {/each}
-    </div>
-  </footer>
 </div>
 
 <style>
