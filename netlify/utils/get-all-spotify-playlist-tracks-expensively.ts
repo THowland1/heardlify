@@ -14,7 +14,7 @@ function mapTrackToDetailedOption(
     },
     formatted: `${formattedArtists} - ${track.name}`,
     id: track.id,
-    imgSrc: track.album.images.at(-1).url,
+    imgSrc: track.album.images[track.album.images.length - 1].url,
     name: track.name,
     year: Number(track.album.release_date.split('-')[0]),
     previewUrl: track.preview_url,
