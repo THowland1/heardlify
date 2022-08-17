@@ -4,13 +4,24 @@
     searchPlaylists,
     type IPlaylistSummary,
   } from '../../functions/search-playlists';
+  import Search from '../icons/Search.svelte';
+  import Times from '../icons/Times.svelte';
+  import Button from '../shared/Button.svelte';
   export let open = true;
+  let input: HTMLInputElement | null = null;
   let textvalue: string = 'All Out';
   let playlists: IPlaylistSummary[] = [];
   async function load() {
     await searchPlaylists(textvalue).then((data) => {
       playlists = data.playlists.items;
     });
+  }
+  function close() {
+    open = false;
+  }
+  function clear() {
+    textvalue = '';
+    input?.focus();
   }
 
   onMount(() => {
@@ -20,28 +31,55 @@
 
 {#if open}
   <div class="playlist-search-modal">
-    <button class="bg" on:click={() => (open = false)} />
+    <button class="bg" on:click={close} />
     <div class="container">
-      <h1>Search playlists</h1>
+      <div class="title">
+        <h1>Search playlists</h1>
+        <Button color="tertiary" on:click={close}><Times /></Button>
+      </div>
 
-      <input class="input" type="text" bind:value={textvalue} on:keyup={load} />
+      <div class="input-container">
+        <Search />
+        <input
+          class="input"
+          type="text"
+          bind:this={input}
+          bind:value={textvalue}
+          on:keyup={load}
+        />
+        {#if textvalue}
+          <Button color="tertiary" nopadding on:click={clear}><Times /></Button>
+        {/if}
+      </div>
       <div class="playlists">
-        {#each playlists as playlist}
-          <a class="playlist" href={`/?playlist-id=${playlist.id}`}>
-            <img
-              class="image"
-              src={playlist.images[0].url}
-              alt={playlist.name}
-              height="80px"
-              width="80px"
-            />
-            <div class="text">
-              <div class="name">{playlist.name}</div>
-              <div class="description">{playlist.description}</div>
-              <div class="owner">By {playlist.owner.display_name}</div>
+        {#if !textvalue}
+          <div class="noresult-message">
+            Start typing to find a Spotify playlist to Heardles-ify
+          </div>
+        {/if}
+        {#if textvalue}
+          {#if playlists.length < 1}
+            <div class="noresult-message">
+              Couldn't find a playlist containing <br /> "{textvalue}"
             </div>
-          </a>
-        {/each}
+          {/if}
+          {#each playlists as playlist}
+            <a class="playlist" href={`/?playlist-id=${playlist.id}`}>
+              <img
+                class="image"
+                src={playlist.images[0].url}
+                alt={playlist.name}
+                height="80px"
+                width="80px"
+              />
+              <div class="text">
+                <div class="name">{playlist.name}</div>
+                <div class="description">{playlist.description}</div>
+                <div class="owner">By {playlist.owner.display_name}</div>
+              </div>
+            </a>
+          {/each}
+        {/if}
       </div>
     </div>
   </div>
@@ -67,16 +105,26 @@
     z-index: 3;
     backdrop-filter: blur(2px);
   }
+
+  .input-container {
+    border-radius: 4px;
+    border: solid 2px var(--color-mbg);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-left: 8px;
+    padding-right: 8px;
+    gap: 8px;
+  }
   .input {
     width: 100%;
     padding: 12px;
     outline: none;
-    border: solid 2px var(--color-mbg);
+    border: none;
     background-color: transparent;
-    border-radius: 4px;
     color: var(--color-fg);
   }
-  .input:focus {
+  .input-container:focus-within {
     border-color: var(--color-positive);
   }
   .container {
@@ -129,5 +177,17 @@
   }
   .owner {
     color: var(--color-line);
+  }
+
+  .title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  .noresult-message {
+    color: var(--color-line);
+    text-align: center;
+    padding: 12px;
   }
 </style>
