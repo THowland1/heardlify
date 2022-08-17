@@ -39,9 +39,9 @@ self.addEventListener('fetch', (evt) => {
   console.log('[ServiceWorker] Fetch', evt.request.url);
   evt.respondWith(
     (async () => {
-      const ignoreSearch = new URL(evt.request.url).searchParams.has(
-        SEARCH_PARAM_TO_IGNORE
-      );
+      const ignoreSearch =
+        new URL(evt.request.url).searchParams.has(SEARCH_PARAM_TO_IGNORE) &&
+        !evt.request.url.includes('get-song');
       const cachedResponse = await caches.match(evt.request, { ignoreSearch });
       if (cachedResponse) {
         return cachedResponse;
