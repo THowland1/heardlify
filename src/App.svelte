@@ -30,11 +30,15 @@
   const date = getDate();
 
   let playlist: IResponse | null = null;
-  onMount(async () => {
-    const data = await getTodaysAnswer(playlistId, date);
 
+  async function loadData() {
+    if (playlist) {
+      return;
+    }
+    const data = await getTodaysAnswer(playlistId, date);
     playlist = data;
-  });
+  }
+  onMount(loadData);
 
   const premadePlaylists = [
     { name: '60s', playlistId: '37i9dQZF1DXaKIA8E7WcJj' },
@@ -59,6 +63,8 @@
   let modalOpen = false;
 </script>
 
+<svelte:window on:online={loadData} />
+
 <div class="bg" style:--image-bg={bgImage} />
 <div class="bg-blur" />
 
@@ -66,7 +72,7 @@
 
 <div class="whole-thing">
   <Header
-    playlistName={playlist?.playlist?.name}
+    playlistName={playlist?.playlist?.name ?? null}
     on:click={() => (modalOpen = true)}
   />
   <main class="game">
