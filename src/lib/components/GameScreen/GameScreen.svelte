@@ -1,11 +1,11 @@
 <script lang="ts">
-  import AudioPlayer from './AudioPlayer.svelte';
+  import AudioPlayer from '../shared/AudioPlayer/AudioPlayer.svelte';
   import Autocomplete from './Autocomplete.svelte';
-  import Button from './Button.svelte';
+  import Button from '../shared/Button.svelte';
   import Guesses from './Guesses.svelte';
-  import type { IGuess, IGuessedGuess } from './types/IGuess';
-  import type { IDetailedOption, IOption } from './types/IOption';
-  import type { IStage } from './types/IStage';
+  import type { IGuessedGuess } from '../../types/IGuess';
+  import type { IDetailedOption, IOption } from '../../types/IOption';
+  import type { IStage } from '../../types/IStage';
 
   function arraysIntersect<T>(a: T[], b: T[]) {
     return a.some((aa) => b.includes(aa));

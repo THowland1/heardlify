@@ -1,4 +1,4 @@
-import type { IStage } from './types/IStage';
+import type { IStage } from '../types/IStage';
 
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 

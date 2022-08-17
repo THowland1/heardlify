@@ -1,4 +1,4 @@
-import type { IDetailedOption, IOption } from './types/IOption';
+import type { IDetailedOption, IOption } from '../types/IOption';
 
 export type IResponse = {
   answer: IDetailedOption;

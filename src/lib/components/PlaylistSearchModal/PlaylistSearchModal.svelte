@@ -1,6 +1,9 @@
 <script lang="ts">
-  import { onMount, onDestroy } from 'svelte';
-  import { searchPlaylists, type IPlaylistSummary } from './search-playlists';
+  import { onMount } from 'svelte';
+  import {
+    searchPlaylists,
+    type IPlaylistSummary,
+  } from '../../functions/search-playlists';
   export let open = true;
   let textvalue: string = 'All Out';
   let playlists: IPlaylistSummary[] = [];

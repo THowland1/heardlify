@@ -1,10 +1,10 @@
 <script lang="ts">
   import { onMount } from 'svelte';
-  import LoadingSpinner from './LoadingSpinner.svg.svelte';
-  import Play from './Play.svg.svelte';
+  import LoadingSpinner from './LoadingSpinner.svelte';
+  import Play from './Play.svelte';
   import Playing from './Playing.svelte';
   import { createEventDispatcher } from 'svelte';
-  const dispatch = createEventDispatcher<'play'>();
+  const dispatch = createEventDispatcher<{ play: void }>();
   export let autoplay = false;
   export let maxLength: number;
   export let lengthSteps: number[];
@@ -28,7 +28,7 @@
   }
 
   function play() {
-    dispatch('play', {});
+    dispatch('play');
     if (!audio) {
       tryingToPlay = true;
       return;

@@ -1,10 +1,10 @@
 <script lang="ts">
-  import AudioPlayer from './AudioPlayer.svelte';
-  import Button from './Button.svelte';
+  import AudioPlayer from '../shared/AudioPlayer/AudioPlayer.svelte';
+  import Button from '../shared/Button.svelte';
   import Share from './Share.svelte';
   import SpotifyPreview from './SpotifyPreview.svelte';
-  import type { IDetailedOption, IOption } from './types/IOption';
-  import type { IStage } from './types/IStage';
+  import type { IDetailedOption } from '../../types/IOption';
+  import type { IStage } from '../../types/IStage';
 
   export let playlistName: string;
   let shareFeedback: string | null;

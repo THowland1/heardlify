@@ -1,14 +1,20 @@
 <script lang="ts">
-  import GameScreen from './lib/GameScreen.svelte';
+  import GameScreen from './lib/components/GameScreen/GameScreen.svelte';
   import type { IGuess } from './lib/types/IGuess';
   import type { IStage } from './lib/types/IStage';
-  import GameOverScreen from './lib/GameOverScreen.svelte';
-  import Header from './lib/Header.svelte';
-  import { getTodaysAnswer, type IResponse } from './lib/get-todays-answer';
-  import LinkThatLooksLikeButton from './lib/LinkThatLooksLikeButton.svelte';
+  import GameOverScreen from './lib/components/GameOverScreen/GameOverScreen.svelte';
+  import Header from './lib/components/Header/Header.svelte';
+  import {
+    getTodaysAnswer,
+    type IResponse,
+  } from './lib/functions/get-todays-answer';
+  import LinkThatLooksLikeButton from './lib/components/shared/LinkThatLooksLikeButton.svelte';
   import { onMount } from 'svelte';
-  import PlaylistSearchModal from './lib/PlaylistSearchModal.svelte';
-  import { getTodaysGuesses, setTodaysGuesses } from './lib/get-todays-guesses';
+  import PlaylistSearchModal from './lib/components/PlaylistSearchModal/PlaylistSearchModal.svelte';
+  import {
+    getTodaysGuesses,
+    setTodaysGuesses,
+  } from './lib/functions/get-todays-guesses';
 
   function getDate(date = new Date()) {
     console.log(123);

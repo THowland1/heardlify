@@ -1,6 +1,6 @@
 <script lang="ts">
   import SpotifyWordmark from './SpotifyWordmark.svelte';
-  import type { IDetailedOption } from './types/IOption';
+  import type { IDetailedOption } from '../../types/IOption';
 
   export let song: IDetailedOption;
 

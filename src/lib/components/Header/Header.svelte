@@ -1,6 +1,6 @@
 <script lang="ts">
-  import ChevronDown from './ChevronDown.svg.svelte';
-  import SpotifyLogo from './SpotifyLogo.svg.svelte';
+  import ChevronDown from './ChevronDown.svelte';
+  import SpotifyLogo from './SpotifyLogo.svelte';
 
   export let playlistName: string | null = null;
 </script>

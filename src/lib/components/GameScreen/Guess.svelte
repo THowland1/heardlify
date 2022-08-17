@@ -1,8 +1,7 @@
 <script lang="ts">
-  import Cross from './Cross.svg.svelte';
-  import EmptyBox from './EmptyBox.svg.svelte';
-
-  import type { IGuess } from './types/IGuess';
+  import Cross from '../icons/Cross.svelte';
+  import EmptyBox from './EmptyBox.svelte';
+  import type { IGuess } from '../../types/IGuess';
 
   export let guess: IGuess;
 
@@ -16,7 +15,7 @@
 <div class="box">
   {#if guess.type === 'skipped'}
     <div class="icon">
-      <EmptyBox color={colors.grey} />
+      <EmptyBox />
     </div>
     <div class="skipped">SKIPPED</div>
   {:else if guess.type === 'guessed'}
@@ -47,6 +46,7 @@
     width: 30px;
     margin-left: 2px;
     margin-right: 8px;
+    color: var(--color-mg);
   }
   .correct-artist {
     color: var(--color-fg);

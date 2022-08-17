@@ -1,7 +1,7 @@
 <script lang="ts">
-  import Search from './Search.svg.svelte';
-  import Times from './Times.svg.svelte';
-  import type { IOption } from './types/IOption';
+  import Search from '../icons/Search.svelte';
+  import Times from '../icons/Times.svelte';
+  import type { IOption } from '../../types/IOption';
 
   export let options: IOption[];
   let textvalue = '';

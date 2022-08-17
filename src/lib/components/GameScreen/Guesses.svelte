@@ -1,6 +1,6 @@
 <script lang="ts">
   import Guess from './Guess.svelte';
-  import type { IGuess } from './types/IGuess';
+  import type { IGuess } from '../../types/IGuess';
   export let guesses: IGuess[];
 </script>
 
