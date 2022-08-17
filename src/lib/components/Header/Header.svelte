@@ -1,23 +1,36 @@
 <script lang="ts">
+  import AnimatedEllipsis from './AnimatedEllipsis.svelte';
   import ChevronDown from './ChevronDown.svelte';
   import SpotifyLogo from './SpotifyLogo.svelte';
 
-  export let playlistName: string | null = null;
+  export let playlistName: string | null;
+
+  let online: boolean;
 </script>
+
+<svelte:window bind:online />
 
 <div class="nav-container">
   <nav class="nav">
     <h1>HEARDLES</h1>
+    {#if !online}
+      <div class="offline-chip">offline</div>
+    {/if}
     <div class="chip-container">
-      {#if !!playlistName}
-        <button class="current-playlist" on:click>
-          <SpotifyLogo />
-          <span class="playlist-name">
-            {playlistName ?? ''}
-          </span>
-          <ChevronDown />
-        </button>
-      {/if}
+      <button class="current-playlist" on:click>
+        <SpotifyLogo />
+
+        <span class="playlist-name">
+          {#if playlistName}
+            {playlistName}
+          {:else if online}
+            <AnimatedEllipsis />
+          {:else}
+            <span class="offline-text">offline</span>
+          {/if}
+        </span>
+        <ChevronDown />
+      </button>
     </div>
   </nav>
 </div>
@@ -63,5 +76,18 @@
     overflow: hidden;
     white-space: nowrap;
     flex: 1;
+  }
+
+  .offline-chip {
+    background-color: var(--color-mg);
+    border-radius: 100vh;
+    padding: 4px 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    font-size: 0.8em;
+  }
+
+  .offline-text {
+    font-style: italic;
   }
 </style>
