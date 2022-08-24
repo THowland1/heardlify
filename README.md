@@ -43,6 +43,17 @@ If you have state that's important to retain within a component, consider creati
 ```js
 // store.js
 // An extremely simple external store
-import { writable } from 'svelte/store'
-export default writable(0)
+import { writable } from 'svelte/store';
+export default writable(0);
 ```
+
+- Bug bash
+  - Grey BG if wrong
+  - Document name
+    - OG image
+    - Title
+  - Cache heavily
+    - Remember day's result
+    - Remember playlist options
+    - Cache bg image
+    - try to rememebr access token

@@ -9,16 +9,19 @@
     "preview": "vite preview",
     "check": "svelte-check --tsconfig ./tsconfig.json"
   },
+  "dependencies": {
+    "sharp": "^0.30.7",
+    "string-pixel-width": "^1.10.0"
+  },
   "devDependencies": {
     "@netlify/functions": "^1.0.0",
     "@sveltejs/vite-plugin-svelte": "^1.0.1",
     "@tsconfig/svelte": "^3.0.0",
     "@types/node": "^14.18.22",
+    "@types/sharp": "^0.30.5",
     "@types/spotify-web-api-node": "^5.0.7",
-    "chrome-aws-lambda": "^10.1.0",
+    "@types/string-pixel-width": "^1.7.2",
     "node-fetch": "^3.2.9",
-    "puppeteer": "^16.1.1",
-    "puppeteer-core": "^16.1.1",
     "svelte": "^3.49.0",
     "svelte-check": "^2.8.0",
     "svelte-preprocess": "^4.10.7",
