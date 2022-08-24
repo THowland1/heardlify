@@ -5,7 +5,9 @@ import { generateSVGBuffer } from './generate-svg-buffer';
 
 async function getPlaylistName(playlistId) {
 	const authToken = await getSpotifyToken();
+	console.log(authToken);
 	const playlist = await getSpotifyPlaylist(playlistId, authToken.access_token);
+	console.log(playlist);
 	return playlist.name;
 }
 
@@ -15,6 +17,9 @@ export const handler: Handler = async (event, context) => {
 	try {
 		playlistName = await getPlaylistName(playlistId);
 	} catch {}
+
+	console.log(playlistId);
+	console.log(playlistName);
 
 	const buffer = await generateSVGBuffer(playlistName);
 

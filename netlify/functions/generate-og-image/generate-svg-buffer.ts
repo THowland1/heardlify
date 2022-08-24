@@ -81,10 +81,6 @@ function buildSVG(text: string) {
 	text = limitPixelWidth(text, fontSize, 1000);
 	const approximateTextWidth = getPixelWidth(text, fontSize);
 	const padding = 20;
-	console.log({
-		approximate: approximateTextWidth,
-		given: getPixelWidth(text, 80)
-	});
 
 	return /* html */ `
 <svg width="${svgWidth}" height="${svgHeight}" viewBox="0 0 ${svgWidth} ${svgHeight}" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
