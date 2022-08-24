@@ -32,7 +32,7 @@ export async function getTodaysAnswer(playlistId: string, date: Date): Promise<I
 
 async function getTodaysAnswerFresh(playlistId: string, date: Date): Promise<IResponse> {
 	const response = await fetch(
-		`https://heardles.netlify.app/api/get-song?playlist-id=${playlistId}&date=${
+		`https://heardles.netlify.app/.netlify/functions/get-song?playlist-id=${playlistId}&date=${
 			date.toISOString().split('T')[0]
 		}`
 	);

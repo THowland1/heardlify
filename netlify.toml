@@ -1,15 +1,5 @@
 [functions]
   directory = "netlify/functions"
-[[redirects]]
-  from = "/api/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-[[redirects]]
-  from = "/og-image/:playlistId/og-image.png"
-  to = "/.netlify/functions/generate-og-image?playlistId=:playlistId"
-  force = true
-  query = { playlistId = ":playlistId" }
-  status = 200
 [[edge_functions]]
   path = "/"
   function = "add-dynamic-og-tags"
