@@ -33,6 +33,7 @@
 		"node-fetch": "^3.2.9",
 		"prettier": "^2.6.2",
 		"prettier-plugin-svelte": "^2.7.0",
+		"sass": "^1.54.5",
 		"svelte": "^3.49.0",
 		"svelte-check": "^2.8.0",
 		"svelte-preprocess": "^4.10.7",
@@ -42,6 +43,8 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"@sveltestack/svelte-query": "^1.6.0",
+		"broadcast-channel": "^4.14.0",
 		"sharp": "^0.30.7",
 		"string-pixel-width": "^1.10.0"
 	}

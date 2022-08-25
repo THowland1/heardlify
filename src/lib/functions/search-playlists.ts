@@ -14,9 +14,9 @@ export type ISearchPlaylistsResponse = {
 };
 
 export async function searchPlaylists(query: string): Promise<ISearchPlaylistsResponse> {
-	const response = await fetch(
-		`https://heardles.netlify.app/.netlify/functions/search-playlists?q=${query}`
-	);
+	const url = new URL('https://heardles.netlify.app/.netlify/functions/search-playlists');
+	url.searchParams.append('q', query);
+	const response = await fetch(url.toString());
 	const body = await response.json();
 	return body;
 	// return {
