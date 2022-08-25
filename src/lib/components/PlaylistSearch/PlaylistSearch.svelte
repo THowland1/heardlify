@@ -11,14 +11,18 @@
 	let input: HTMLInputElement | null = null;
 	let textvalue: string = 'All Out';
 	let playlists: IPlaylistSummary[] = [];
-
+	const limit = 10;
 	$: queryResult = useInfiniteQuery(
 		['search', { textvalue }] as const,
 		async ({ pageParam = 0, queryKey }) => {
-			return await searchPlaylists(queryKey[1].textvalue);
+			return await searchPlaylists(queryKey[1].textvalue, pageParam, limit);
 		},
 		{
-			getNextPageParam: (lastGroup) => lastGroup.playlists.items.length || undefined
+			getNextPageParam: (lastGroup) => {
+				const next = lastGroup.playlists.offset + limit;
+				console.log(lastGroup);
+				return next < lastGroup.playlists.total ? next : undefined;
+			}
 		}
 	);
 	$: pages = $queryResult.data?.pages ?? [];
@@ -31,6 +35,18 @@
 	onMount(() => {
 		load();
 	});
+
+	let container: HTMLDivElement | null = null;
+	$: {
+		if (container) {
+			const { scrollTop, clientHeight, scrollHeight } = container;
+			if (scrollTop >= scrollHeight - clientHeight) {
+				if ($queryResult.hasNextPage && !$queryResult.isFetchingNextPage) {
+					$queryResult.fetchNextPage();
+				}
+			}
+		}
+	}
 </script>
 
 <div class="input-container" class:large={size === 'large'}>
@@ -40,7 +56,7 @@
 		<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
 	{/if}
 </div>
-<div class="playlists">
+<div class="playlists" bind:this={container} on:scroll={() => (container = container)}>
 	{#if !textvalue}
 		<div class="noresult-message">Start typing to find a Spotify playlist to Heardles-ify</div>
 	{/if}
@@ -72,7 +88,8 @@
 				</a>
 			{/each}
 		{/each}
-		{#if $queryResult.isLoading}
+
+		{#if $queryResult.isLoading || $queryResult.isFetchingNextPage}
 			{#each [1, 0.5, 0.25, 0.1] as opacity}
 				<div class="playlist" style:opacity>
 					<div class="image" height="80px" width="80px">

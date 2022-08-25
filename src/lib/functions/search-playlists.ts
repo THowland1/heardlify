@@ -10,13 +10,20 @@ export type IPlaylistSummary = {
 export type ISearchPlaylistsResponse = {
 	playlists: {
 		items: IPlaylistSummary[];
+		offset: number;
 		total: number;
 	};
 };
 
-export async function searchPlaylists(query: string): Promise<ISearchPlaylistsResponse> {
+export async function searchPlaylists(
+	query: string,
+	offset: number,
+	limit: number
+): Promise<ISearchPlaylistsResponse> {
 	const url = new URL('https://heardles.netlify.app/.netlify/functions/search-playlists');
 	url.searchParams.append('q', query);
+	url.searchParams.append('offset', String(offset));
+	url.searchParams.append('limit', String(limit));
 	const response = await fetch(url.toString());
 	const body = await response.json();
 	return body;
