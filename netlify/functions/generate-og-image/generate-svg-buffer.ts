@@ -1,9 +1,8 @@
-import { Handler } from '@netlify/functions';
 import sharp from 'sharp';
 import pixelWidth from 'string-pixel-width';
 
 function getPixelWidth(value: string, size: number): number {
-	const width = pixelWidth(value, { size: size - 5, font: 'open sans' });
+	const width = pixelWidth(value, { size: size, font: 'open sans' });
 	return width;
 }
 

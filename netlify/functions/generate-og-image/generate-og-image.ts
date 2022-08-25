@@ -27,8 +27,7 @@ export const handler: Handler = async (event, context) => {
 		statusCode: 200,
 		headers: {
 			'Content-Type': 'image/png',
-			'Access-Control-Allow-Origin': '*', // Allow from anywhere
-			'Cache-Control': 'public, immutable, no-transform, s-maxage=31536000, max-age=31536000'
+			'Access-Control-Allow-Origin': '*' // Allow from anywhere
 		},
 		body: buffer.toString('base64'),
 		isBase64Encoded: true
