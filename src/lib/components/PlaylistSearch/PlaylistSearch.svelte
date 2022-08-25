@@ -20,7 +20,6 @@
 		{
 			getNextPageParam: (lastGroup) => {
 				const next = lastGroup.playlists.offset + limit;
-				console.log(lastGroup);
 				return next < lastGroup.playlists.total ? next : undefined;
 			}
 		}

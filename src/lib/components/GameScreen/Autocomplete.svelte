@@ -9,7 +9,6 @@
 	export let selectedOption: IOption | null;
 
 	function selectOption(option: IOption): void {
-		console.log(textvalue);
 		selectedOption = option;
 		textvalue = option.formatted;
 	}
