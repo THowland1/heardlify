@@ -13,7 +13,18 @@ async function getPlaylistName(playlistId) {
 
 export const handler: Handler = async (event, context) => {
 	console.log(event.queryStringParameters);
-	const playlistId = event.queryStringParameters?.['playlist-id']?.split('.')[0];
+	console.log(event.path);
+	if (!event.queryStringParameters) {
+		return {
+			statusCode: 400,
+			body: 'Query string parameters required'
+		};
+	}
+
+	const queryPlaylistId = event.queryStringParameters['playlist-id']
+		? event.queryStringParameters['playlist-id']
+		: event.path.split('/')[2];
+	const playlistId = queryPlaylistId.split('.')[0];
 	let playlistName = '';
 	try {
 		playlistName = await getPlaylistName(playlistId);
