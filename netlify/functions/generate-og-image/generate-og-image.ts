@@ -12,7 +12,7 @@ async function getPlaylistName(playlistId) {
 }
 
 export const handler: Handler = async (event, context) => {
-	const playlistId = event.queryStringParameters!['playlist-id'];
+	const playlistId = event.queryStringParameters!['playlist-id']!.split('.')[0];
 	let playlistName = '';
 	try {
 		playlistName = await getPlaylistName(playlistId);

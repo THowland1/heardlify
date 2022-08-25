@@ -43,9 +43,13 @@
 	{#if playlist?.playlist}
 		<title>Heardles - {playlist.playlist.name}</title>
 		<meta property="og:title" content={`Heardles ${playlist.playlist.name}`} />
+		<meta property="og:image" content="/og-image.png" />
+		<meta name="twitter:image" content="/og-image.png" />
 	{:else}
 		<title>Heardles</title>
 		<meta property="og:title" content="Heardles" />
+		<meta property="og:image" content="/og-image.png" />
+		<meta name="twitter:image" content="/og-image.png" />
 	{/if}
 </svelte:head>
 
