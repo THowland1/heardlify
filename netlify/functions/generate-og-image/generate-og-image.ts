@@ -12,13 +12,13 @@ async function getPlaylistName(playlistId) {
 }
 
 export const handler: Handler = async (event, context) => {
-	const playlistId = event.queryStringParameters!['playlist-id']!.split('.')[0];
+	console.log(event.queryStringParameters);
+	const playlistId = event.queryStringParameters?.['playlist-id']?.split('.')[0];
 	let playlistName = '';
 	try {
 		playlistName = await getPlaylistName(playlistId);
 	} catch {}
 
-	console.log(playlistId);
 	console.log(playlistName);
 
 	const buffer = await generateSVGBuffer(playlistName);
