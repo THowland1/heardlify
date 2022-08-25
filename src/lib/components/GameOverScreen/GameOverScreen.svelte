@@ -10,6 +10,7 @@
 	let shareFeedback: string | null;
 	export let correctOption: IDetailedOption;
 	export let stages: IStage[];
+	export let timeMachine: boolean;
 
 	function numberTo2Digit(val: number) {
 		return String(val).padStart(2, '0');
@@ -142,7 +143,13 @@
 	</div>
 
 	<div class="bottom">
-		<AudioPlayer autoplay src={correctOption.previewUrl} maxLength={30} lengthSteps={[30]} />
+		<AudioPlayer
+			autoplay
+			src={correctOption.previewUrl}
+			maxLength={30}
+			lengthSteps={[30]}
+			{timeMachine}
+		/>
 	</div>
 </div>
 

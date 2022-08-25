@@ -11,17 +11,11 @@
 	import { getTodaysGuesses, setTodaysGuesses } from '$lib/functions/get-todays-guesses';
 	import type { PageData } from './$types';
 
-	function getDate(date = new Date()) {
-		var timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
-		var correctDate = new Date(timestamp);
-		return correctDate;
-	}
-
 	export let data: PageData;
 
 	$: playlistId = data.playlistId;
 	$: playlist = data.playlist;
-	const date = getDate();
+	const date = new Date(data.dateValue);
 
 	let stages: IStage[] = getTodaysGuesses(playlistId, date);
 	$: {
@@ -67,12 +61,14 @@
 			<GameOverScreen
 				playlistName={playlist.playlist.name}
 				correctOption={playlist.answer}
+				timeMachine={data.timeMachine}
 				{stages}
 			/>
 		{:else}
 			<GameScreen
 				options={playlist?.options ?? null}
 				correctOption={playlist?.answer ?? null}
+				timeMachine={data.timeMachine}
 				bind:stages
 			/>
 		{/if}
