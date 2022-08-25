@@ -13,13 +13,10 @@ async function getPlaylistName(playlistId) {
 
 export const handler: Handler = async (event, context) => {
 	const playlistId = event.queryStringParameters!['playlist-id'];
-	console.log(playlistId);
-	const playlistName = playlistId;
-	// try {
-	// 	playlistName = await getPlaylistName(playlistId);
-	// } catch {
-	// 	console.log(playlistId);
-	// }
+	let playlistName = '';
+	try {
+		playlistName = await getPlaylistName(playlistId);
+	} catch {}
 
 	console.log(playlistId);
 	console.log(playlistName);
