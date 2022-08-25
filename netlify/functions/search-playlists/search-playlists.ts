@@ -15,6 +15,7 @@ export type IPlaylistSummary = {
 export type ISearchPlaylistsResponse = {
 	playlists: {
 		items: IPlaylistSummary[];
+		offset: number;
 		total: number;
 	};
 };
@@ -63,6 +64,7 @@ export const handler: Handler = async (event) => {
 		results = {
 			playlists: {
 				items: [mapSpotifyObjectToDto(item)],
+				offset: 0,
 				total: 1
 			}
 		};
@@ -71,6 +73,7 @@ export const handler: Handler = async (event) => {
 		results = {
 			playlists: {
 				items: searchResult.playlists.items.map(mapSpotifyObjectToDto),
+				offset: searchResult.playlists.offset,
 				total: searchResult.playlists.total
 			}
 		};
