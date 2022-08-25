@@ -1,1 +1,1 @@
-/image/:playlistId/ /.netlify/functions/generate-og-image?playlist-id=:playlistId 200
+/images/:playlistName/ /.netlify/functions/generate-og-image?subtitle=:playlistName 200

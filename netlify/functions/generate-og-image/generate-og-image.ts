@@ -3,14 +3,6 @@ import { getSpotifyPlaylist } from '../../utils/get-spotify-playlist';
 import { getSpotifyToken } from '../../utils/get-spotify-token';
 import { generateSVGBuffer } from './generate-svg-buffer';
 
-async function getPlaylistName(playlistId) {
-	const authToken = await getSpotifyToken();
-	console.log(authToken);
-	const playlist = await getSpotifyPlaylist(playlistId, authToken.access_token);
-	console.log(playlist);
-	return playlist.name;
-}
-
 export const handler: Handler = async (event, context) => {
 	console.log(event.queryStringParameters);
 	console.log(event.path);
@@ -21,18 +13,12 @@ export const handler: Handler = async (event, context) => {
 		};
 	}
 
-	const queryPlaylistId = event.queryStringParameters['playlist-id']
-		? event.queryStringParameters['playlist-id']
-		: event.path.split('/')[2];
-	const playlistId = queryPlaylistId.split('.')[0];
-	let playlistName = '';
-	try {
-		playlistName = await getPlaylistName(playlistId);
-	} catch {}
+	const querySubtitle = event.queryStringParameters.subtitle || event.path.split('/')[2];
+	const subtitle = querySubtitle.split('.')[0];
 
-	console.log(playlistName);
+	console.log(subtitle);
 
-	const buffer = await generateSVGBuffer(playlistName);
+	const buffer = await generateSVGBuffer(subtitle);
 
 	const response = {
 		statusCode: 200,
