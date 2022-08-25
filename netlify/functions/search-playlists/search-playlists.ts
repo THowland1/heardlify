@@ -15,6 +15,7 @@ export type IPlaylistSummary = {
 export type ISearchPlaylistsResponse = {
 	playlists: {
 		items: IPlaylistSummary[];
+		total: number;
 	};
 };
 
@@ -39,6 +40,10 @@ function isSpotifyId(value: string) {
 
 export const handler: Handler = async (event) => {
 	const q = event.queryStringParameters?.['q'];
+	let offset = Number(event.queryStringParameters?.['offset']);
+	let limit = Number(event.queryStringParameters?.['limit']);
+	if (isNaN(offset) || offset < 0) offset = 0;
+	if (isNaN(limit) || limit < 1 || limit > 100) limit = 10;
 
 	if (!q) {
 		return {
@@ -57,14 +62,16 @@ export const handler: Handler = async (event) => {
 		const item = await getSpotifyPlaylist(q, authToken.access_token);
 		results = {
 			playlists: {
-				items: [mapSpotifyObjectToDto(item)]
+				items: [mapSpotifyObjectToDto(item)],
+				total: 1
 			}
 		};
 	} else {
-		const searchResult = await searchSpotifyPlaylists(authToken.access_token, q);
+		const searchResult = await searchSpotifyPlaylists(authToken.access_token, q, offset, limit);
 		results = {
 			playlists: {
-				items: searchResult.playlists.items.map(mapSpotifyObjectToDto)
+				items: searchResult.playlists.items.map(mapSpotifyObjectToDto),
+				total: searchResult.playlists.total
 			}
 		};
 	}

@@ -10,6 +10,7 @@ export type IPlaylistSummary = {
 export type ISearchPlaylistsResponse = {
 	playlists: {
 		items: IPlaylistSummary[];
+		total: number;
 	};
 };
 
