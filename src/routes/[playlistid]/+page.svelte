@@ -42,9 +42,10 @@
 <svelte:head>
 	{#if playlist?.playlist}
 		<title>Heardles - {playlist.playlist.name}</title>
-		<meta property="og:title" content={`Heardles ${playlist.playlist.name}`} />
+		<meta property="og:title" content={`Heardles – ${playlist.playlist.name}`} />
 		<meta property="og:image" content="/images/{encodeURIComponent(playlist.playlist.name)}.png" />
 		<meta name="twitter:image" content="/images/{encodeURIComponent(playlist.playlist.name)}.png" />
+		<meta property="og:description" content="A Heardle for the {playlist.playlist.name} playlist" />
 	{:else}
 		<title>Heardles</title>
 		<meta property="og:title" content="Heardles" />

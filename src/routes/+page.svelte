@@ -2,11 +2,6 @@
 	import PlaylistSearch from '$lib/components/PlaylistSearch/PlaylistSearch.svelte';
 </script>
 
-<svelte:head>
-	<title>Home</title>
-	<meta name="description" content="Svelte demo app" />
-</svelte:head>
-
 <div class="bg" />
 <div class="bg-blur" />
 <div class="whole-thing">
