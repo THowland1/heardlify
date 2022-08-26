@@ -10,6 +10,7 @@
 	import PlaylistSearchModal from '$lib/components/PlaylistSearchModal/PlaylistSearchModal.svelte';
 	import { getTodaysGuesses, setTodaysGuesses } from '$lib/functions/get-todays-guesses';
 	import type { PageData } from './$types';
+	import { page } from '$app/stores';
 
 	export let data: PageData;
 
@@ -43,14 +44,20 @@
 	{#if playlist?.playlist}
 		<title>Heardles - {playlist.playlist.name}</title>
 		<meta property="og:title" content={`Heardles – ${playlist.playlist.name}`} />
-		<meta property="og:image" content="/images/{encodeURIComponent(playlist.playlist.name)}.png" />
-		<meta name="twitter:image" content="/images/{encodeURIComponent(playlist.playlist.name)}.png" />
+		<meta
+			property="og:image"
+			content="{$page.url.origin}/images/{encodeURIComponent(playlist.playlist.name)}.png"
+		/>
+		<meta
+			name="twitter:image"
+			content="{$page.url.origin}/images/{encodeURIComponent(playlist.playlist.name)}.png"
+		/>
 		<meta property="og:description" content="A Heardle for the {playlist.playlist.name} playlist" />
 	{:else}
 		<title>Heardles</title>
 		<meta property="og:title" content="Heardles" />
-		<meta property="og:image" content="/og-image.png" />
-		<meta name="twitter:image" content="/og-image.png" />
+		<meta property="og:image" content="{$page.url.origin}/og-image.png" />
+		<meta name="twitter:image" content="{$page.url.origin}/og-image.png" />
 	{/if}
 </svelte:head>
 
