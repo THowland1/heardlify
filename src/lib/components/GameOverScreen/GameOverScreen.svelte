@@ -68,7 +68,8 @@
 	}
 	async function copyResultsToClipboard() {
 		const text = `
-    #Heardles-${playlistName}
+    #Heardlify
+    #${playlistName.replaceAll(/[^A-z0-9]/g, '')}
     #${dayIndex}
 
     🔇${stages
@@ -109,8 +110,8 @@
 	$: headline = result.type === 'success' ? result.message : 'UNLUCKY!';
 	$: message =
 		result.type === 'success'
-			? `You got today's Heardle within ${result.time} second${result.time === 1 ? '' : 's'}.`
-			: `You didn't get today's Heardle.<br />Better luck tomorrow!`;
+			? `You got today's answer within ${result.time} second${result.time === 1 ? '' : 's'}.`
+			: `You didn't get today's answer.<br />Better luck tomorrow!`;
 </script>
 
 <div class="game-over-screen">
@@ -144,7 +145,7 @@
 		{/if}
 
 		<div class="next">
-			<div>NEXT HEARDLE IN</div>
+			<div>NEXT GAME IN</div>
 			<div>{timeToNextGameString}</div>
 		</div>
 	</div>

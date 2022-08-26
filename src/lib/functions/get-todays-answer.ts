@@ -21,18 +21,26 @@ function generateKey(playlistId: string, fullDaysSinceEpoch: number) {
 	return `${playlistId}:${fullDaysSinceEpoch}`;
 }
 
-export async function getTodaysAnswer(playlistId: string, date: Date): Promise<IResponse> {
+export async function getTodaysAnswer(
+	baseURL: string,
+	playlistId: string,
+	date: Date
+): Promise<IResponse> {
 	const fromCache = getTodaysAnswerFromCache(playlistId, date);
 	if (fromCache) {
 		return fromCache;
 	}
-	const fresh = getTodaysAnswerFresh(playlistId, date);
+	const fresh = getTodaysAnswerFresh(baseURL, playlistId, date);
 	return fresh;
 }
 
-async function getTodaysAnswerFresh(playlistId: string, date: Date): Promise<IResponse> {
+async function getTodaysAnswerFresh(
+	baseURL: string,
+	playlistId: string,
+	date: Date
+): Promise<IResponse> {
 	const response = await fetch(
-		`https://heardles.netlify.app/.netlify/functions/get-song?playlist-id=${playlistId}&date=${
+		`${baseURL}/.netlify/functions/get-song?playlist-id=${playlistId}&date=${
 			date.toISOString().split('T')[0]
 		}`
 	);

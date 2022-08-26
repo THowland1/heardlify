@@ -87,7 +87,7 @@ function buildSVG(text: string) {
     .small { font:  120px system-ui; fill: white; font-weight: 600; }
   </style>
 <rect width="${svgWidth}" height="${svgHeight}" fill="black" />
-<text x="50%" y="35%" class="small"  dominant-baseline="middle" text-anchor="middle">HEARDLES</text>
+<text x="50%" y="35%" class="small"  dominant-baseline="middle" text-anchor="middle">HEARDLIFY</text>
 ${
 	text &&
 	buildRoundedRectangle(

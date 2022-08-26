@@ -10,6 +10,10 @@
 	import { page } from '$app/stores';
 	import { goto } from '$app/navigation';
 
+	import { variables } from '$lib/variables';
+
+	const baseURL = variables.basePath || $page.url.origin;
+
 	let input: HTMLInputElement | null = null;
 	let textvalue: string = 'All Out';
 	let playlists: IPlaylistSummary[] = [];
@@ -18,7 +22,7 @@
 		['search', { textvalue }] as const,
 		async ({ pageParam = 0, queryKey }) => {
 			return textvalue
-				? await searchPlaylists(queryKey[1].textvalue, pageParam, limit)
+				? await searchPlaylists(baseURL, queryKey[1].textvalue, pageParam, limit)
 				: Promise.resolve({ playlists: { items: [], offset: 0, total: 0 } });
 		},
 		{
@@ -78,7 +82,7 @@
 </div>
 <div class="playlists" bind:this={container} on:scroll={() => (container = container)}>
 	{#if !textvalue}
-		<div class="noresult-message">Start typing to find a Spotify playlist to Heardles-ify</div>
+		<div class="noresult-message">Start typing to find a Spotify playlist to Heardlify</div>
 	{/if}
 	{#if textvalue}
 		{#if pages[0]?.playlists.items.length < 1}

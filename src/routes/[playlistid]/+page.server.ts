@@ -1,6 +1,7 @@
 import type { PageServerLoad } from '../../../.svelte-kit/types/src/routes/todos/$types';
 import { getTodaysAnswer } from '$lib/functions/get-todays-answer';
 import { getDateFromURL } from '$lib/functions/get-date-from-url';
+import { variables } from '$lib/variables';
 
 function getDate(date = new Date()) {
 	const timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
@@ -15,6 +16,8 @@ export const load: PageServerLoad = async ({ params, url }) => {
 	const slugSplit = slug.split('-');
 	const playlistId = slugSplit[slugSplit.length - 1] || '0erQqpBCFFYj0gDam2pnp1';
 	const date = getDate(queryDate ?? new Date());
-	const playlist = await getTodaysAnswer(playlistId, date);
+
+	const baseURL = variables.basePath || url.origin;
+	const playlist = await getTodaysAnswer(baseURL, playlistId, date);
 	return { playlistId, playlist, dateValue: date.valueOf(), timeMachine };
 };

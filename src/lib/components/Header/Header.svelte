@@ -5,14 +5,14 @@
 
 	export let playlistName: string | null;
 
-	let online: boolean;
+	let online = true;
 </script>
 
 <svelte:window bind:online />
 
 <div class="nav-container">
 	<nav class="nav">
-		<h1><a href="/">HEARDLES</a></h1>
+		<h1><a href="/">HEARDLIFY</a></h1>
 		{#if !online}
 			<div class="offline-chip">offline</div>
 		{/if}

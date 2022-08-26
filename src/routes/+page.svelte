@@ -5,7 +5,7 @@
 <div class="bg" />
 <div class="bg-blur" />
 <div class="whole-thing">
-	<h1>Heardles</h1>
+	<h1>Heardlify</h1>
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
 	<PlaylistSearch />
 </div>

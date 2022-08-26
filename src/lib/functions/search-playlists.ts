@@ -16,11 +16,12 @@ export type ISearchPlaylistsResponse = {
 };
 
 export async function searchPlaylists(
+	baseURL: string,
 	query: string,
 	offset: number,
 	limit: number
 ): Promise<ISearchPlaylistsResponse> {
-	const url = new URL('https://heardles.netlify.app/.netlify/functions/search-playlists');
+	const url = new URL(`${baseURL}/.netlify/functions/search-playlists`);
 	url.searchParams.append('q', query);
 	url.searchParams.append('offset', String(offset));
 	url.searchParams.append('limit', String(limit));
