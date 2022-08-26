@@ -67,6 +67,7 @@
 				playlistName={playlist.playlist.name}
 				correctOption={playlist.answer}
 				timeMachine={data.timeMachine}
+				{date}
 				{stages}
 			/>
 		{:else}

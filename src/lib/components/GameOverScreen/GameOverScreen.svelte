@@ -11,12 +11,20 @@
 	export let correctOption: IDetailedOption;
 	export let stages: IStage[];
 	export let timeMachine: boolean;
+	export let date: Date;
+	const DAY_0 = new Date('2022-08-25');
+	const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 	function numberTo2Digit(val: number) {
 		return String(val).padStart(2, '0');
 	}
 
+	function getFullDaysSinceEpoch(date: Date) {
+		return Math.floor(date.valueOf() / DAY_IN_MS);
+	}
+
 	let now = new Date();
+	const dayIndex = getFullDaysSinceEpoch(date) - getFullDaysSinceEpoch(DAY_0);
 	let clear: number | null = null;
 	$: {
 		if (clear) clearInterval(clear);
@@ -60,9 +68,8 @@
 	}
 	async function copyResultsToClipboard() {
 		const text = `
-    #Heardles
-    💿${playlistName}
-    📅${new Date().toLocaleDateString('en-GB', { dateStyle: 'short' })}
+    #Heardles-${playlistName}
+    #${dayIndex}
 
     🔇${stages
 			.map(({ guess }) => {
