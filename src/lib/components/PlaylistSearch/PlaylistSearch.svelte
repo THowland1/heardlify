@@ -7,6 +7,8 @@
 	import Button from '../shared/Button.svelte';
 	import Skeleton from './Skeleton.svelte';
 	export let size: 'regular' | 'large' = 'large';
+	import { page } from '$app/stores';
+	import { goto } from '$app/navigation';
 
 	let input: HTMLInputElement | null = null;
 	let textvalue: string = 'All Out';
@@ -15,10 +17,13 @@
 	$: queryResult = useInfiniteQuery(
 		['search', { textvalue }] as const,
 		async ({ pageParam = 0, queryKey }) => {
-			return await searchPlaylists(queryKey[1].textvalue, pageParam, limit);
+			return textvalue
+				? await searchPlaylists(queryKey[1].textvalue, pageParam, limit)
+				: Promise.resolve({ playlists: { items: [], offset: 0, total: 0 } });
 		},
 		{
 			getNextPageParam: (lastGroup) => {
+				if (!lastGroup.playlists) return undefined;
 				const next = lastGroup.playlists.offset + limit;
 				return next < lastGroup.playlists.total ? next : undefined;
 			}
@@ -44,6 +49,22 @@
 					$queryResult.fetchNextPage();
 				}
 			}
+		}
+	}
+	$: {
+		if (textvalue === '/time') {
+			textvalue = '';
+			let message = '';
+			const currentTimeMachine = $page.url.searchParams.get('time-machine');
+			if (currentTimeMachine) {
+				$page.url.searchParams.delete('time-machine');
+				message = 'Time Machine Disabled';
+			} else {
+				$page.url.searchParams.set('time-machine', String(true));
+				message = 'Time Machine Activated';
+			}
+			window.location.href = $page.url.toString();
+			alert(message);
 		}
 	}
 </script>
