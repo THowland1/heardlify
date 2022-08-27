@@ -7,7 +7,7 @@
 
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
-	const URL = $page.url.origin;
+	const URL = $page.url;
 </script>
 
 <svelte:head>
@@ -20,7 +20,7 @@
 	<meta property="og:title" content={TITLE} />
 	<meta property="og:locale" content="en_GB" />
 	<meta property="og:description" content={DESCRIPTION} />
-	<meta property="og:url" content={URL} />
+	<meta property="og:url" content={URL.toString()} />
 	<meta property="og:site_name" content={TITLE} />
 
 	<meta name="twitter:card" content="summary_large_image" />
