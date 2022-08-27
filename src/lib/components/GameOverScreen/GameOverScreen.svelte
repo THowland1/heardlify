@@ -67,12 +67,11 @@
 		};
 	}
 	async function copyResultsToClipboard() {
-		const text = `
-    #Heardlify
-    #${playlistName.replaceAll(/[^A-z0-9]/g, '')}
-    #${dayIndex}
+		const text = `#Heardlify
+#${playlistName.replaceAll(/[^A-z0-9]/g, '')}
+#${dayIndex}
 
-    🔇${stages
+🔇${stages
 			.map(({ guess }) => {
 				if (guess.type === 'guessed') {
 					if (guess.isCorrectSong) {
