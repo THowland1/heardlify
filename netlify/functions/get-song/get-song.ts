@@ -58,7 +58,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.error,
 			sessionId: awsRequestId,
-			eventName: 'get-song:error'
+			eventName: 'get-song:error',
+			error
 		});
 		await logger.tryFlush();
 		throw error;

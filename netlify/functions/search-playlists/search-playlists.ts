@@ -112,7 +112,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.error,
 			sessionId: awsRequestId,
-			eventName: 'search-playlists:error'
+			eventName: 'search-playlists:error',
+			error
 		});
 		await logger.tryFlush();
 		throw error;
