@@ -13,7 +13,7 @@
 
 <div class="bg" />
 <div class="bg-blur" />
-<Header playlistName={null} />
+<Header playlistName={null} showChip={false} />
 <div class="whole-thing">
 	<h1>Uh oh!</h1>
 	<p class="subheading">

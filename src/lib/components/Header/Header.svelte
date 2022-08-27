@@ -4,6 +4,7 @@
 	import SpotifyLogo from './SpotifyLogo.svelte';
 
 	export let playlistName: string | null;
+	export let showChip = true;
 
 	let online = true;
 </script>
@@ -17,20 +18,22 @@
 			<div class="offline-chip">offline</div>
 		{/if}
 		<div class="chip-container">
-			<button class="current-playlist" on:click>
-				<SpotifyLogo />
+			{#if showChip}
+				<button class="current-playlist" on:click>
+					<SpotifyLogo />
 
-				<span class="playlist-name">
-					{#if playlistName}
-						{playlistName}
-					{:else if online}
-						<AnimatedEllipsis />
-					{:else}
-						<span class="offline-text">offline</span>
-					{/if}
-				</span>
-				<ChevronDown />
-			</button>
+					<span class="playlist-name">
+						{#if playlistName}
+							{playlistName}
+						{:else if online}
+							<AnimatedEllipsis />
+						{:else}
+							<span class="offline-text">offline</span>
+						{/if}
+					</span>
+					<ChevronDown />
+				</button>
+			{/if}
 		</div>
 	</nav>
 </div>
