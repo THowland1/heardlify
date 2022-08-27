@@ -1,6 +1,21 @@
 <script lang="ts">
 	import PlaylistSearch from '$lib/components/PlaylistSearch/PlaylistSearch.svelte';
+	import { page } from '$app/stores';
+	const TITLE = 'Heardlify';
+	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 </script>
+
+<svelte:head>
+	<title>{TITLE}</title>
+
+	<meta name="description" content={DESCRIPTION} />
+	<meta property="og:title" content={TITLE} />
+	<meta property="og:description" content={DESCRIPTION} />
+	<meta property="og:site_name" content={TITLE} />
+	<meta name="twitter:title" content={TITLE} />
+	<meta name="twitter:description" content={DESCRIPTION} />
+	<meta name="twitter:image:alt" content={TITLE} />
+</svelte:head>
 
 <div class="bg" />
 <div class="bg-blur" />
