@@ -31,6 +31,7 @@ export class Logger<
 			const collection = client.db('heardlify').collection('logs');
 			await collection.insertMany(this.logs);
 			await client.close();
+			this.logs = [];
 		} catch (error) {
 			console.error(error, this.logs);
 		}

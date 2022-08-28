@@ -60,7 +60,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			logger.log({
 				...Logger.LOGGER_LEVELS.info,
 				sessionId: awsRequestId,
-				eventName: 'search-playlists:400'
+				eventName: 'search-playlists:400',
+				event: { ...event }
 			});
 			await logger.tryFlush();
 			return {
@@ -98,7 +99,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.info,
 			sessionId: awsRequestId,
-			eventName: 'search-playlists:200'
+			eventName: 'search-playlists:200',
+			event: { ...event }
 		});
 		await logger.tryFlush();
 		return {
@@ -112,7 +114,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.error,
 			sessionId: awsRequestId,
-			eventName: 'search-playlists:error',
+			eventName: 'search-playlists:500',
+			event: { ...event },
 			error
 		});
 		await logger.tryFlush();

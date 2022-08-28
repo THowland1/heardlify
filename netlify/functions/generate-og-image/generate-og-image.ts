@@ -4,19 +4,14 @@ import { generateSVGBuffer } from './generate-svg-buffer';
 
 export const handler: Handler = async (event, { awsRequestId }) => {
 	const logger = new Logger();
-	logger.log({
-		...Logger.LOGGER_LEVELS.info,
-		sessionId: awsRequestId,
-		eventName: 'generate-og-image:request',
-		event: { ...event }
-	});
 
 	try {
 		if (!event.queryStringParameters) {
 			logger.log({
 				...Logger.LOGGER_LEVELS.info,
 				sessionId: awsRequestId,
-				eventName: 'generate-og-image:400'
+				eventName: 'generate-og-image:400',
+				event: { ...event }
 			});
 			await logger.tryFlush();
 			return {
@@ -33,7 +28,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.info,
 			sessionId: awsRequestId,
-			eventName: 'generate-og-image:200'
+			eventName: 'generate-og-image:200',
+			event: { ...event }
 		});
 		await logger.tryFlush();
 		const response = {
@@ -50,7 +46,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.error,
 			sessionId: awsRequestId,
-			eventName: 'generate-og-image:error',
+			eventName: 'generate-og-image:500',
+			event: { ...event },
 			error
 		});
 		await logger.tryFlush();

@@ -4,13 +4,14 @@ import { getSpotifyPlaylist } from '../../utils/get-spotify-playlist';
 import { getSpotifyToken } from '../../utils/get-spotify-token';
 import { Logger } from '../../utils/logger';
 import { IDetailedOption } from '../../utils/option';
+import pushoverApi from '../../utils/pushover-api';
 import { seededShuffle } from '../../utils/seeded-shuffle';
 interface IResult {
 	answer: IDetailedOption;
 	options: IDetailedOption[];
 	playlist: {
 		name: string;
-		imageUrl: any;
+		imageUrl: string;
 	};
 }
 
@@ -24,15 +25,9 @@ const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const handler: Handler = async (event, { awsRequestId }) => {
 	const logger = new Logger();
-	logger.log({
-		...Logger.LOGGER_LEVELS.info,
-		sessionId: awsRequestId,
-		eventName: 'get-song:request',
-		event: { ...event }
-	});
 	try {
-		const playlistId = event.queryStringParameters['playlist-id'];
-		const dateString = event.queryStringParameters['date'];
+		const playlistId = event.queryStringParameters?.['playlist-id'] ?? '';
+		const dateString = event.queryStringParameters?.['date'] ?? '';
 		let dateValue = Date.parse(dateString);
 		if (isNaN(dateValue)) {
 			dateValue = new Date().valueOf();
@@ -44,9 +39,11 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.info,
 			sessionId: awsRequestId,
-			eventName: 'get-song:200'
+			eventName: 'get-song:200',
+			event: { ...event }
 		});
 		await logger.tryFlush();
+		await pushoverApi.trySendNotification(`get-song:200:${result.playlist.name}`);
 		return {
 			statusCode: 200,
 			body: JSON.stringify(result, null, 2),
@@ -58,10 +55,13 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		logger.log({
 			...Logger.LOGGER_LEVELS.error,
 			sessionId: awsRequestId,
-			eventName: 'get-song:error',
+			eventName: 'get-song:500',
+			event: { ...event },
 			error
 		});
 		await logger.tryFlush();
+		await pushoverApi.trySendNotification(`get-song:500:${event.rawUrl}`);
+
 		throw error;
 	}
 };
