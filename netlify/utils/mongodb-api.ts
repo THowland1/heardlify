@@ -8,7 +8,7 @@ export const ResultSchema = z.object({
 	date: z.preprocess((arg) => {
 		if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
 	}, z.date()),
-	sid: z.string()
+	sid: z.string().nullable()
 });
 export type Result = z.infer<typeof ResultSchema>;
 
