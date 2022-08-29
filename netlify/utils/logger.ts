@@ -9,12 +9,12 @@ const LOGGER_LEVELS = {
 	trace: { level: 'trace', severity: 0 }
 } as const;
 
-export class Logger<
-	T extends Record<string, unknown> & {
-		sessionId: string;
-		eventName: string;
-	} & typeof LOGGER_LEVELS[keyof typeof LOGGER_LEVELS]
-> {
+type Log = {
+	sessionId: string;
+	eventName: string;
+} & typeof LOGGER_LEVELS[keyof typeof LOGGER_LEVELS];
+
+export class Logger<T extends Log> {
 	static LOGGER_LEVELS = LOGGER_LEVELS;
 	logs: T[] = [];
 
@@ -35,5 +35,16 @@ export class Logger<
 		} catch (error) {
 			console.error(error, this.logs);
 		}
+	}
+
+	static async tryLogInfo<TInfoLog extends Omit<Log, 'severity' | 'level'>>(log: TInfoLog) {
+		const logg: Log = { ...LOGGER_LEVELS.info, ...log };
+		const client = new MongoClient(process.env.MONGODB_CREDENTIALS || '', {
+			serverApi: ServerApiVersion.v1
+		});
+		await client.connect();
+		const collection = client.db('heardlify').collection('logs');
+		await collection.insertOne(logg);
+		await client.close();
 	}
 }

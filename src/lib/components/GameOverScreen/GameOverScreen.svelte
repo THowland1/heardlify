@@ -5,7 +5,12 @@
 	import SpotifyPreview from './SpotifyPreview.svelte';
 	import type { IDetailedOption } from '../../types/IOption';
 	import type { IStage } from '../../types/IStage';
+	import { onMount } from 'svelte';
+	import { recordResult } from '$lib/functions/record-result';
+	import { variables } from '$lib/variables';
+	import { page } from '$app/stores';
 
+	export let playlistId: string;
 	export let playlistName: string;
 	let shareFeedback: string | null;
 	export let correctOption: IDetailedOption;
@@ -111,6 +116,24 @@
 		result.type === 'success'
 			? `You got today's answer within ${result.time} second${result.time === 1 ? '' : 's'}.`
 			: `You didn't get today's answer.<br />Better luck tomorrow!`;
+
+	onMount(async () => {
+		const key = `${playlistId}:${getFullDaysSinceEpoch(date)}:recorded`;
+		const recorded = localStorage.getItem(key);
+		if (!recorded) {
+			const baseURL = variables.basePath || $page.url.origin;
+			const success = await recordResult(baseURL, {
+				date,
+				playlistId,
+				playlistName,
+				numberOfGuesses:
+					result.type === 'success' ? stages.filter((s) => s.guess.type !== 'empty').length : null
+			});
+			if (success) {
+				localStorage.setItem(key, 'true');
+			}
+		}
+	});
 </script>
 
 <div class="game-over-screen">

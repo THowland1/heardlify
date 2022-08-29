@@ -70,6 +70,7 @@
 				playlistName={playlist.playlist.name}
 				correctOption={playlist.answer}
 				timeMachine={data.timeMachine}
+				{playlistId}
 				{date}
 				{stages}
 			/>
