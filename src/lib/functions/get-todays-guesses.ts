@@ -17,7 +17,7 @@ export function getTodaysGuesses(playlistId: string, date: Date): IStage[] {
 	if (fromCache) {
 		return fromCache;
 	}
-	const fromDefault = getTodaysGuessesDefault(playlistId, date);
+	const fromDefault = getTodaysGuessesDefault();
 	return fromDefault;
 }
 
@@ -30,7 +30,7 @@ function getTodaysGuessesFromCache(playlistId: string, date: Date): IStage[] | n
 	return null;
 }
 
-function getTodaysGuessesDefault(playlistId: string, date: Date): IStage[] {
+function getTodaysGuessesDefault(): IStage[] {
 	return [
 		{
 			duration: 1,

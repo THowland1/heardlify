@@ -7,7 +7,8 @@ export const ResultSchema = z.object({
 	numberOfGuesses: z.number().nullable(),
 	date: z.preprocess((arg) => {
 		if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
-	}, z.date())
+	}, z.date()),
+	sid: z.string()
 });
 export type Result = z.infer<typeof ResultSchema>;
 

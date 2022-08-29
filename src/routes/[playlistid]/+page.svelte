@@ -1,21 +1,18 @@
 <script lang="ts">
-	import GameScreen from '$lib/components/GameScreen/GameScreen.svelte';
-	import type { IGuess } from '$lib/types/IGuess';
-	import type { IStage } from '$lib/types/IStage';
+	import { page } from '$app/stores';
 	import GameOverScreen from '$lib/components/GameOverScreen/GameOverScreen.svelte';
+	import GameScreen from '$lib/components/GameScreen/GameScreen.svelte';
 	import Header from '$lib/components/Header/Header.svelte';
-	import { getTodaysAnswer, type IResponse } from '$lib/functions/get-todays-answer';
-	import LinkThatLooksLikeButton from '$lib/components/shared/LinkThatLooksLikeButton.svelte';
-	import { onMount } from 'svelte';
 	import PlaylistSearchModal from '$lib/components/PlaylistSearchModal/PlaylistSearchModal.svelte';
 	import { getTodaysGuesses, setTodaysGuesses } from '$lib/functions/get-todays-guesses';
+	import type { IStage } from '$lib/types/IStage';
 	import type { PageData } from './$types';
-	import { page } from '$app/stores';
 
 	export let data: PageData;
 
 	$: playlistId = data.playlistId;
 	$: playlist = data.playlist;
+	$: sessionId = data.sessionId;
 	const date = new Date(data.dateValue);
 
 	let stages: IStage[] = getTodaysGuesses(playlistId, date);
@@ -60,7 +57,7 @@
 <div class="bg" style:--image-bg={bgImage} />
 <div class="bg-blur" />
 
-<PlaylistSearchModal bind:open={modalOpen} />
+<PlaylistSearchModal bind:open={modalOpen} {sessionId} />
 
 <div class="whole-thing">
 	<Header playlistName={playlist?.playlist?.name ?? null} on:click={() => (modalOpen = true)} />
@@ -73,6 +70,7 @@
 				{playlistId}
 				{date}
 				{stages}
+				{sessionId}
 			/>
 		{:else}
 			<GameScreen

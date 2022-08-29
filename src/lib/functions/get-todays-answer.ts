@@ -24,25 +24,27 @@ function generateKey(playlistId: string, fullDaysSinceEpoch: number) {
 export async function getTodaysAnswer(
 	baseURL: string,
 	playlistId: string,
-	date: Date
+	date: Date,
+	sessionId: string
 ): Promise<IResponse> {
 	const fromCache = getTodaysAnswerFromCache(playlistId, date);
 	if (fromCache) {
 		return fromCache;
 	}
-	const fresh = getTodaysAnswerFresh(baseURL, playlistId, date);
+	const fresh = getTodaysAnswerFresh(baseURL, playlistId, date, sessionId);
 	return fresh;
 }
 
 async function getTodaysAnswerFresh(
 	baseURL: string,
 	playlistId: string,
-	date: Date
+	date: Date,
+	sessionId: string
 ): Promise<IResponse> {
 	const response = await fetch(
 		`${baseURL}/.netlify/functions/get-song?playlist-id=${playlistId}&date=${
 			date.toISOString().split('T')[0]
-		}`
+		}&sid=${sessionId}`
 	);
 	const body = (await response.json()) as IResponse;
 

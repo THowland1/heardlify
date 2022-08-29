@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { page } from '$app/stores';
 	import { useInfiniteQuery } from '@sveltestack/svelte-query';
 	import { onMount } from 'svelte';
 	import { searchPlaylists, type IPlaylistSummary } from '../../functions/search-playlists';
@@ -6,11 +7,10 @@
 	import Times from '../icons/Times.svelte';
 	import Button from '../shared/Button.svelte';
 	import Skeleton from './Skeleton.svelte';
-	export let size: 'regular' | 'large' = 'large';
-	import { page } from '$app/stores';
-	import { goto } from '$app/navigation';
 
 	import { variables } from '$lib/variables';
+
+	export let sessionId: string;
 
 	const baseURL = variables.basePath || $page.url.origin;
 
@@ -22,7 +22,7 @@
 		['search', { textvalue }] as const,
 		async ({ pageParam = 0, queryKey }) => {
 			return textvalue
-				? await searchPlaylists(baseURL, queryKey[1].textvalue, pageParam, limit)
+				? await searchPlaylists(baseURL, queryKey[1].textvalue, sessionId, pageParam, limit)
 				: Promise.resolve({ playlists: { items: [], offset: 0, total: 0 } });
 		},
 		{
@@ -73,7 +73,7 @@
 	}
 </script>
 
-<div class="input-container" class:large={size === 'large'}>
+<div class="input-container">
 	<Search />
 	<input class="input" type="text" bind:this={input} bind:value={textvalue} on:keyup={load} />
 	{#if textvalue}
@@ -153,9 +153,6 @@
 	}
 	.input-container:focus-within {
 		border-color: var(--color-positive);
-	}
-	.input-container.large {
-		font-size: 1.5rem;
 	}
 	.playlists {
 		width: 100%;

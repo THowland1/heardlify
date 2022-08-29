@@ -3,6 +3,7 @@ interface IResult {
 	playlistName: string;
 	date: Date;
 	numberOfGuesses: number | null;
+	sid: string;
 }
 export async function recordResult(baseURL: string, result: IResult): Promise<boolean> {
 	const response = await fetch(`${baseURL}/.netlify/functions/record-result`, {

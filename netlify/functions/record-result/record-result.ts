@@ -24,7 +24,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 	const body = JSON.parse(event.body ?? '{}');
 	const result = ResultSchema.safeParse(body);
 	if (!result.success) {
-		await pushoverApi.trySendNotification(`record-result:400:${event.body}`);
+		await pushoverApi.trySendNotification(`(null)record-result:400:${event.body}`);
 		await Logger.tryLogInfo({
 			sessionId: awsRequestId,
 			eventName: 'record-result:400',
@@ -34,13 +34,14 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 	}
 
 	await pushoverApi.trySendNotification(
-		`record-result:200:${result.data.playlistName}:${
+		`(${result.data.sid})record-result:200:${result.data.playlistName}:${
 			result.data.numberOfGuesses
 		}:${result.data.date.getDate()}`
 	);
 	await Logger.tryLogInfo({
 		sessionId: awsRequestId,
 		eventName: 'record-result:200',
+		userSessionId: result.data.sid,
 		event
 	});
 	await mongodbApi.tryRecordStat(result.data);

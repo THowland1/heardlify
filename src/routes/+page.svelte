@@ -1,8 +1,13 @@
 <script lang="ts">
 	import PlaylistSearch from '$lib/components/PlaylistSearch/PlaylistSearch.svelte';
-	import { page } from '$app/stores';
+	import type { PageData } from '.svelte-kit/types/src/routes/$types';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
+
+	export let data: PageData;
+
+	$: sessionId = data.sessionId;
+	const date = new Date(data.dateValue);
 </script>
 
 <svelte:head>
@@ -22,7 +27,7 @@
 <div class="whole-thing">
 	<h1>Heardlify</h1>
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
-	<PlaylistSearch />
+	<PlaylistSearch {sessionId} />
 </div>
 
 <style>

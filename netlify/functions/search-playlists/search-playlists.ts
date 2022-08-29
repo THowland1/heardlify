@@ -42,17 +42,13 @@ function isSpotifyId(value: string) {
 
 export const handler: Handler = async (event, { awsRequestId }) => {
 	const logger = new Logger();
-	logger.log({
-		...Logger.LOGGER_LEVELS.info,
-		sessionId: awsRequestId,
-		eventName: 'search-playlists:request',
-		event: { ...event }
-	});
+	let userSessionId = '';
 
 	try {
 		const q = event.queryStringParameters?.['q'];
 		let offset = Number(event.queryStringParameters?.['offset']);
 		let limit = Number(event.queryStringParameters?.['limit']);
+		userSessionId = event.queryStringParameters?.['sid'] ?? '';
 		if (isNaN(offset) || offset < 0) offset = 0;
 		if (isNaN(limit) || limit < 1 || limit > 100) limit = 10;
 
@@ -61,7 +57,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 				...Logger.LOGGER_LEVELS.info,
 				sessionId: awsRequestId,
 				eventName: 'search-playlists:400',
-				event: { ...event }
+				event: { ...event },
+				userSessionId
 			});
 			await logger.tryFlush();
 			return {
@@ -100,7 +97,8 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			...Logger.LOGGER_LEVELS.info,
 			sessionId: awsRequestId,
 			eventName: 'search-playlists:200',
-			event: { ...event }
+			event: { ...event },
+			userSessionId
 		});
 		await logger.tryFlush();
 		return {
@@ -116,6 +114,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			sessionId: awsRequestId,
 			eventName: 'search-playlists:500',
 			event: { ...event },
+			userSessionId,
 			error
 		});
 		await logger.tryFlush();

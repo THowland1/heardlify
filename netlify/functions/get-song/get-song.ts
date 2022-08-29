@@ -25,9 +25,11 @@ const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const handler: Handler = async (event, { awsRequestId }) => {
 	const logger = new Logger();
+	let userSessionId = '';
 	try {
 		const playlistId = event.queryStringParameters?.['playlist-id'] ?? '';
 		const dateString = event.queryStringParameters?.['date'] ?? '';
+		userSessionId = event.queryStringParameters?.['sid'] ?? '';
 		let dateValue = Date.parse(dateString);
 		if (isNaN(dateValue)) {
 			dateValue = new Date().valueOf();
@@ -40,10 +42,11 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			...Logger.LOGGER_LEVELS.info,
 			sessionId: awsRequestId,
 			eventName: 'get-song:200',
-			event: { ...event }
+			event: { ...event },
+			userSessionId
 		});
 		await logger.tryFlush();
-		await pushoverApi.trySendNotification(`get-song:200:${result.playlist.name}`);
+		await pushoverApi.trySendNotification(`(${userSessionId})get-song:200:${result.playlist.name}`);
 		return {
 			statusCode: 200,
 			body: JSON.stringify(result, null, 2),
@@ -57,10 +60,11 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			sessionId: awsRequestId,
 			eventName: 'get-song:500',
 			event: { ...event },
-			error
+			error,
+			userSessionId
 		});
 		await logger.tryFlush();
-		await pushoverApi.trySendNotification(`get-song:500:${event.rawUrl}`);
+		await pushoverApi.trySendNotification(`${userSessionId})get-song:500:${event.rawUrl}`);
 
 		throw error;
 	}
