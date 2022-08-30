@@ -1,8 +1,10 @@
 <script lang="ts">
 	import PlaylistSearch from '$lib/components/PlaylistSearch/PlaylistSearch.svelte';
 	import type { PageData } from '.svelte-kit/types/src/routes/$types';
+	import { page } from '$app/stores';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
+	const IMAGE = `${$page.url.origin}/og-image.png`;
 
 	export let data: PageData;
 
@@ -20,6 +22,8 @@
 	<meta name="twitter:title" content={TITLE} />
 	<meta name="twitter:description" content={DESCRIPTION} />
 	<meta name="twitter:image:alt" content={TITLE} />
+	<meta property="og:image" content={IMAGE} />
+	<meta name="twitter:image" content={IMAGE} />
 </svelte:head>
 
 <div class="bg" />
