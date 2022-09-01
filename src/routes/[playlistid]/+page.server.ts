@@ -9,12 +9,22 @@ function getDate(date = new Date()) {
 	return correctDate;
 }
 
+function isSpotifyId(value: string) {
+	const spotifyIdRegexp = new RegExp(
+		'^[0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz]{22}$'
+	);
+	return spotifyIdRegexp.test(value);
+}
+
 export const load: PageServerLoad = async ({ params, url, locals }) => {
 	const queryDate = getDateFromURL(url);
 	const timeMachine = Boolean(url.searchParams.get('time-machine'));
 	const slug = params['playlistid'] ?? '';
 	const slugSplit = slug.split('-');
 	const playlistId = slugSplit[slugSplit.length - 1] || '0erQqpBCFFYj0gDam2pnp1';
+	if (!isSpotifyId(playlistId)) {
+		throw new Error('The given id is not a playlist id');
+	}
 	const date = getDate(queryDate ?? new Date());
 
 	const baseURL = variables.basePath || url.origin;
