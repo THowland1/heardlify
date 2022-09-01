@@ -169,4 +169,19 @@ export default class HeardlifyApi {
 
 		return reshaped;
 	}
+	async sendFeedback(feedback: { content: string; sid: string }) {
+		const url = new URL(this.baseURL + '/.netlify/functions/send-feedback');
+
+		const response = await fetch(url, {
+			method: 'POST',
+			headers: {
+				// 'Content-Type': 'application/json'
+			},
+			body: JSON.stringify(feedback)
+		});
+		const success = response.status >= 200 && response.status < 300;
+		if (!success) {
+			throw new Error('Sending feedback failed');
+		}
+	}
 }

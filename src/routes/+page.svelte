@@ -2,6 +2,7 @@
 	import PlaylistSearch from '$lib/components/PlaylistSearch/PlaylistSearch.svelte';
 	import type { PageData } from '.svelte-kit/types/src/routes/$types';
 	import { page } from '$app/stores';
+	import FeedbackModal from '$lib/components/FeedbackModal/FeedbackModal.svelte';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 	const IMAGE = `${$page.url.origin}/og-image.png`;
@@ -9,7 +10,7 @@
 	export let data: PageData;
 
 	$: sessionId = data.sessionId;
-	const date = new Date(data.dateValue);
+	let feedbackModalOpen = false;
 </script>
 
 <svelte:head>
@@ -32,7 +33,9 @@
 	<h1>Heardlify</h1>
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
 	<PlaylistSearch {sessionId} />
+	<button class="feedback" on:click={() => (feedbackModalOpen = true)}>Feedback</button>
 </div>
+<FeedbackModal bind:open={feedbackModalOpen} {sessionId} />
 
 <style>
 	:root {
@@ -85,5 +88,11 @@
 		padding: var(--padding);
 		height: 100%;
 		gap: 12px;
+	}
+	.feedback {
+		border: none;
+		background: transparent;
+		text-decoration: underline;
+		color: var(--color-line);
 	}
 </style>
