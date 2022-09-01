@@ -76,7 +76,7 @@ function mapTrackToDetailedOption(
 		},
 		formatted: `${formattedArtists} - ${track.name}`,
 		id: track.id,
-		imgSrc: track.album.images[track.album.images.length - 1].url,
+		imgSrc: track.album.images[track.album.images.length - 1]?.url ?? null,
 		name: track.name,
 		year: Number(track.album.release_date.split('-')[0]),
 		previewUrl: track.preview_url
@@ -101,6 +101,7 @@ export async function getAllTracksExpensively(
 			.map((i) => i.track)
 			.filter(isNotNull)
 			.filter(propertyIsNotNull('preview_url'))
+			.filter((t) => t.type === 'track')
 			.map((i) => mapTrackToDetailedOption(i));
 		options.push(...pageAsOptions);
 		offset += limit;

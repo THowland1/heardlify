@@ -4,7 +4,7 @@
 
   export let song: IDetailedOption;
 
-  $: bgImage = `url(${song.imgSrc})`;
+  $: bgImage = `url(${song.imgSrc && '/default-playlist-300x300.png'})`;
 </script>
 
 <a

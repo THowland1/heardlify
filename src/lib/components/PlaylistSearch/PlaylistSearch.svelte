@@ -74,6 +74,12 @@
 	const handleInput = debounce((newvalue: string) => {
 		textvalue = newvalue;
 	}, 600);
+
+	function setSrcToFallback({ currentTarget }: { currentTarget: HTMLElement }) {
+		if (currentTarget instanceof HTMLImageElement) {
+			currentTarget.src = '/default-playlist-300x300.png';
+		}
+	}
 </script>
 
 <div class="input-container">
@@ -109,6 +115,7 @@
 				>
 					<img
 						class="image"
+						on:error|once={setSrcToFallback}
 						src={playlist.images[0]?.url}
 						alt={playlist.name}
 						height="80px"
