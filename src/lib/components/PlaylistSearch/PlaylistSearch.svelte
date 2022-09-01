@@ -7,6 +7,7 @@
 	import Times from '../icons/Times.svelte';
 	import Button from '../shared/Button.svelte';
 	import Skeleton from './Skeleton.svelte';
+	import debounce from 'lodash.debounce';
 
 	import { variables } from '$lib/variables';
 
@@ -16,7 +17,6 @@
 
 	let input: HTMLInputElement | null = null;
 	let textvalue: string = 'All Out';
-	let playlists: IPlaylistSummary[] = [];
 	const limit = 10;
 	$: queryResult = useInfiniteQuery(
 		['search', { textvalue }] as const,
@@ -71,11 +71,21 @@
 			alert(message);
 		}
 	}
+	const handleInput = debounce((newvalue: string) => {
+		textvalue = newvalue;
+	}, 600);
 </script>
 
 <div class="input-container">
 	<Search />
-	<input class="input" type="text" bind:this={input} bind:value={textvalue} on:keyup={load} />
+	<input
+		class="input"
+		type="text"
+		bind:this={input}
+		value={textvalue}
+		on:input={(e) => handleInput(e.currentTarget.value)}
+		on:keyup={load}
+	/>
 	{#if textvalue}
 		<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
 	{/if}
@@ -99,7 +109,7 @@
 				>
 					<img
 						class="image"
-						src={playlist.images[0].url}
+						src={playlist.images[0]?.url}
 						alt={playlist.name}
 						height="80px"
 						width="80px"
