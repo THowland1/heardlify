@@ -21,6 +21,7 @@
 		"@sveltejs/vite-plugin-svelte": "^1.0.1",
 		"@tsconfig/svelte": "^3.0.0",
 		"@types/cookie": "^0.5.1",
+		"@types/lodash.debounce": "^4.0.7",
 		"@types/node": "^14.18.22",
 		"@types/sharp": "^0.30.5",
 		"@types/spotify-web-api-node": "^5.0.7",
@@ -45,6 +46,7 @@
 	"dependencies": {
 		"@sveltestack/svelte-query": "^1.6.0",
 		"broadcast-channel": "^4.14.0",
+		"lodash.debounce": "^4.0.8",
 		"mongodb": "^4.9.0",
 		"sharp": "^0.30.7",
 		"string-pixel-width": "^1.10.0",
