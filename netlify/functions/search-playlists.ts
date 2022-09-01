@@ -1,8 +1,8 @@
 import { Handler } from '@netlify/functions';
-import { getSpotifyToken } from '$/utils/get-spotify-token';
 import spotifyApi from '$/utils/spotify-api';
 import mongodbApi from '$/utils/mongodb-api';
 import jsonifyError from '$/utils/jsonify-error';
+import spotifyAccountApi from '$/utils/spotify-account-api';
 
 export type IPlaylistSummary = {
 	id: string;
@@ -69,7 +69,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			};
 		}
 
-		const authToken = await getSpotifyToken();
+		const authToken = await spotifyAccountApi.getClientCredentialsToken();
 
 		let results: ISearchPlaylistsResponse;
 		if (isSpotifyId(q)) {
