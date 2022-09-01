@@ -10,6 +10,7 @@
 	import debounce from 'lodash.debounce';
 
 	import { variables } from '$lib/variables';
+	import { goto } from '$app/navigation';
 
 	export let sessionId: string;
 
@@ -69,6 +70,8 @@
 			}
 			window.location.href = $page.url.toString();
 			alert(message);
+		} else if (textvalue === '/stats') {
+			goto('/stats');
 		}
 	}
 	const handleInput = debounce((newvalue: string) => {
