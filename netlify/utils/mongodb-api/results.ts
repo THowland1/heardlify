@@ -1,11 +1,11 @@
 import { MongoClient, ServerApiVersion, Filter } from 'mongodb';
 import { z } from 'zod';
-import { ImmutableDate } from './immutable-date';
+import { ImmutableDate } from '../immutable-date';
 
 const nullsafestring = (fallback: string) =>
 	z.preprocess((val) => (val === null ? fallback : val), z.string());
 
-export const ResultSchema = z.object({
+const ResultSchema = z.object({
 	playlistId: z.string(),
 	playlistName: z.string(),
 	numberOfGuesses: z.number().nullable(),
@@ -14,54 +14,7 @@ export const ResultSchema = z.object({
 	}, z.date()),
 	sid: z.string().nullable()
 });
-export type Result = z.infer<typeof ResultSchema>;
-
-export const LogSchema = z.object({
-	sessionId: z.string(),
-	eventName: z.string(),
-	level: z.number(),
-	severity: z.number()
-});
-type Log = z.infer<typeof LogSchema> & Record<string, unknown>;
-
-const getLogs = async ({
-	query,
-	limit,
-	offset,
-	from,
-	to
-}: {
-	query: string;
-	limit: number;
-	offset: number;
-	from: Date;
-	to: Date;
-}) => {
-	const client = new MongoClient(process.env.MONGODB_CREDENTIALS || '', {
-		serverApi: ServerApiVersion.v1
-	});
-	await client.connect();
-	const collection = client.db('heardlify').collection<Log>('logs');
-
-	const results = await collection
-		.find({
-			date: {
-				$gte: from,
-				$lt: to
-			}
-		})
-		.filter({
-			eventName: new RegExp(`.*${query}.*`, 'i')
-		})
-		.skip(offset)
-		.limit(limit)
-		.sort({ date: -1 })
-
-		.toArray();
-
-	await client.close();
-	return results;
-};
+type Result = z.infer<typeof ResultSchema>;
 
 const tryRecordStat = async (result: Result) => {
 	const client = new MongoClient(process.env.MONGODB_CREDENTIALS || '', {
@@ -323,6 +276,6 @@ export default {
 	getSessionHistory,
 	getMostActiveSessions,
 	getScoresForPlaylistDay,
-	getLogs,
-	getActivityByTime
+	getActivityByTime,
+	ResultSchema
 };

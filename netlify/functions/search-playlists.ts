@@ -1,8 +1,8 @@
 import { Handler } from '@netlify/functions';
-import { Logger } from '../../utils/logger';
-import { getSpotifyPlaylist } from '../../utils/get-spotify-playlist';
-import { getSpotifyToken } from '../../utils/get-spotify-token';
-import { searchSpotifyPlaylists } from '../../utils/search-spotify-playlists';
+import { getSpotifyToken } from '$/utils/get-spotify-token';
+import spotifyApi from '$/utils/spotify-api';
+import mongodbApi from '$/utils/mongodb-api';
+import jsonifyError from '$/utils/jsonify-error';
 
 export type IPlaylistSummary = {
 	id: string;
@@ -41,7 +41,6 @@ function isSpotifyId(value: string) {
 }
 
 export const handler: Handler = async (event, { awsRequestId }) => {
-	const logger = new Logger();
 	let userSessionId = '';
 
 	try {
@@ -53,14 +52,14 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		if (isNaN(limit) || limit < 1 || limit > 100) limit = 10;
 
 		if (!q) {
-			logger.log({
-				...Logger.LOGGER_LEVELS.info,
+			await mongodbApi.logs.logInfo({
 				sessionId: awsRequestId,
 				eventName: 'search-playlists:400',
-				event: { ...event },
-				userSessionId
+				data: {
+					event: { ...event },
+					userSessionId
+				}
 			});
-			await logger.tryFlush();
 			return {
 				statusCode: 400,
 				body: JSON.stringify({ error: { status: 400, message: 'No search query' } }, null, 2),
@@ -74,7 +73,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 
 		let results: ISearchPlaylistsResponse;
 		if (isSpotifyId(q)) {
-			const item = await getSpotifyPlaylist(q, authToken.access_token);
+			const item = await spotifyApi.playlists.getOne(q, authToken.access_token);
 			results = {
 				playlists: {
 					items: [mapSpotifyObjectToDto(item)],
@@ -83,7 +82,12 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 				}
 			};
 		} else {
-			const searchResult = await searchSpotifyPlaylists(authToken.access_token, q, offset, limit);
+			const searchResult = await spotifyApi.search.searchPlaylists(
+				authToken.access_token,
+				q,
+				offset,
+				limit
+			);
 			results = {
 				playlists: {
 					items: searchResult.playlists.items.map(mapSpotifyObjectToDto),
@@ -93,14 +97,15 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			};
 		}
 
-		logger.log({
-			...Logger.LOGGER_LEVELS.info,
+		await mongodbApi.logs.logInfo({
 			sessionId: awsRequestId,
 			eventName: 'search-playlists:200',
-			event: { ...event },
-			userSessionId
+			data: {
+				event: { ...event },
+				userSessionId
+			}
 		});
-		await logger.tryFlush();
+
 		return {
 			statusCode: 200,
 			body: JSON.stringify(results, null, 2),
@@ -109,15 +114,15 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			}
 		};
 	} catch (error) {
-		logger.log({
-			...Logger.LOGGER_LEVELS.error,
+		await mongodbApi.logs.logError({
 			sessionId: awsRequestId,
 			eventName: 'search-playlists:500',
-			event: { ...event },
-			userSessionId,
-			error
+			data: {
+				event: { ...event },
+				userSessionId,
+				error: jsonifyError(error)
+			}
 		});
-		await logger.tryFlush();
 		throw error;
 	}
 };

@@ -1,14 +1,13 @@
+import mongodbApi from '$/utils/mongodb-api';
 import { Handler } from '@netlify/functions';
-import mongodbApi from '../../utils/mongodb-api';
 import { z } from 'zod';
 
 const numberstring = () => z.preprocess(Number, z.number());
 const datestring = () => z.preprocess((val) => new Date(val as string), z.date());
 
 export const handler: Handler = async (event) => {
-	const { query, limit, offset, from, to } = z
+	const { limit, offset, from, to } = z
 		.object({
-			query: z.string(),
 			limit: numberstring(),
 			offset: numberstring(),
 			from: datestring(),
@@ -16,8 +15,7 @@ export const handler: Handler = async (event) => {
 		})
 		.parse(event.queryStringParameters);
 
-	const result = await mongodbApi.getLogs({
-		query,
+	const result = await mongodbApi.results.getMostActiveSessions({
 		limit,
 		offset,
 		from: new Date(from),

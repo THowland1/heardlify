@@ -1,11 +1,11 @@
 import { Handler } from '@netlify/functions';
-import { getAllSpotifyPlaylistTracksExpensively } from '../../utils/get-all-spotify-playlist-tracks-expensively';
-import { getSpotifyPlaylist } from '../../utils/get-spotify-playlist';
-import { getSpotifyToken } from '../../utils/get-spotify-token';
-import { Logger } from '../../utils/logger';
-import { IDetailedOption } from '../../utils/option';
-import pushoverApi from '../../utils/pushover-api';
-import { seededShuffle } from '../../utils/seeded-shuffle';
+import { getSpotifyToken } from '$/utils/get-spotify-token';
+import { IDetailedOption } from '$/utils/option';
+import pushoverApi from '$/utils/pushover-api';
+import { seededShuffle } from '$/utils/seeded-shuffle';
+import spotifyApi from '$/utils/spotify-api';
+import mongodbApi from '$/utils/mongodb-api';
+import jsonifyError from '$/utils/jsonify-error';
 interface IResult {
 	answer: IDetailedOption;
 	options: IDetailedOption[];
@@ -24,7 +24,6 @@ const cache: ICache = {};
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const handler: Handler = async (event, { awsRequestId }) => {
-	const logger = new Logger();
 	let userSessionId = '';
 	try {
 		const playlistId = event.queryStringParameters?.['playlist-id'] ?? '';
@@ -38,14 +37,14 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 
 		const result = await getResult({ fullDaysSinceEpoch, playlistId });
 
-		logger.log({
-			...Logger.LOGGER_LEVELS.info,
+		await mongodbApi.logs.logInfo({
 			sessionId: awsRequestId,
 			eventName: 'get-song:200',
-			event: { ...event },
-			userSessionId
+			data: {
+				event: { ...event },
+				userSessionId
+			}
 		});
-		await logger.tryFlush();
 		await pushoverApi.trySendNotification(`(${userSessionId})get-song:200:${result.playlist.name}`);
 		return {
 			statusCode: 200,
@@ -55,16 +54,16 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			}
 		};
 	} catch (error) {
-		logger.log({
-			...Logger.LOGGER_LEVELS.error,
+		await mongodbApi.logs.logError({
 			sessionId: awsRequestId,
 			eventName: 'get-song:500',
-			event: { ...event },
-			error,
-			userSessionId
+			data: {
+				event: { ...event },
+				userSessionId,
+				error: jsonifyError(error)
+			}
 		});
-		await logger.tryFlush();
-		await pushoverApi.trySendNotification(`${userSessionId})get-song:500:${event.rawUrl}`);
+		await pushoverApi.trySendNotification(`(${userSessionId})get-song:500:${event.rawUrl}`);
 
 		throw error;
 	}
@@ -102,12 +101,12 @@ function setResultInCache(keys: ICacheKeys, value: IResult) {
 async function getResultFresh(keys: ICacheKeys): Promise<IResult> {
 	const { fullDaysSinceEpoch, playlistId } = keys;
 	const authToken = await getSpotifyToken();
-	const allPlaylistTracks = await getAllSpotifyPlaylistTracksExpensively(
+	const allPlaylistTracks = await spotifyApi.playlists.getAllTracksExpensively(
 		playlistId,
 		authToken.access_token
 	);
 
-	const playlist = await getSpotifyPlaylist(playlistId, authToken.access_token);
+	const playlist = await spotifyApi.playlists.getOne(playlistId, authToken.access_token);
 	const totalCount = allPlaylistTracks.length;
 
 	const index = fullDaysSinceEpoch % totalCount;

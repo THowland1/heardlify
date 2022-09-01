@@ -1,19 +1,18 @@
+import { generateSVGBuffer } from '$/utils/generate-svg-buffer';
+import jsonifyError from '$/utils/jsonify-error';
+import mongodbApi from '$/utils/mongodb-api';
 import { Handler } from '@netlify/functions';
-import { Logger } from '../../utils/logger';
-import { generateSVGBuffer } from './generate-svg-buffer';
 
 export const handler: Handler = async (event, { awsRequestId }) => {
-	const logger = new Logger();
-
 	try {
 		if (!event.queryStringParameters) {
-			logger.log({
-				...Logger.LOGGER_LEVELS.info,
+			await mongodbApi.logs.logInfo({
 				sessionId: awsRequestId,
 				eventName: 'generate-og-image:400',
-				event: { ...event }
+				data: {
+					event: { ...event }
+				}
 			});
-			await logger.tryFlush();
 			return {
 				statusCode: 400,
 				body: 'Query string parameters required'
@@ -24,14 +23,13 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		const subtitle = querySubtitle.split('.')[0];
 
 		const buffer = await generateSVGBuffer(subtitle);
-
-		logger.log({
-			...Logger.LOGGER_LEVELS.info,
+		await mongodbApi.logs.logInfo({
 			sessionId: awsRequestId,
 			eventName: 'generate-og-image:200',
-			event: { ...event }
+			data: {
+				event: { ...event }
+			}
 		});
-		await logger.tryFlush();
 		const response = {
 			statusCode: 200,
 			headers: {
@@ -43,14 +41,14 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		};
 		return response;
 	} catch (error) {
-		logger.log({
-			...Logger.LOGGER_LEVELS.error,
+		await mongodbApi.logs.logError({
 			sessionId: awsRequestId,
 			eventName: 'generate-og-image:500',
-			event: { ...event },
-			error
+			data: {
+				event: { ...event },
+				error: jsonifyError(error)
+			}
 		});
-		await logger.tryFlush();
 		throw error;
 	}
 };

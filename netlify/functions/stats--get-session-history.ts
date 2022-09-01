@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import mongodbApi from '../../utils/mongodb-api';
+import mongodbApi from '$/utils/mongodb-api';
 import { z } from 'zod';
 
 const numberstring = () => z.preprocess(Number, z.number());
@@ -16,7 +16,7 @@ export const handler: Handler = async (event) => {
 		})
 		.parse(event.queryStringParameters);
 
-	const result = await mongodbApi.getSessionHistory({
+	const result = await mongodbApi.results.getSessionHistory({
 		sessionId,
 		limit,
 		offset,

@@ -1,20 +1,20 @@
 import { Handler } from '@netlify/functions';
-import mongodbApi from '../../utils/mongodb-api';
+import mongodbApi from '$/utils/mongodb-api';
 import { z } from 'zod';
 
+const numberstring = () => z.preprocess(Number, z.number());
 const datestring = () => z.preprocess((val) => new Date(val as string), z.date());
 
 export const handler: Handler = async (event) => {
-	const { playlistId, date } = z
-		.object({
-			playlistId: z.string(),
-			date: datestring()
-		})
+	const { limit, offset, from, to } = z
+		.object({ limit: numberstring(), offset: numberstring(), from: datestring(), to: datestring() })
 		.parse(event.queryStringParameters);
 
-	const result = await mongodbApi.getScoresForPlaylistDay({
-		playlistId,
-		date
+	const result = await mongodbApi.results.getTopPlaylists({
+		limit,
+		offset,
+		from: new Date(from),
+		to: new Date(to)
 	});
 
 	return {

@@ -1,5 +1,5 @@
 import { Handler } from '@netlify/functions';
-import spotifyAccountApi from '../../utils/spotify-account-api';
+import spotifyAccountApi from '$/utils/spotify-account-api';
 
 export const handler: Handler = async (event) => {
 	const url = new URL(event.rawUrl);
