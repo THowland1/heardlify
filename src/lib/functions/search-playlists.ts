@@ -18,7 +18,6 @@ export type ISearchPlaylistsResponse = {
 export async function searchPlaylists(
 	baseURL: string,
 	query: string,
-	sessionId: string,
 	offset: number,
 	limit: number
 ): Promise<ISearchPlaylistsResponse> {
@@ -26,8 +25,7 @@ export async function searchPlaylists(
 	url.searchParams.append('q', query);
 	url.searchParams.append('offset', String(offset));
 	url.searchParams.append('limit', String(limit));
-	url.searchParams.append('sid', sessionId);
-	const response = await fetch(url.toString());
+	const response = await fetch(url.toString(), { credentials: 'include' });
 	const body = await response.json();
 	return body;
 }

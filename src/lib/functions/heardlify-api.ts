@@ -1,3 +1,5 @@
+import type { IDetailedOption, IOption } from '$lib/types/IOption';
+
 type TopPlaylist = {
 	_id: {
 		playlistId: string;
@@ -36,8 +38,10 @@ type Log = {
 	severity: number;
 } & Record<string, unknown>;
 
+type IFetch = (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
+
 export default class HeardlifyApi {
-	constructor(private baseURL: string) {}
+	constructor(private baseURL: string, private fetch: IFetch = window.fetch) {}
 	async getLogs({
 		query,
 		limit,
@@ -58,7 +62,10 @@ export default class HeardlifyApi {
 		url.searchParams.append('from', from.toISOString());
 		url.searchParams.append('to', to.toISOString());
 
-		const response = await fetch(url);
+		const response = await fetch(url, {
+			credentials: 'include',
+			headers: { cookie: 'fhdvsfjewis', 'x-hello': '12' }
+		});
 		const body = (await response.json()) as Log[];
 
 		return body;
@@ -80,7 +87,7 @@ export default class HeardlifyApi {
 		url.searchParams.append('from', from.toISOString());
 		url.searchParams.append('to', to.toISOString());
 
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: 'include' });
 		const body = (await response.json()) as TopPlaylist[];
 
 		return body;
@@ -102,7 +109,7 @@ export default class HeardlifyApi {
 		url.searchParams.append('from', from.toISOString().split('Z')[0]);
 		url.searchParams.append('to', to.toISOString().split('Z')[0]);
 
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: 'include' });
 		const body = (await response.json()) as MostActiveSession[];
 
 		return body;
@@ -112,7 +119,7 @@ export default class HeardlifyApi {
 		url.searchParams.append('from', from.toISOString());
 		url.searchParams.append('to', to.toISOString());
 
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: 'include' });
 		const body = (await response.json()) as ActivityByTime[];
 
 		return body;
@@ -137,7 +144,7 @@ export default class HeardlifyApi {
 		url.searchParams.append('from', from.toISOString());
 		url.searchParams.append('to', to.toISOString());
 
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: 'include' });
 		const body = (await response.json()) as Result[];
 
 		return body;
@@ -147,7 +154,7 @@ export default class HeardlifyApi {
 		url.searchParams.append('playlistId', playlistId);
 		url.searchParams.append('date', date.toISOString());
 
-		const response = await fetch(url);
+		const response = await fetch(url, { credentials: 'include' });
 		const body = (await response.json()) as ScoreForPlaylistDay[];
 
 		function getQuantity(numberOfGuesses: number | null) {
@@ -169,7 +176,7 @@ export default class HeardlifyApi {
 
 		return reshaped;
 	}
-	async sendFeedback(feedback: { content: string; sid: string }) {
+	async sendFeedback(feedback: { content: string }) {
 		const url = new URL(this.baseURL + '/.netlify/functions/send-feedback');
 
 		const response = await fetch(url, {
@@ -177,11 +184,32 @@ export default class HeardlifyApi {
 			headers: {
 				// 'Content-Type': 'application/json'
 			},
+			credentials: 'include',
 			body: JSON.stringify(feedback)
 		});
 		const success = response.status >= 200 && response.status < 300;
 		if (!success) {
 			throw new Error('Sending feedback failed');
 		}
+	}
+	async getSong(playlistId: string, date: Date) {
+		type IResponse = {
+			answer: IDetailedOption;
+			options: IOption[];
+			playlist: {
+				name: string;
+				imageUrl: string;
+			};
+		};
+
+		const url = new URL(`${this.baseURL}/.netlify/functions/get-song`);
+		url.search = new URLSearchParams({
+			'playlist-id': playlistId,
+			date: date.toISOString().split('T')[0]
+		}).toString();
+		const response = await this.fetch(url.toString(), { credentials: 'include' });
+		const body = (await response.json()) as IResponse;
+
+		return body;
 	}
 }

@@ -6,6 +6,7 @@ import { seededShuffle } from '$/utils/seeded-shuffle';
 import spotifyApi from '$/utils/spotify-api';
 import mongodbApi from '$/utils/mongodb-api';
 import jsonifyError from '$/utils/jsonify-error';
+import NetlifyFunctionHelpers from '$/utils/netlify-function-helpers';
 interface IResult {
 	answer: IDetailedOption;
 	options: IDetailedOption[];
@@ -24,11 +25,11 @@ const cache: ICache = {};
 const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 export const handler: Handler = async (event, { awsRequestId }) => {
-	let userSessionId = '';
+	const userSessionId = NetlifyFunctionHelpers.getCookie(event, 'sid');
+
 	try {
 		const playlistId = event.queryStringParameters?.['playlist-id'] ?? '';
 		const dateString = event.queryStringParameters?.['date'] ?? '';
-		userSessionId = event.queryStringParameters?.['sid'] ?? '';
 		let dateValue = Date.parse(dateString);
 		if (isNaN(dateValue)) {
 			dateValue = new Date().valueOf();
@@ -50,7 +51,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			statusCode: 200,
 			body: JSON.stringify(result, null, 2),
 			headers: {
-				'Access-Control-Allow-Origin': '*' // Allow from anywhere
+				...NetlifyFunctionHelpers.getCorsHeaders(event)
 			}
 		};
 	} catch (error) {

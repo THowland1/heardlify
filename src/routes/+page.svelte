@@ -7,9 +7,6 @@
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 	const IMAGE = `${$page.url.origin}/og-image.png`;
 
-	export let data: PageData;
-
-	$: sessionId = data.sessionId;
 	let feedbackModalOpen = false;
 </script>
 
@@ -32,10 +29,10 @@
 <div class="whole-thing">
 	<h1>Heardlify</h1>
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
-	<PlaylistSearch {sessionId} />
+	<PlaylistSearch />
 	<button class="feedback" on:click={() => (feedbackModalOpen = true)}>Feedback</button>
 </div>
-<FeedbackModal bind:open={feedbackModalOpen} {sessionId} />
+<FeedbackModal bind:open={feedbackModalOpen} />
 
 <style>
 	:root {

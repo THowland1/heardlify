@@ -12,8 +12,6 @@
 	import { variables } from '$lib/variables';
 	import { goto } from '$app/navigation';
 
-	export let sessionId: string;
-
 	const baseURL = variables.basePath || $page.url.origin;
 
 	let input: HTMLInputElement | null = null;
@@ -23,7 +21,7 @@
 		['search', { textvalue }] as const,
 		async ({ pageParam = 0, queryKey }) => {
 			return textvalue
-				? await searchPlaylists(baseURL, queryKey[1].textvalue, sessionId, pageParam, limit)
+				? await searchPlaylists(baseURL, queryKey[1].textvalue, pageParam, limit)
 				: Promise.resolve({ playlists: { items: [], offset: 0, total: 0 } });
 		},
 		{

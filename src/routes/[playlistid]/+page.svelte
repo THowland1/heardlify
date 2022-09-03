@@ -12,7 +12,6 @@
 
 	$: playlistId = data.playlistId;
 	$: playlist = data.playlist;
-	$: sessionId = data.sessionId;
 	const date = new Date(data.dateValue);
 
 	let stages: IStage[] = getTodaysGuesses(playlistId, date);
@@ -57,7 +56,7 @@
 <div class="bg" style:--image-bg={bgImage} />
 <div class="bg-blur" />
 
-<PlaylistSearchModal bind:open={modalOpen} {sessionId} />
+<PlaylistSearchModal bind:open={modalOpen} />
 
 <div class="whole-thing">
 	<Header playlistName={playlist?.playlist?.name ?? null} on:click={() => (modalOpen = true)} />
@@ -70,7 +69,6 @@
 				{playlistId}
 				{date}
 				{stages}
-				{sessionId}
 			/>
 		{:else}
 			<GameScreen

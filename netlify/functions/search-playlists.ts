@@ -3,6 +3,7 @@ import spotifyApi from '$/utils/spotify-api';
 import mongodbApi from '$/utils/mongodb-api';
 import jsonifyError from '$/utils/jsonify-error';
 import spotifyAccountApi from '$/utils/spotify-account-api';
+import NetlifyFunctionHelpers from '$/utils/netlify-function-helpers';
 
 export type IPlaylistSummary = {
 	id: string;
@@ -41,13 +42,11 @@ function isSpotifyId(value: string) {
 }
 
 export const handler: Handler = async (event, { awsRequestId }) => {
-	let userSessionId = '';
-
+	const userSessionId = NetlifyFunctionHelpers.getCookie(event, 'sid');
 	try {
 		const q = event.queryStringParameters?.['q'];
 		let offset = Number(event.queryStringParameters?.['offset']);
 		let limit = Number(event.queryStringParameters?.['limit']);
-		userSessionId = event.queryStringParameters?.['sid'] ?? '';
 		if (isNaN(offset) || offset < 0) offset = 0;
 		if (isNaN(limit) || limit < 1 || limit > 100) limit = 10;
 
@@ -64,7 +63,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 				statusCode: 400,
 				body: JSON.stringify({ error: { status: 400, message: 'No search query' } }, null, 2),
 				headers: {
-					'Access-Control-Allow-Origin': '*' // Allow from anywhere
+					...NetlifyFunctionHelpers.getCorsHeaders(event)
 				}
 			};
 		}
@@ -110,7 +109,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			statusCode: 200,
 			body: JSON.stringify(results, null, 2),
 			headers: {
-				'Access-Control-Allow-Origin': '*' // Allow from anywhere
+				...NetlifyFunctionHelpers.getCorsHeaders(event)
 			}
 		};
 	} catch (error) {

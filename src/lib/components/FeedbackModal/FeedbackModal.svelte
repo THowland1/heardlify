@@ -7,7 +7,6 @@
 	import AnimatedEllipsis from '../Header/AnimatedEllipsis.svelte';
 
 	export let open = true;
-	export let sessionId: string;
 	const baseURL = variables.basePath || $page.url.origin;
 	const api = new HeardlifyApi(baseURL);
 
@@ -15,7 +14,6 @@
 
 	$: mutation = useMutation(() =>
 		api.sendFeedback({
-			sid: sessionId,
 			content
 		})
 	);

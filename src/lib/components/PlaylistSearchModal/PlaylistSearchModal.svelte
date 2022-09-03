@@ -3,7 +3,6 @@
 	import PlaylistSearch from '../PlaylistSearch/PlaylistSearch.svelte';
 	import Button from '../shared/Button.svelte';
 	export let open = true;
-	export let sessionId: string;
 
 	function close() {
 		open = false;
@@ -19,7 +18,7 @@
 				<Button color="tertiary" on:click={close}><Times /></Button>
 			</div>
 
-			<PlaylistSearch {sessionId} />
+			<PlaylistSearch />
 		</div>
 	</div>
 {/if}

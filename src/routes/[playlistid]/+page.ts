@@ -1,7 +1,7 @@
-import type { PageServerLoad } from '../../../.svelte-kit/types/src/routes/[playlistid]/$types';
-import { getTodaysAnswer } from '$lib/functions/get-todays-answer';
+import type { PageLoad } from '.svelte-kit/types/src/routes/[playlistid]/$types';
 import { getDateFromURL } from '$lib/functions/get-date-from-url';
 import { variables } from '$lib/variables';
+import HeardlifyApi from '$lib/functions/heardlify-api';
 
 function getDate(date = new Date()) {
 	const timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
@@ -16,7 +16,7 @@ function isSpotifyId(value: string) {
 	return spotifyIdRegexp.test(value);
 }
 
-export const load: PageServerLoad = async ({ params, url, locals }) => {
+export const load: PageLoad = async ({ params, url, fetch }) => {
 	const queryDate = getDateFromURL(url);
 	const timeMachine = Boolean(url.searchParams.get('time-machine'));
 	const slug = params['playlistid'] ?? '';
@@ -28,12 +28,12 @@ export const load: PageServerLoad = async ({ params, url, locals }) => {
 	const date = getDate(queryDate ?? new Date());
 
 	const baseURL = variables.basePath || url.origin;
-	const playlist = await getTodaysAnswer(baseURL, playlistId, date, locals.sessionid);
+	const api = new HeardlifyApi(baseURL, fetch);
+	const playlist = await api.getSong(playlistId, date);
 	return {
 		playlistId,
 		playlist,
 		dateValue: date.valueOf(),
-		timeMachine,
-		sessionId: locals.sessionid
+		timeMachine
 	};
 };

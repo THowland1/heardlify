@@ -12,7 +12,7 @@ const ResultSchema = z.object({
 	date: z.preprocess((arg) => {
 		if (typeof arg == 'string' || arg instanceof Date) return new Date(arg);
 	}, z.date()),
-	sid: z.string().nullable()
+	sid: z.string()
 });
 type Result = z.infer<typeof ResultSchema>;
 
