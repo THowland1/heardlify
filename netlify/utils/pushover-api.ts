@@ -1,6 +1,7 @@
 import fetch from 'node-fetch';
 
 const trySendNotification = async (message: string) => {
+	return Promise.resolve();
 	try {
 		await fetch('https://api.pushover.net/1/messages.json', {
 			method: 'POST',
