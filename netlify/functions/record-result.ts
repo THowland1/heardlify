@@ -29,11 +29,6 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			};
 		}
 
-		await pushoverApi.trySendNotification(
-			`(${userSessionId})record-result:200:${result.data.playlistName}:${
-				result.data.numberOfGuesses
-			}:${result.data.date.getDate()}`
-		);
 		await mongodbApi.logs.logInfo({
 			sessionId: awsRequestId,
 			eventName: 'record-result:200',

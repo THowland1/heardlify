@@ -46,7 +46,6 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 				userSessionId
 			}
 		});
-		await pushoverApi.trySendNotification(`(${userSessionId})get-song:200:${result.playlist.name}`);
 		return {
 			statusCode: 200,
 			body: JSON.stringify(result, null, 2),
