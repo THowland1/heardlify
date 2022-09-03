@@ -7,7 +7,11 @@ function getCookie(event: { headers: { cookie?: string } }, cookieKey: string) {
 }
 
 function getCorsHeaders(event: { headers: { origin?: string } }): Record<string, string> {
-	const ALLOWED_ORIGINS = ['http://localhost:5173', 'https://heardlify.app'];
+	const ALLOWED_ORIGINS = [
+		'http://localhost:5173',
+		'http://localhost:4173',
+		'https://heardlify.app'
+	];
 	const origin = event.headers.origin ?? '';
 	if (ALLOWED_ORIGINS.includes(origin)) {
 		return {
@@ -18,8 +22,30 @@ function getCorsHeaders(event: { headers: { origin?: string } }): Record<string,
 		return {};
 	}
 }
+function getCacheControlHeader(params: {
+	public?: boolean;
+	maxAge?: { days?: number; hours?: number; minutes?: number; seconds?: number };
+}): Record<'Cache-Control', string> {
+	const pieces: string[] = [];
+	if (params.public === true) {
+		pieces.push('public');
+	}
+	if (params.maxAge) {
+		const { days, hours, minutes, seconds } = params.maxAge;
+		let maxAge = 0;
+		maxAge += (days ?? 0) * 24 * 60 * 60;
+		maxAge += (hours ?? 0) * 60 * 60;
+		maxAge += (minutes ?? 0) * 60;
+		maxAge += seconds ?? 0;
+		pieces.push(`max-age=${maxAge}`);
+	}
+	return {
+		'Cache-Control': pieces.join(', ')
+	};
+}
 
 export default {
 	getCookie,
-	getCorsHeaders
+	getCorsHeaders,
+	getCacheControlHeader
 };

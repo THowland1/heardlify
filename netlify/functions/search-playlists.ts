@@ -109,6 +109,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			statusCode: 200,
 			body: JSON.stringify(results, null, 2),
 			headers: {
+				...NetlifyFunctionHelpers.getCacheControlHeader({ public: true, maxAge: { days: 1 } }),
 				...NetlifyFunctionHelpers.getCorsHeaders(event)
 			}
 		};
