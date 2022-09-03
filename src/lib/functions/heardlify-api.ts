@@ -41,7 +41,7 @@ type Log = {
 type IFetch = (input: RequestInfo, init?: RequestInit | undefined) => Promise<Response>;
 
 export default class HeardlifyApi {
-	constructor(private baseURL: string, private fetch: IFetch = window.fetch) {}
+	constructor(private baseURL: string, private fetch: IFetch = globalThis.fetch) {}
 	async getLogs({
 		query,
 		limit,
