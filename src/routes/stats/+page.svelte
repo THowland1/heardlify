@@ -1,4 +1,6 @@
 <script lang="ts">
+	import ActivityByDay from './activity-by-day/activity-by-day.svelte';
+
 	import ActivityByTime from './activity-by-time/activity-by-time.svelte';
 
 	import Logs from './logs.svelte';
@@ -14,6 +16,10 @@
 <div class="bg" />
 <div class="bg-blur" />
 <div class="whole-thing">
+	<div>
+		<h2>Activity by day</h2>
+		<ActivityByDay />
+	</div>
 	<div>
 		<h2>Activity by time</h2>
 		<ActivityByTime />

@@ -228,6 +228,53 @@ const getActivityByTime = async ({ from, to }: { from: Date; to: Date }) => {
 	await client.close();
 	return ActivityByTimeSchema.parse(results);
 };
+const ActivityByDaySchema = z.array(
+	z.object({
+		_id: z.object({
+			year: z.number(),
+			month: z.number(),
+			day: z.number()
+		}),
+		totalQuantity: z.number()
+	})
+);
+const getActivityByDay = async ({ from, to }: { from: Date; to: Date }) => {
+	const client = new MongoClient(process.env.MONGODB_CREDENTIALS || '', {
+		serverApi: ServerApiVersion.v1
+	});
+	await client.connect();
+	const collection = client.db('heardlify').collection<Result>('results');
+
+	const results = await collection
+		.aggregate([
+			{
+				$match: {
+					date: {
+						$gte: new ImmutableDate(from).setHours(0, 0, 0, 0).date,
+						$lt: new ImmutableDate(to).setHours(24, 0, 0, 0).date
+					}
+				}
+			},
+			{
+				$project: {
+					y: { $year: '$date' },
+					m: { $month: '$date' },
+					d: { $dayOfMonth: '$date' }
+				}
+			},
+			{
+				$group: {
+					_id: { year: '$y', month: '$m', day: '$d' },
+					totalQuantity: { $count: {} }
+				}
+			},
+			{ $sort: { '_id.year': 1, '_id.month': 1, '_id.day': 1 } }
+		])
+		.toArray();
+
+	await client.close();
+	return ActivityByDaySchema.parse(results);
+};
 const ScoresForPlaylistDaySchema = z.array(
 	z.object({
 		_id: z.number().nullable(),
@@ -278,5 +325,6 @@ export default {
 	getMostActiveSessions,
 	getScoresForPlaylistDay,
 	getActivityByTime,
+	getActivityByDay,
 	ResultSchema
 };

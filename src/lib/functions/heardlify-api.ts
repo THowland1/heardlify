@@ -27,6 +27,14 @@ type ActivityByTime = {
 	};
 	totalQuantity: number;
 };
+type ActivityByDay = {
+	_id: {
+		year: number;
+		month: number;
+		day: number;
+	};
+	totalQuantity: number;
+};
 type ScoreForPlaylistDay = {
 	_id: number | null;
 	totalQuantity: number;
@@ -120,6 +128,16 @@ export default class HeardlifyApi {
 
 		const response = await fetch(url, { credentials: 'include' });
 		const body = (await response.json()) as ActivityByTime[];
+
+		return body;
+	}
+	async getActivityByDay({ from, to }: { from: Date; to: Date }) {
+		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-activity-by-day');
+		url.searchParams.append('from', from.toISOString());
+		url.searchParams.append('to', to.toISOString());
+
+		const response = await fetch(url, { credentials: 'include' });
+		const body = (await response.json()) as ActivityByDay[];
 
 		return body;
 	}
