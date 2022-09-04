@@ -9,6 +9,7 @@
 	import { recordResult } from '$lib/functions/record-result';
 	import { variables } from '$lib/variables';
 	import { page } from '$app/stores';
+	import LinkThatLooksLikeButton from '../shared/LinkThatLooksLikeButton.svelte';
 
 	export let playlistId: string;
 	export let playlistName: string;
@@ -169,7 +170,9 @@
 		<div class="next">
 			<div>NEXT GAME IN</div>
 			<div>{timeToNextGameString}</div>
+			<div>Can't wait that long?</div>
 		</div>
+		<LinkThatLooksLikeButton href="/" color="secondary">PLAY ANOTHER!</LinkThatLooksLikeButton>
 	</div>
 
 	<div class="bottom">
