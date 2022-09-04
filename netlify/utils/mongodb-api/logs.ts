@@ -93,8 +93,51 @@ const getLogs = async ({
 	return results;
 };
 
+const getImportantLogs = async ({
+	query,
+	limit,
+	offset,
+	from,
+	to
+}: {
+	query: string;
+	limit: number;
+	offset: number;
+	from: Date;
+	to: Date;
+}) => {
+	const client = new MongoClient(process.env.MONGODB_CREDENTIALS || '', {
+		serverApi: ServerApiVersion.v1
+	});
+	await client.connect();
+	const collection = client.db('heardlify').collection<Log>('logs');
+
+	const importantEventNames = ['get-song', 'record-result'];
+
+	const results = await collection
+		.find({
+			date: {
+				$gte: from,
+				$lt: to
+			}
+		})
+		.filter({
+			eventName: new RegExp(`.*${importantEventNames.join('|')}.*`, 'i')
+		})
+		.skip(offset)
+		.limit(limit)
+		.sort({ date: -1 })
+
+		.toArray();
+
+	await client.close();
+
+	return results;
+};
+
 export default {
 	getLogs,
+	getImportantLogs,
 	logTrace,
 	logDebug,
 	logInfo,

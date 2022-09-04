@@ -63,8 +63,7 @@ export default class HeardlifyApi {
 		url.searchParams.append('to', to.toISOString());
 
 		const response = await fetch(url, {
-			credentials: 'include',
-			headers: { cookie: 'fhdvsfjewis', 'x-hello': '12' }
+			credentials: 'include'
 		});
 		const body = (await response.json()) as Log[];
 

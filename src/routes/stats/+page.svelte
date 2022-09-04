@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ActivityByTime from './activity-by-time.svelte';
+	import ActivityByTime from './activity-by-time/activity-by-time.svelte';
 
 	import Logs from './logs.svelte';
 

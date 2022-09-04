@@ -2,16 +2,20 @@
 	import HeardlifyApi from '$lib/functions/heardlify-api';
 	import { variables } from '$lib/variables';
 	import { page } from '$app/stores';
+	import { LayerCake, Svg } from 'layercake';
 
 	import { useQuery } from '@sveltestack/svelte-query';
 	import { ImmutableDate } from '$lib/utils/immutable-date';
+	import AxisX from './AxisX.svelte';
+	import AxisY from './AxisY.svelte';
+	import Line from './Line.svelte';
+	import Area from './Area.svelte';
 
 	const baseURL = variables.basePath || $page.url.origin;
 	const api = new HeardlifyApi(baseURL);
 
 	let from = new ImmutableDate().setHours(0, 0, 0, 0).date;
 	let to = new ImmutableDate().setHours(24, 0, 0, 0).date;
-	$: range = to.valueOf() - from.valueOf();
 
 	$: queryResult = useQuery(['activity-by-time', { from, to }] as const, async ({ queryKey }) => {
 		return api.getActivityByTime(queryKey[1]);
@@ -23,28 +27,14 @@
 		return correctDate;
 	}
 
-	function getLeft({
-		year,
-		month,
-		day,
-		hour
-	}: {
-		year: number;
-		month: number;
-		day: number;
-		hour: number;
-	}) {
-		const valueof = new Date(year, month - 1, day, hour).valueOf();
-		return (100 * (valueof - from.valueOf())) / (to.valueOf() - from.valueOf()) + '%';
-	}
-	function getWidth() {
-		return '5%';
-	}
-	function getHeight(totalQuantity: number) {
-		const data = $queryResult.data ?? [];
-		const biggestHeight = Math.max(...data.map((o) => o.totalQuantity));
-		return 100 * (totalQuantity / biggestHeight) + '%';
-	}
+	const xKey = 'myX';
+	const yKey = 'myY';
+	$: data = $queryResult?.data?.map((datum) => ({
+		[xKey]: new Date(datum._id.year, datum._id.month, datum._id.day, datum._id.hour).valueOf(),
+		[yKey]: datum.totalQuantity
+	})) ?? [{ [xKey]: 1, [yKey]: 1 }];
+
+	const nullAsNumber = null as unknown as number;
 </script>
 
 <svelte:head />
@@ -58,19 +48,27 @@
 	value={getDate(to).toISOString().split('Z')[0]}
 	on:change={(e) => (to = new Date(e.currentTarget.value))}
 />
-<!-- <div class="chart">
-	{#if $queryResult.data}
-		{#each $queryResult.data as value}
-			<div
-				class="bar"
-				style:width={getWidth()}
-				style:left={getLeft(value._id)}
-				style:bottom={0}
-				style:height={getHeight(value.totalQuantity)}
+<div class="chart-container">
+	<LayerCake
+		padding={{ right: 10, bottom: 20, left: 25 }}
+		x={xKey}
+		y={yKey}
+		yDomain={[0, nullAsNumber]}
+		{data}
+	>
+		<Svg>
+			<AxisX
+				formatTick={(d) => {
+					const asDate = new Date(d);
+					return asDate.getHours();
+				}}
 			/>
-		{/each}
-	{/if}
-</div> -->
+			<AxisY ticks={4} />
+			<Line />
+			<Area />
+		</Svg>
+	</LayerCake>
+</div>
 <table>
 	{#if $queryResult.data}
 		{#each $queryResult.data as playlist}
@@ -106,13 +104,8 @@
 	tr td {
 		border-bottom: solid 1px var(--color-line);
 	}
-	.chart {
-		position: relative;
+	.chart-container {
 		width: 100%;
-		height: 300px;
-	}
-	.bar {
-		position: absolute;
-		background-color: aqua;
+		height: 500px;
 	}
 </style>
