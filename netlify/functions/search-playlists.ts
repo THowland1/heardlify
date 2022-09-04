@@ -40,6 +40,17 @@ function isSpotifyId(value: string) {
 	);
 	return spotifyIdRegexp.test(value);
 }
+function isSpotifyPlaylistUrl(value: string) {
+	// e.g. 'https://open.spotify.com/playlist/1p3I3zrVPmJXbmYUcA7kJz?si=iNcr5LgOSG-JMLU6D-o84A'
+	const isUrl = value.includes('https://open.spotify.com/playlist/');
+	return isUrl;
+}
+function getPlaylistIdFromPlaylistUrl(value: string) {
+	// e.g. 'https://open.spotify.com/playlist/1p3I3zrVPmJXbmYUcA7kJz?si=iNcr5LgOSG-JMLU6D-o84A'
+	const path = new URL(value).pathname.split('/');
+	const entityId = path[path.length - 1];
+	return entityId;
+}
 
 export const handler: Handler = async (event, { awsRequestId }) => {
 	const userSessionId = NetlifyFunctionHelpers.getCookie(event, 'sid');
@@ -73,6 +84,16 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 		let results: ISearchPlaylistsResponse;
 		if (isSpotifyId(q)) {
 			const item = await spotifyApi.playlists.getOne(q, authToken.access_token);
+			results = {
+				playlists: {
+					items: [mapSpotifyObjectToDto(item)],
+					offset: 0,
+					total: 1
+				}
+			};
+		} else if (isSpotifyPlaylistUrl(q)) {
+			const playlistId = getPlaylistIdFromPlaylistUrl(q);
+			const item = await spotifyApi.playlists.getOne(playlistId, authToken.access_token);
 			results = {
 				playlists: {
 					items: [mapSpotifyObjectToDto(item)],

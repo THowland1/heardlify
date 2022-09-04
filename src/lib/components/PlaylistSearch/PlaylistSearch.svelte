@@ -11,6 +11,9 @@
 
 	import { variables } from '$lib/variables';
 	import { goto } from '$app/navigation';
+	import HelpModal from '../HelpModal/HelpModal.svelte';
+
+	let helpmodalOpen = false;
 
 	const baseURL = variables.basePath || $page.url.origin;
 
@@ -83,19 +86,25 @@
 	}
 </script>
 
-<div class="input-container">
-	<Search />
-	<input
-		class="input"
-		type="text"
-		bind:this={input}
-		value={textvalue}
-		on:input={(e) => handleInput(e.currentTarget.value)}
-		on:keyup={load}
-	/>
-	{#if textvalue}
-		<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
-	{/if}
+<HelpModal bind:open={helpmodalOpen} />
+<div style="width: 100%">
+	<div class="input-container">
+		<Search />
+		<input
+			class="input"
+			type="text"
+			bind:this={input}
+			value={textvalue}
+			on:input={(e) => handleInput(e.currentTarget.value)}
+			on:keyup={load}
+		/>
+		{#if textvalue}
+			<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
+		{/if}
+	</div>
+	<button class="help-link" on:click={() => (helpmodalOpen = true)}
+		>Still can't find your playlist?</button
+	>
 </div>
 <div class="playlists" bind:this={container} on:scroll={() => (container = container)}>
 	{#if !textvalue}
@@ -219,5 +228,16 @@
 		color: var(--color-line);
 		text-align: center;
 		padding: 12px;
+	}
+	.help-link {
+		border: none;
+		padding-top: 8px;
+		background-color: transparent;
+		text-decoration: underline;
+		color: var(--color-line);
+		text-align: end;
+		justify-self: end;
+		width: 100%;
+		cursor: pointer;
 	}
 </style>
