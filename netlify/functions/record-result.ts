@@ -9,7 +9,9 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 
 	try {
 		const body = JSON.parse(event.body ?? '{}');
-		const result = mongodbApi.results.ResultSchema.omit({ sid: true }).safeParse(body);
+		const result = mongodbApi.results.ResultSchema.omit({ sid: true, createdAt: true }).safeParse(
+			body
+		);
 		if (!result.success) {
 			await pushoverApi.trySendNotification(`(${userSessionId})record-result:400:${event.body}`);
 			await mongodbApi.logs.logInfo({
@@ -37,7 +39,11 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 				userSessionId
 			}
 		});
-		await mongodbApi.results.tryRecordStat({ ...result.data, sid: userSessionId });
+		await mongodbApi.results.tryRecordStat({
+			...result.data,
+			sid: userSessionId,
+			createdAt: new Date()
+		});
 		return {
 			statusCode: 200,
 			body: '',
