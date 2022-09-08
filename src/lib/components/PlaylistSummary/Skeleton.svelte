@@ -1,8 +1,11 @@
 <script lang="ts">
-	interface $$Props extends svelte.JSX.HTMLAttributes<HTMLButtonElement> {}
+	interface $$Props extends svelte.JSX.HTMLAttributes<HTMLButtonElement> {
+		shimmer?: boolean;
+	}
+	export let shimmer = true;
 </script>
 
-<span class="skeleton-box" style="width: 100%;" {...$$restProps} />
+<span class="skeleton-box" style="width: 100%;" {...$$restProps} class:shimmer />
 
 <style lang="scss">
 	.skeleton-box {
@@ -13,7 +16,7 @@
 		overflow: hidden;
 		background-color: var(--color-mg);
 
-		&::after {
+		&.shimmer::after {
 			position: absolute;
 			top: 0;
 			right: 0;

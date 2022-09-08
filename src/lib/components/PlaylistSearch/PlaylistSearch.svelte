@@ -6,12 +6,15 @@
 	import Search from '../icons/Search.svelte';
 	import Times from '../icons/Times.svelte';
 	import Button from '../shared/Button.svelte';
-	import Skeleton from './Skeleton.svelte';
 	import debounce from 'lodash.debounce';
 
 	import { variables } from '$lib/variables';
 	import { goto } from '$app/navigation';
+
+	import PlaylistSummary from '../PlaylistSummary/PlaylistSummary.svelte';
+
 	import HelpModal from '../HelpModal/HelpModal.svelte';
+	import PlaylistSummarySkeleton from '../PlaylistSummary/PlaylistSummarySkeleton.svelte';
 
 	let helpmodalOpen = false;
 
@@ -106,6 +109,7 @@
 		>Still can't find your playlist?</button
 	>
 </div>
+
 <div class="playlists" bind:this={container} on:scroll={() => (container = container)}>
 	{#if !textvalue}
 		<div class="noresult-message">Start typing to find a Spotify playlist to Heardlify</div>
@@ -119,39 +123,13 @@
 
 		{#each pages as page}
 			{#each page.playlists.items as playlist}
-				<a
-					class="playlist"
-					href={`/${encodeURIComponent(playlist.name).replace(/%../g, '+')}-${playlist.id}`}
-				>
-					<img
-						class="image"
-						on:error|once={setSrcToFallback}
-						src={playlist.images[0]?.url}
-						alt={playlist.name}
-						height="80px"
-						width="80px"
-					/>
-					<div class="text">
-						<div class="name">{playlist.name}</div>
-						<div class="description">{playlist.description}</div>
-						<div class="owner">By {playlist.owner.display_name}</div>
-					</div>
-				</a>
+				<PlaylistSummary {playlist} />
 			{/each}
 		{/each}
 
 		{#if $queryResult.isLoading || $queryResult.isFetchingNextPage}
 			{#each [1, 0.5, 0.25, 0.1] as opacity}
-				<div class="playlist" style:opacity>
-					<div class="image" height="80px" width="80px">
-						<Skeleton style="height: 100%; width:100%" />
-					</div>
-					<div class="text">
-						<Skeleton style="width: 25%" />
-						<Skeleton style="width: 50%" />
-						<Skeleton style="width: 25%" />
-					</div>
-				</div>
+				<PlaylistSummarySkeleton style="opacity: {opacity}" />
 			{/each}
 		{/if}
 	{/if}
@@ -185,43 +163,6 @@
 		width: 100%;
 
 		overflow-y: auto;
-	}
-	.playlist {
-		display: flex;
-		height: 80px;
-		background-color: var(--color-mbg);
-		border-radius: 8px;
-		overflow: hidden;
-		margin-bottom: 12px;
-
-		color: inherit;
-		padding: 0;
-		text-decoration: inherit;
-	}
-	.playlist:hover {
-		background-color: var(--color-mg);
-		cursor: pointer;
-	}
-	.image {
-		height: 80px;
-		width: 80px;
-	}
-	.text {
-		flex: 1;
-		padding: 12px;
-		display: flex;
-		flex-direction: column;
-		justify-content: space-between;
-		overflow: hidden;
-	}
-	.description {
-		text-overflow: ellipsis;
-		overflow: hidden;
-		color: var(--color-line);
-		white-space: nowrap;
-	}
-	.owner {
-		color: var(--color-line);
 	}
 
 	.noresult-message {
