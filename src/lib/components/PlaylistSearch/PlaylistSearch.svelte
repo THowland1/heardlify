@@ -15,18 +15,24 @@
 
 	import HelpModal from '../HelpModal/HelpModal.svelte';
 	import PlaylistSummarySkeleton from '../PlaylistSummary/PlaylistSummarySkeleton.svelte';
+	import { persistedWritable } from './persisted-writable';
+	import { browser } from '$app/env';
 
 	let helpmodalOpen = false;
 
 	const baseURL = variables.basePath || $page.url.origin;
 
 	let input: HTMLInputElement | null = null;
-	let textvalue: string = 'All Out';
+	const textvalue = persistedWritable('search', 'All Out');
+	$: {
+		if (browser) textvalue.useLocalStorage();
+	}
+
 	const limit = 10;
 	$: queryResult = useInfiniteQuery(
-		['search', { textvalue }] as const,
+		['search', { textvalue: $textvalue }] as const,
 		async ({ pageParam = 0, queryKey }) => {
-			return textvalue
+			return $textvalue
 				? await searchPlaylists(baseURL, queryKey[1].textvalue, pageParam, limit)
 				: Promise.resolve({ playlists: { items: [], offset: 0, total: 0 } });
 		},
@@ -41,7 +47,7 @@
 	$: pages = $queryResult.data?.pages ?? [];
 	async function load() {}
 	function clear() {
-		textvalue = '';
+		$textvalue = '';
 		input?.focus();
 	}
 
@@ -61,8 +67,8 @@
 		}
 	}
 	$: {
-		if (textvalue === '/time') {
-			textvalue = '';
+		if ($textvalue === '/time') {
+			$textvalue = '';
 			let message = '';
 			const currentTimeMachine = $page.url.searchParams.get('time-machine');
 			if (currentTimeMachine) {
@@ -74,12 +80,12 @@
 			}
 			window.location.href = $page.url.toString();
 			alert(message);
-		} else if (textvalue === '/stats') {
+		} else if ($textvalue === '/stats') {
 			goto('/stats');
 		}
 	}
 	const handleInput = debounce((newvalue: string) => {
-		textvalue = newvalue;
+		$textvalue = newvalue;
 	}, 600);
 
 	function setSrcToFallback({ currentTarget }: { currentTarget: HTMLElement }) {
@@ -97,11 +103,11 @@
 			class="input"
 			type="text"
 			bind:this={input}
-			value={textvalue}
+			value={$textvalue}
 			on:input={(e) => handleInput(e.currentTarget.value)}
 			on:keyup={load}
 		/>
-		{#if textvalue}
+		{#if $textvalue}
 			<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
 		{/if}
 	</div>
@@ -111,13 +117,13 @@
 </div>
 
 <div class="playlists" bind:this={container} on:scroll={() => (container = container)}>
-	{#if !textvalue}
+	{#if !$textvalue}
 		<div class="noresult-message">Start typing to find a Spotify playlist to Heardlify</div>
 	{/if}
-	{#if textvalue}
+	{#if $textvalue}
 		{#if pages[0]?.playlists.items.length < 1}
 			<div class="noresult-message">
-				Couldn't find a playlist containing <br /> "{textvalue}"
+				Couldn't find a playlist containing <br /> "{$textvalue}"
 			</div>
 		{/if}
 
