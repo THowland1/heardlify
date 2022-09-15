@@ -8,11 +8,13 @@
 	import Favourites from '$lib/components/Favourites/Favourites.svelte';
 	import { setDateContext } from './date-context';
 	import { getDateFromURL } from '$lib/functions/get-date-from-url';
+	import SupportModal from './SupportModal.svelte';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 	const IMAGE = `${$page.url.origin}/og-image.png`;
 
 	let feedbackModalOpen = false;
+	let supportModalOpen = false;
 	let selectedTab = 'search' as 'search' | 'favourites';
 
 	const date = getDateFromURL($page.url);
@@ -45,9 +47,15 @@
 	{#if selectedTab === 'favourites' && browser}
 		<Favourites {date} />
 	{/if}
-	<button class="feedback" on:click={() => (feedbackModalOpen = true)}>Feedback</button>
+	<div class="buttons">
+		<button class="button support" on:click={() => (supportModalOpen = true)}
+			>Support the app</button
+		>
+		<button class="button feedback" on:click={() => (feedbackModalOpen = true)}>Feedback</button>
+	</div>
 </div>
 <FeedbackModal bind:open={feedbackModalOpen} />
+<SupportModal bind:open={supportModalOpen} />
 
 <style>
 	:root {
@@ -101,7 +109,12 @@
 		height: 100%;
 		gap: 12px;
 	}
-	.feedback {
+	.buttons {
+		display: flex;
+		justify-content: space-around;
+		width: 100%;
+	}
+	.button {
 		border: none;
 		background: transparent;
 		text-decoration: underline;

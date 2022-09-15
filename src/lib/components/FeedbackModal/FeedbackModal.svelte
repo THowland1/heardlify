@@ -47,6 +47,9 @@
 					experiences
 				</p>
 				<p>Any feedback, positive or constructive, is welcome!</p>
+				<p>
+					If you wish to get a response, don't forget to include a return address (email, etc.)!
+				</p>
 				<label class="label" for="feedback">Your feedback</label>
 				<textarea name="feedback" class="textarea" cols="30" rows="10" bind:value={content} />
 				<Button color="primary" disabled={$mutation.isLoading} on:click={() => $mutation.mutate()}>
