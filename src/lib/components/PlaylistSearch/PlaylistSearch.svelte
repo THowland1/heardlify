@@ -17,6 +17,7 @@
 	import { persistedWritable } from './persisted-writable';
 	import { browser } from '$app/env';
 	import HelpModal from './HelpModal.svelte';
+	import Portal from 'svelte-portal/src/Portal.svelte';
 
 	export let date: Date;
 
@@ -97,53 +98,65 @@
 	}
 </script>
 
-<HelpModal bind:open={helpmodalOpen} />
-<div style="width: 100%">
-	<div class="input-container">
-		<Search />
-		<input
-			class="input"
-			type="text"
-			bind:this={input}
-			value={$textvalue}
-			on:input={(e) => handleInput(e.currentTarget.value)}
-			on:keyup={load}
-		/>
+<Portal target="body">
+	<HelpModal bind:open={helpmodalOpen} />
+</Portal>
+<div class="whole-thing">
+	<div style="width: 100%">
+		<div class="input-container">
+			<Search />
+			<input
+				class="input"
+				type="text"
+				bind:this={input}
+				value={$textvalue}
+				on:input={(e) => handleInput(e.currentTarget.value)}
+				on:keyup={load}
+			/>
+			{#if $textvalue}
+				<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
+			{/if}
+		</div>
+		<button class="help-link" on:click={() => (helpmodalOpen = true)}
+			>Still can't find your playlist?</button
+		>
+	</div>
+
+	<div class="playlists" bind:this={container} on:scroll={() => (container = container)}>
+		{#if !$textvalue}
+			<div class="noresult-message">Start typing to find a Spotify playlist to Heardlify</div>
+		{/if}
 		{#if $textvalue}
-			<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
+			{#if pages[0]?.playlists.items.length < 1}
+				<div class="noresult-message">
+					Couldn't find a playlist containing <br /> "{$textvalue}"
+				</div>
+			{/if}
+
+			{#each pages as page}
+				{#each page.playlists.items as playlist}
+					<PlaylistSummary {playlist} {date} />
+				{/each}
+			{/each}
+
+			{#if $queryResult.isLoading || $queryResult.isFetchingNextPage}
+				{#each [1, 0.5, 0.25, 0.1] as opacity}
+					<PlaylistSummarySkeleton style="opacity: {opacity}" />
+				{/each}
+			{/if}
 		{/if}
 	</div>
-	<button class="help-link" on:click={() => (helpmodalOpen = true)}
-		>Still can't find your playlist?</button
-	>
-</div>
-
-<div class="playlists" bind:this={container} on:scroll={() => (container = container)}>
-	{#if !$textvalue}
-		<div class="noresult-message">Start typing to find a Spotify playlist to Heardlify</div>
-	{/if}
-	{#if $textvalue}
-		{#if pages[0]?.playlists.items.length < 1}
-			<div class="noresult-message">
-				Couldn't find a playlist containing <br /> "{$textvalue}"
-			</div>
-		{/if}
-
-		{#each pages as page}
-			{#each page.playlists.items as playlist}
-				<PlaylistSummary {playlist} {date} />
-			{/each}
-		{/each}
-
-		{#if $queryResult.isLoading || $queryResult.isFetchingNextPage}
-			{#each [1, 0.5, 0.25, 0.1] as opacity}
-				<PlaylistSummarySkeleton style="opacity: {opacity}" />
-			{/each}
-		{/if}
-	{/if}
 </div>
 
 <style>
+	.whole-thing {
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+	}
+	.playlists {
+		flex: 1;
+	}
 	.input-container {
 		border-radius: 4px;
 		border: solid 2px var(--color-mbg);

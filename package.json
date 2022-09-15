@@ -51,6 +51,7 @@
 		"mongodb": "^4.9.0",
 		"sharp": "^0.30.7",
 		"string-pixel-width": "^1.10.0",
+		"svelte-portal": "^2.2.0",
 		"zod": "^3.18.0"
 	}
 }

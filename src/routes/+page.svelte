@@ -9,6 +9,7 @@
 	import { setDateContext } from './date-context';
 	import { getDateFromURL } from '$lib/functions/get-date-from-url';
 	import SupportModal from './SupportModal.svelte';
+	import { fade } from 'svelte/transition';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 	const IMAGE = `${$page.url.origin}/og-image.png`;
@@ -41,12 +42,19 @@
 	<h1>Heardlify</h1>
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
 	<TabGroup bind:value={selectedTab} />
-	{#if selectedTab === 'search'}
-		<PlaylistSearch {date} />
-	{/if}
-	{#if selectedTab === 'favourites' && browser}
-		<Favourites {date} />
-	{/if}
+
+	<div class="tab-panels">
+		{#key selectedTab}
+			<div class="tab-panel" transition:fade>
+				{#if selectedTab === 'search'}
+					<PlaylistSearch {date} />
+				{/if}
+				{#if selectedTab === 'favourites' && browser}
+					<Favourites {date} />
+				{/if}
+			</div>
+		{/key}
+	</div>
 	<div class="buttons">
 		<button class="button support" on:click={() => (supportModalOpen = true)}
 			>Support the app</button
@@ -119,5 +127,14 @@
 		background: transparent;
 		text-decoration: underline;
 		color: var(--color-line);
+	}
+	.tab-panels {
+		position: relative;
+		flex: 1;
+		width: 100%;
+	}
+	.tab-panel {
+		position: absolute;
+		inset: 0;
 	}
 </style>
