@@ -23,7 +23,10 @@
 		</p>
 		<p>
 			If you wish to make the app better, please give some feedback and let me know how I can
-			improve the experience.
+			improve the experience. Either with the feedback button or in <a
+				href="https://www.reddit.com/r/Heardle/comments/x1bxoo/heardlify_turns_any_spotify_playlist_into_a/"
+				>this Reddit post</a
+			>
 		</p>
 		<p>Thank you!</p>
 		<p class="name">Tom</p>
