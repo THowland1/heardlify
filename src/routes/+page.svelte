@@ -6,12 +6,17 @@
 	import FeedbackModal from '$lib/components/FeedbackModal/FeedbackModal.svelte';
 	import TabGroup from '$lib/components/TabGroup/TabGroup.svelte';
 	import Favourites from '$lib/components/Favourites/Favourites.svelte';
+	import { setDateContext } from './date-context';
+	import { getDateFromURL } from '$lib/functions/get-date-from-url';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 	const IMAGE = `${$page.url.origin}/og-image.png`;
 
 	let feedbackModalOpen = false;
 	let selectedTab = 'search' as 'search' | 'favourites';
+
+	const date = getDateFromURL($page.url);
+	setDateContext(date);
 </script>
 
 <svelte:head>
@@ -35,10 +40,10 @@
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
 	<TabGroup bind:value={selectedTab} />
 	{#if selectedTab === 'search'}
-		<PlaylistSearch />
+		<PlaylistSearch {date} />
 	{/if}
 	{#if selectedTab === 'favourites' && browser}
-		<Favourites />
+		<Favourites {date} />
 	{/if}
 	<button class="feedback" on:click={() => (feedbackModalOpen = true)}>Feedback</button>
 </div>

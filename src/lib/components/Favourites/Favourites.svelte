@@ -7,6 +7,8 @@
 	} from '$lib/stores/favourites';
 	import PlaylistSummary from '../PlaylistSummary/PlaylistSummary.svelte';
 	import PlaylistSummarySkeleton from '../PlaylistSummary/PlaylistSummarySkeleton.svelte';
+
+	export let date: Date;
 </script>
 
 <div class="container">
@@ -20,7 +22,7 @@
 	{/if}
 
 	{#each $favourites as favourite}
-		<PlaylistSummary playlist={favourite} />
+		<PlaylistSummary playlist={favourite} {date} />
 	{/each}
 </div>
 

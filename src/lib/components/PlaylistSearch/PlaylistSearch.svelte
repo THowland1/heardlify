@@ -18,6 +18,8 @@
 	import { persistedWritable } from './persisted-writable';
 	import { browser } from '$app/env';
 
+	export let date: Date;
+
 	let helpmodalOpen = false;
 
 	const baseURL = variables.basePath || $page.url.origin;
@@ -129,7 +131,7 @@
 
 		{#each pages as page}
 			{#each page.playlists.items as playlist}
-				<PlaylistSummary {playlist} />
+				<PlaylistSummary {playlist} {date} />
 			{/each}
 		{/each}
 

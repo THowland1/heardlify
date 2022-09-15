@@ -56,7 +56,7 @@
 <div class="bg" style:--image-bg={bgImage} />
 <div class="bg-blur" />
 
-<PlaylistSearchModal bind:open={modalOpen} />
+<PlaylistSearchModal {date} bind:open={modalOpen} />
 
 <div class="whole-thing">
 	<Header playlistName={playlist?.playlist?.name ?? null} on:click={() => (modalOpen = true)} />

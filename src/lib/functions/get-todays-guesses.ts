@@ -21,7 +21,7 @@ export function getTodaysGuesses(playlistId: string, date: Date): IStage[] {
 	return fromDefault;
 }
 
-function getTodaysGuessesFromCache(playlistId: string, date: Date): IStage[] | null {
+export function getTodaysGuessesFromCache(playlistId: string, date: Date): IStage[] | null {
 	const key = generateKey(playlistId, getFullDaysSinceEpoch(date));
 	const fromCache = safeLocalStorage?.getItem(key);
 	if (fromCache) {

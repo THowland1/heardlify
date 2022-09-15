@@ -3,6 +3,7 @@
 	import PlaylistSearch from '../PlaylistSearch/PlaylistSearch.svelte';
 	import Button from '../shared/Button.svelte';
 	export let open = true;
+	export let date: Date;
 
 	function close() {
 		open = false;
@@ -18,7 +19,7 @@
 				<Button color="tertiary" on:click={close}><Times /></Button>
 			</div>
 
-			<PlaylistSearch />
+			<PlaylistSearch {date} />
 		</div>
 	</div>
 {/if}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import AudioPlayer from '../shared/AudioPlayer/AudioPlayer.svelte';
 	import Button from '../shared/Button.svelte';
-	import Share from './Share.svelte';
+	import Share from './icons/Share.svelte';
 	import SpotifyPreview from './SpotifyPreview.svelte';
 	import type { IDetailedOption } from '../../types/IOption';
 	import type { IStage } from '../../types/IStage';
@@ -10,6 +10,9 @@
 	import { variables } from '$lib/variables';
 	import { page } from '$app/stores';
 	import LinkThatLooksLikeButton from '../shared/LinkThatLooksLikeButton.svelte';
+	import StatsModal from './StatsModal.svelte';
+	import { evaluateResult } from '$lib/functions/result-helper';
+	import Stats from './icons/Stats.svelte';
 
 	export let playlistId: string;
 	export let playlistName: string;
@@ -20,6 +23,7 @@
 	export let date: Date;
 	const DAY_0 = new Date('2022-08-25');
 	const DAY_IN_MS = 24 * 60 * 60 * 1000;
+	let statsOpen = false;
 
 	function numberTo2Digit(val: number) {
 		return String(val).padStart(2, '0');
@@ -52,26 +56,6 @@
 	}
 	$: timeToNextGameString = getTimeToNextDayString(now);
 
-	type IResult =
-		| {
-				type: 'failure';
-		  }
-		| {
-				type: 'success';
-				message: string;
-				time: number;
-		  };
-	function evaluateResult(): IResult {
-		const correctStage = stages.find((s) => s.guess.type === 'guessed' && s.guess.isCorrectSong);
-		if (!correctStage) {
-			return { type: 'failure' };
-		}
-		return {
-			type: 'success',
-			message: correctStage.message,
-			time: correctStage.duration
-		};
-	}
 	async function copyResultsToClipboard() {
 		const text = `#Heardlify
 #${playlistName.replaceAll(/[^A-z0-9]/g, '')}
@@ -110,7 +94,7 @@
 		setTimeout((_) => (shareFeedback = null), 3000);
 	}
 
-	$: result = evaluateResult();
+	$: result = evaluateResult(stages);
 
 	$: headline = result.type === 'success' ? result.message : 'UNLUCKY!';
 	$: message =
@@ -127,8 +111,7 @@
 				date,
 				playlistId,
 				playlistName,
-				numberOfGuesses:
-					result.type === 'success' ? stages.filter((s) => s.guess.type !== 'empty').length : null
+				numberOfGuesses: result.numberOfGuesses
 			});
 			if (success) {
 				localStorage.setItem(key, 'true');
@@ -162,7 +145,11 @@
 
 		<div class="message">{@html message}</div>
 
-		<Button on:click={copyResultsToClipboard} color="primary">SHARE&nbsp;<Share /></Button>
+		<div class="buttons">
+			<Button on:click={copyResultsToClipboard} color="primary">SHARE&nbsp;<Share /></Button>
+			&nbsp; &nbsp;
+			<Button color="secondary" on:click={() => (statsOpen = true)}>STATS&nbsp;<Stats /></Button>
+		</div>
 		{#if shareFeedback}
 			<div class="share-feedback">{shareFeedback}</div>
 		{/if}
@@ -171,8 +158,8 @@
 			<div>NEXT GAME IN</div>
 			<div>{timeToNextGameString}</div>
 			<div>Can't wait that long?</div>
+			<a class="play-another-link" href="/">PLAY ANOTHER!</a>
 		</div>
-		<LinkThatLooksLikeButton href="/" color="secondary">PLAY ANOTHER!</LinkThatLooksLikeButton>
 	</div>
 
 	<div class="bottom">
@@ -185,8 +172,9 @@
 		/>
 	</div>
 </div>
+<StatsModal bind:open={statsOpen} {playlistId} {playlistName} />
 
-<style>
+<style lang="scss">
 	.top {
 		width: 100%;
 		max-width: var(--width-game);
@@ -235,5 +223,13 @@
 	}
 	.dash--correct {
 		background-color: green;
+	}
+
+	.play-another-link {
+		color: var(--color-fg);
+	}
+
+	.buttons {
+		display: flex;
 	}
 </style>

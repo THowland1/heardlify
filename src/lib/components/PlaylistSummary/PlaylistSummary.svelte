@@ -8,6 +8,10 @@
 	import StarOutline from './StarOutline.svelte';
 	import StarSolid from './StarSolid.svelte';
 	import { fade } from 'svelte/transition';
+	import CheckCircle from './CheckCircle.svelte';
+	import { browser } from '$app/env';
+	import { getTodaysGuessesFromCache } from '$lib/functions/get-todays-guesses';
+	export let date: Date;
 	type IPlaylistSummary = {
 		id: string;
 		images: { url: string }[];
@@ -27,9 +31,20 @@
 	}
 
 	$: isFavourite = $favourites.findIndex((f) => f.id === playlist.id) > -1;
+	let playedtoday = false;
+	$: {
+		if (browser) {
+			const todaysGuesses = getTodaysGuessesFromCache(playlist.id, date);
+			if (todaysGuesses) {
+				playedtoday =
+					todaysGuesses.some((s) => s.guess.type === 'guessed' && s.guess.isCorrectSong) ||
+					todaysGuesses.every((s) => s.guess.type !== 'empty');
+			}
+		}
+	}
 </script>
 
-<div class="wrapper">
+<div class="wrapper" class:playedtoday>
 	<a
 		class="playlist"
 		href={`/${encodeURIComponent(playlist.name).replace(/%../g, '+')}-${playlist.id}`}
@@ -64,6 +79,9 @@
 			</span>
 		{/if}
 	</button>
+	{#if playedtoday}
+		<div class="playedtoday-message"><CheckCircle />&nbsp;Played today!</div>
+	{/if}
 </div>
 
 <style lang="scss">
@@ -81,6 +99,22 @@
 		color: inherit;
 		padding: 0;
 		text-decoration: inherit;
+	}
+	.playedtoday-message {
+		border-radius: 8px;
+
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		pointer-events: none;
+		letter-spacing: 0.5px;
+		background-color: var(--color-overlay-mid);
+		color: var(--color-line);
 	}
 	.playlist:hover {
 		background-color: var(--color-mg);
