@@ -13,10 +13,10 @@
 
 	import PlaylistSummary from '../PlaylistSummary/PlaylistSummary.svelte';
 
-	import HelpModal from '../HelpModal/HelpModal.svelte';
 	import PlaylistSummarySkeleton from '../PlaylistSummary/PlaylistSummarySkeleton.svelte';
 	import { persistedWritable } from './persisted-writable';
 	import { browser } from '$app/env';
+	import HelpModal from './HelpModal.svelte';
 
 	export let date: Date;
 

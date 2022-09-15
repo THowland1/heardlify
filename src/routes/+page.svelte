@@ -3,7 +3,7 @@
 	import type { PageData } from '.svelte-kit/types/src/routes/$types';
 	import { page } from '$app/stores';
 	import { browser } from '$app/env';
-	import FeedbackModal from '$lib/components/FeedbackModal/FeedbackModal.svelte';
+	import FeedbackModal from './FeedbackModal.svelte';
 	import TabGroup from '$lib/components/TabGroup/TabGroup.svelte';
 	import Favourites from '$lib/components/Favourites/Favourites.svelte';
 	import { setDateContext } from './date-context';
