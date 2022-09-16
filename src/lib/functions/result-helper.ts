@@ -1,6 +1,10 @@
 import type { IStage } from '$lib/types/IStage';
 
-type IResult =
+export type IResult =
+	| {
+			type: 'unfinished';
+			numberOfGuesses: null;
+	  }
 	| {
 			type: 'failure';
 			numberOfGuesses: null;
@@ -14,7 +18,10 @@ type IResult =
 export function evaluateResult(stages: IStage[]): IResult {
 	const correctStage = stages.find((s) => s.guess.type === 'guessed' && s.guess.isCorrectSong);
 	if (!correctStage) {
-		return { type: 'failure', numberOfGuesses: null };
+		const remainingGuesses = stages.filter((s) => s.guess.type === 'empty').length;
+		return remainingGuesses === 0
+			? { type: 'failure', numberOfGuesses: null }
+			: { type: 'unfinished', numberOfGuesses: null };
 	}
 	const numberOfGuesses = stages.filter((s) => s.guess.type !== 'empty').length;
 	return {

@@ -1,84 +1,30 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 
-	import { evaluateResult } from '$lib/functions/result-helper';
-
-	import { IStagesSchema } from '$lib/types/IStage';
-	import { zz } from '$lib/utils/zod-extend';
-
+	import { MMath } from '$lib/utils/math-extend';
+	import { date } from 'zod';
 	import Times from '../icons/Times.svelte';
-	import { fade } from 'svelte/transition';
+	import { dragscroll } from './drag-scroll';
+	import {
+		fillInDays,
+		getDaysForPlaylistIdFromLocalStorage,
+		getBarsFromDaysWithResults,
+		getSummaryFromDays
+	} from './stats-helper';
 
 	export let open: boolean;
 	export let playlistId: string;
 	export let playlistName: string;
 
-	type Stats = {
-		_1: number;
-		_2: number;
-		_3: number;
-		_4: number;
-		_5: number;
-		_6: number;
-		_null: number;
-	};
-	type Bar = {
-		label: string;
-		count: number;
-		color: 'positive' | 'negative';
-	};
-
-	function getAllResultsForPlaylistId(playlistId: string): Stats {
-		const allkeys = Object.keys(localStorage);
-		const matchingkeys = allkeys.filter((o) => o.startsWith(playlistId) && o.endsWith('guesses'));
-		const matchingvalues = matchingkeys.map((key) => JSON.parse(localStorage.getItem(key) ?? '{}'));
-		const values = matchingvalues.filter(zz.is(IStagesSchema));
-		const counts = values.map(evaluateResult).map((o) => o.numberOfGuesses);
-		const whereNumberOfGuessesIs = (numberOfGuesses: number | null) =>
-			counts.filter((o) => o === numberOfGuesses).length;
-		return {
-			_1: whereNumberOfGuessesIs(1),
-			_2: whereNumberOfGuessesIs(2),
-			_3: whereNumberOfGuessesIs(3),
-			_4: whereNumberOfGuessesIs(4),
-			_5: whereNumberOfGuessesIs(5),
-			_6: whereNumberOfGuessesIs(6),
-			_null: whereNumberOfGuessesIs(null)
-		};
+	function getDateFromDaysSinceEpoch(daysSinceEpoch: number) {
+		return new Date(daysSinceEpoch * 24 * 60 * 60 * 1000);
 	}
 
-	const defaultStats: Stats = {
-		_1: 0,
-		_2: 0,
-		_3: 0,
-		_4: 0,
-		_5: 0,
-		_6: 0,
-		_null: 0
-	};
-	$: {
-		const newstats = browser && open ? getAllResultsForPlaylistId(playlistId) : defaultStats;
-		bars[0].count = newstats._1;
-		bars[1].count = newstats._2;
-		bars[2].count = newstats._3;
-		bars[3].count = newstats._4;
-		bars[4].count = newstats._5;
-		bars[5].count = newstats._6;
-		bars[6].count = newstats._null;
-		// bars = bars;
-	}
+	$: daysWithResults = getDaysForPlaylistIdFromLocalStorage(browser, playlistId);
+	$: days = fillInDays(daysWithResults);
+	$: summary = getSummaryFromDays(days);
 
-	let bars = [
-		{ label: '1°', count: 0, color: 'positive' },
-		{ label: '2°', count: 0, color: 'positive' },
-		{ label: '3°', count: 0, color: 'positive' },
-		{ label: '4°', count: 0, color: 'positive' },
-		{ label: '5°', count: 0, color: 'positive' },
-		{ label: '6°', count: 0, color: 'positive' },
-		{ label: '×', count: 0, color: 'negative' }
-	] as [Bar, Bar, Bar, Bar, Bar, Bar, Bar];
-	let bar1 = { label: '1°', count: 0, color: 'positive' };
-	$: max = Math.max(...bars.map((o) => o.count)) || 1;
+	$: bars = getBarsFromDaysWithResults(open ? daysWithResults : []);
 </script>
 
 <div class="whole-thing" class:hidden={!open}>
@@ -91,7 +37,7 @@
 			<button class="close-button" on:click={() => (open = false)}><Times /></button>
 		</div>
 		<div class="body">
-			<div class="chart" style:--bar-maxcount={max}>
+			<div class="chart" style:--bar-maxcount={Math.max(...bars.map((o) => o.count)) || 1}>
 				{#each bars as bar, index}
 					<div class="column" style:--bar-index={index} style:--bar-count={bar.count}>
 						<div class="count">{bar.count || ''}</div>
@@ -107,6 +53,45 @@
 			<div class="legend">
 				<div>Your score distribution for</div>
 				<div class="playlist-name">{playlistName}</div>
+			</div>
+			<div class="summary">
+				<div class="summary-item">
+					<div class="summary-value">{summary.totalcorrect}/{summary.total}</div>
+					<div class="summary-label">Correct</div>
+				</div>
+				<div class="summary-item">
+					<div class="summary-value">{MMath.percent(summary.totalcorrect, summary.total)}</div>
+					<div class="summary-label">Correct %</div>
+				</div>
+				<div class="summary-item">
+					<div class="summary-value">{summary.currentstreak} : {summary.maxstreak}</div>
+					<div class="summary-label">Current:Max Streak</div>
+				</div>
+			</div>
+			<div class="squares-container">
+				<div class="squares-container-overlay left" />
+				<div class="squares-container-overlay right" />
+				<div class="squares" use:dragscroll>
+					{#each days as day, i}
+						{@const date = getDateFromDaysSinceEpoch(day.daysSinceEpoch)}
+						<div
+							title={date.toLocaleDateString(undefined, {
+								month: 'short',
+								day: 'numeric',
+								year: 'numeric'
+							})}
+							class="square"
+							class:empty={day.result === null || day.result.type === 'unfinished'}
+							class:positive={day.result && day.result.type === 'success'}
+							class:negative={day.result && day.result.type === 'failure'}
+						>
+							{#if i === 0 || date.getDate() === 1}
+								<div class="month">{date.toLocaleDateString(undefined, { month: 'short' })}</div>
+								{date.getDate()}
+							{/if}
+						</div>
+					{/each}
+				</div>
 			</div>
 		</div>
 	</div>
@@ -124,6 +109,24 @@
 		display: flex;
 		justify-content: center;
 		align-items: center;
+	}
+	@mixin padding-y($val) {
+		padding-top: $val;
+		padding-bottom: $val;
+	}
+	@mixin padding-x($val) {
+		padding-left: $val;
+		padding-right: $val;
+	}
+	@mixin hide-scrollbar() {
+		/* Hide scrollbar for Chrome, Safari and Opera */
+		&::-webkit-scrollbar {
+			display: none;
+		}
+
+		/* Hide scrollbar for IE, Edge and Firefox */
+		-ms-overflow-style: none; /* IE and Edge */
+		scrollbar-width: none; /* Firefox */
 	}
 	:root {
 		--height-chart: 200px;
@@ -153,7 +156,7 @@
 		margin: auto;
 		width: 100%;
 		height: fit-content;
-		max-width: 400px;
+		max-width: 450px;
 		background-color: var(--color-bg);
 
 		display: flex;
@@ -174,9 +177,9 @@
 	}
 	.body {
 		flex: 1;
-		padding: 0 24px;
 	}
 	.chart {
+		@include padding-x(24px);
 		height: var(--height-chart);
 		display: flex;
 		justify-content: space-between;
@@ -184,9 +187,12 @@
 		align-items: flex-end;
 	}
 	.legend {
+		@include padding-y(16px);
+		padding-top: 16px;
+		padding-bottom: 8px;
+
 		@include flex-place-center();
 		flex-direction: column;
-		padding: 32px;
 		color: var(--color-line);
 
 		.playlist-name {
@@ -234,6 +240,99 @@
 			height: var(--height-label);
 			line-height: 1;
 			color: var(--color-line);
+		}
+	}
+
+	.summary {
+		@include padding-y(16px);
+		@include padding-x(16px);
+
+		display: flex;
+		justify-content: space-around;
+		border-top: solid 1px var(--color-mg);
+		.summary-item {
+			flex: 1;
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			text-align: center;
+
+			.summary-value {
+				font-size: 1.5em;
+			}
+			.summary-label {
+				color: var(--color-line);
+			}
+		}
+	}
+	.squares-container {
+		border-top: solid 1px var(--color-mg);
+		overflow: hidden;
+		position: relative;
+		.squares-container-overlay {
+			@include absolute-inset-0();
+			z-index: 1;
+			pointer-events: none;
+			background: transparent;
+			&.left {
+				width: 24px;
+				right: initial;
+				border-bottom-left-radius: 16px;
+				background: linear-gradient(
+					90deg,
+					var(--color-bg) 0%,
+					var(--color-bg) 25%,
+					transparent 100%
+				);
+			}
+			&.right {
+				width: 24px;
+				left: initial;
+				border-bottom-right-radius: 16px;
+				background: linear-gradient(
+					270deg,
+					var(--color-bg) 0%,
+					var(--color-bg) 25%,
+					transparent 100%
+				);
+			}
+		}
+		.squares {
+			@include padding-x(24px);
+			@include padding-y(24px);
+			display: flex;
+			color: var(--color-line);
+			overflow-x: auto;
+			@include hide-scrollbar();
+			position: relative;
+
+			.square {
+				@include flex-place-center();
+				position: relative;
+				font-size: 10px;
+				line-height: 1;
+				flex: 0 0 12px;
+				height: 12px;
+				margin-left: 4px;
+				margin-right: 4px;
+				background-color: transparent;
+				&.empty {
+					background-color: var(--color-mg);
+				}
+				&.positive {
+					background-color: var(--color-positive);
+				}
+				&.negative {
+					background-color: var(--color-negative);
+				}
+
+				.month {
+					font-size: 12px;
+
+					@include absolute-inset-0();
+					top: -16px;
+				}
+			}
 		}
 	}
 </style>
