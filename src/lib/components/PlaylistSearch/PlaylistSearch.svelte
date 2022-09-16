@@ -28,7 +28,14 @@
 	let input: HTMLInputElement | null = null;
 	const textvalue = persistedWritable('search', 'All Out');
 	$: {
-		if (browser) textvalue.useLocalStorage();
+		if (browser) {
+			textvalue.useLocalStorage();
+			const defaultFromQuery = $page.url.searchParams.get('q');
+			if (defaultFromQuery) {
+				$textvalue = defaultFromQuery;
+				goto($page.url.pathname);
+			}
+		}
 	}
 
 	const limit = 10;
