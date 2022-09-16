@@ -20,6 +20,7 @@ function isDayWithResult(value: Day): value is DayWithResult {
 }
 
 export type Bar = {
+	numberOfGuesses: number | null;
 	label: string;
 	count: number;
 	color: 'positive' | 'negative';
@@ -27,8 +28,10 @@ export type Bar = {
 export type Summary = {
 	total: number;
 	totalcorrect: number;
-	currentstreak: number;
-	maxstreak: number;
+	streak: {
+		current: number;
+		max: number;
+	} | null;
 };
 
 export function getDaysForPlaylistIdFromLocalStorage(
@@ -69,13 +72,28 @@ export function getBarsFromDaysWithResults(days: DayWithResult[] = []): Bar[] {
 	const whereNumberOfGuessesIs = (numberOfGuesses: number | null) =>
 		counts.filter((o) => o === numberOfGuesses).length;
 	return [
-		{ label: '1°', count: whereNumberOfGuessesIs(1), color: 'positive' },
-		{ label: '2°', count: whereNumberOfGuessesIs(2), color: 'positive' },
-		{ label: '3°', count: whereNumberOfGuessesIs(3), color: 'positive' },
-		{ label: '4°', count: whereNumberOfGuessesIs(4), color: 'positive' },
-		{ label: '5°', count: whereNumberOfGuessesIs(5), color: 'positive' },
-		{ label: '6°', count: whereNumberOfGuessesIs(6), color: 'positive' },
-		{ label: '×', count: whereNumberOfGuessesIs(null), color: 'negative' }
+		{ numberOfGuesses: 1, label: '1°', count: whereNumberOfGuessesIs(1), color: 'positive' },
+		{ numberOfGuesses: 2, label: '2°', count: whereNumberOfGuessesIs(2), color: 'positive' },
+		{ numberOfGuesses: 3, label: '3°', count: whereNumberOfGuessesIs(3), color: 'positive' },
+		{ numberOfGuesses: 4, label: '4°', count: whereNumberOfGuessesIs(4), color: 'positive' },
+		{ numberOfGuesses: 5, label: '5°', count: whereNumberOfGuessesIs(5), color: 'positive' },
+		{ numberOfGuesses: 6, label: '6°', count: whereNumberOfGuessesIs(6), color: 'positive' },
+		{ numberOfGuesses: null, label: '×', count: whereNumberOfGuessesIs(null), color: 'negative' }
+	];
+}
+export function getBarsFromGlobalDayStats(
+	globaldaystats: { numberOfGuesses: number | null; totalQuantity: number }[] = []
+): Bar[] {
+	const whereNumberOfGuessesIs = (numberOfGuesses: number | null) =>
+		globaldaystats.find((o) => o.numberOfGuesses === numberOfGuesses)?.totalQuantity ?? 0;
+	return [
+		{ numberOfGuesses: 1, label: '1°', count: whereNumberOfGuessesIs(1), color: 'positive' },
+		{ numberOfGuesses: 2, label: '2°', count: whereNumberOfGuessesIs(2), color: 'positive' },
+		{ numberOfGuesses: 3, label: '3°', count: whereNumberOfGuessesIs(3), color: 'positive' },
+		{ numberOfGuesses: 4, label: '4°', count: whereNumberOfGuessesIs(4), color: 'positive' },
+		{ numberOfGuesses: 5, label: '5°', count: whereNumberOfGuessesIs(5), color: 'positive' },
+		{ numberOfGuesses: 6, label: '6°', count: whereNumberOfGuessesIs(6), color: 'positive' },
+		{ numberOfGuesses: null, label: '×', count: whereNumberOfGuessesIs(null), color: 'negative' }
 	];
 }
 
@@ -94,8 +112,23 @@ export function getSummaryFromDays(days: Day[]): Summary {
 	return {
 		total: daysWithResults.length,
 		totalcorrect: daysWithResults.filter((d) => d.result.type === 'success').length,
-		currentstreak,
-		maxstreak
+		streak: {
+			current: currentstreak,
+			max: maxstreak
+		}
+	};
+}
+export function getSummaryFromGlobalDayStats(
+	globaldaystats: { numberOfGuesses: number | null; totalQuantity: number }[] = []
+): Summary {
+	const total = MMath.sum(...globaldaystats.map((o) => o.totalQuantity));
+	const totalcorrect = MMath.sum(
+		...globaldaystats.filter((o) => o.numberOfGuesses !== null).map((o) => o.totalQuantity)
+	);
+	return {
+		total,
+		totalcorrect,
+		streak: null
 	};
 }
 

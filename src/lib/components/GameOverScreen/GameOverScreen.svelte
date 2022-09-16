@@ -9,7 +9,6 @@
 	import { recordResult } from '$lib/functions/record-result';
 	import { variables } from '$lib/variables';
 	import { page } from '$app/stores';
-	import LinkThatLooksLikeButton from '../shared/LinkThatLooksLikeButton.svelte';
 	import StatsModal from './StatsModal.svelte';
 	import { evaluateResult } from '$lib/functions/result-helper';
 	import Stats from './icons/Stats.svelte';
@@ -21,6 +20,7 @@
 	export let stages: IStage[];
 	export let timeMachine: boolean;
 	export let date: Date;
+
 	const DAY_0 = new Date('2022-08-25');
 	const DAY_IN_MS = 24 * 60 * 60 * 1000;
 	let statsOpen = false;
@@ -172,7 +172,7 @@
 		/>
 	</div>
 </div>
-<StatsModal bind:open={statsOpen} {playlistId} {playlistName} />
+<StatsModal bind:open={statsOpen} {playlistId} {playlistName} {date} />
 
 <style lang="scss">
 	.top {

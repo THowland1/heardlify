@@ -15,8 +15,14 @@ function percent(top: number, bottom: number) {
 function minAndMax(...values: number[]): [number, number] {
 	return [Math.min(...values), Math.max(...values)];
 }
+function sum(...values: number[]) {
+	let sum = 0;
+	values.forEach((value) => (sum += value));
+	return sum;
+}
 
 export const MMath = {
 	percent,
-	minAndMax
+	minAndMax,
+	sum
 };

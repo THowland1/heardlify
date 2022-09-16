@@ -166,7 +166,13 @@ export default class HeardlifyApi {
 
 		return body;
 	}
-	async getScoresForPlaylistDay({ playlistId, date }: { playlistId: string; date: Date }) {
+	async getScoresForPlaylistDay({
+		playlistId,
+		date
+	}: {
+		playlistId: string;
+		date: Date;
+	}): Promise<{ numberOfGuesses: number | null; totalQuantity: number }[]> {
 		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-scores-for-playlist-day');
 		url.searchParams.append('playlistId', playlistId);
 		url.searchParams.append('date', date.toISOString());

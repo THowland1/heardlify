@@ -1,7 +1,8 @@
 <script lang="ts">
-	const options = ['search', 'favourites'] as const;
+	type TOptions = $$Generic<readonly string[]>;
 	const name = Math.random().toString().replace('.', '');
-	export let value = options[0] as typeof options[number];
+	export let options: TOptions;
+	export let value: typeof options[number];
 </script>
 
 <div class="wrapper">

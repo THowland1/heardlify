@@ -1,20 +1,34 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 
+	import { page } from '$app/stores';
 	import { MMath } from '$lib/utils/math-extend';
-	import { date } from 'zod';
+	import { useQuery } from '@sveltestack/svelte-query';
 	import Times from '../icons/Times.svelte';
+	import TabGroup from '../TabGroup/TabGroup.svelte';
 	import { dragscroll } from './drag-scroll';
 	import {
 		fillInDays,
-		getDaysForPlaylistIdFromLocalStorage,
 		getBarsFromDaysWithResults,
-		getSummaryFromDays
+		getDaysForPlaylistIdFromLocalStorage,
+		getSummaryFromDays,
+		getBarsFromGlobalDayStats,
+		getSummaryFromGlobalDayStats
 	} from './stats-helper';
+	import HeardlifyApi from '$lib/functions/heardlify-api';
+	import { variables } from '$lib/variables';
 
 	export let open: boolean;
 	export let playlistId: string;
 	export let playlistName: string;
+	export let date: Date;
+
+	let taboptions = ['local', 'global'] as const;
+	let tabvalue = 'local' as typeof taboptions[number];
+
+	function getFullDaysSinceEpoch(date: Date) {
+		return Math.floor(date.valueOf() / (24 * 60 * 60 * 1000));
+	}
 
 	function getDateFromDaysSinceEpoch(daysSinceEpoch: number) {
 		return new Date(daysSinceEpoch * 24 * 60 * 60 * 1000);
@@ -22,9 +36,26 @@
 
 	$: daysWithResults = getDaysForPlaylistIdFromLocalStorage(browser, playlistId);
 	$: days = fillInDays(daysWithResults);
-	$: summary = getSummaryFromDays(days);
+	$: localsummary = getSummaryFromDays(days);
+	$: localbars = getBarsFromDaysWithResults(open ? daysWithResults : []);
 
-	$: bars = getBarsFromDaysWithResults(open ? daysWithResults : []);
+	$: today = days.find((o) => o.daysSinceEpoch === getFullDaysSinceEpoch(date));
+
+	const baseURL = variables.basePath || $page.url.origin;
+	const api = new HeardlifyApi(baseURL);
+
+	$: queryResult = useQuery(
+		['scores-for-playlist-day', { date, playlistId }] as const,
+		async ({ queryKey }) => {
+			console.log(queryKey);
+			return api.getScoresForPlaylistDay(queryKey[1]);
+		},
+		{ enabled: tabvalue === 'global' }
+	);
+	$: globalbars = getBarsFromGlobalDayStats($queryResult.data);
+	$: globalsummary = getSummaryFromGlobalDayStats($queryResult.data);
+	$: bars = tabvalue === 'local' ? localbars : globalbars;
+	$: summary = tabvalue === 'local' ? localsummary : globalsummary;
 </script>
 
 <div class="whole-thing" class:hidden={!open}>
@@ -33,10 +64,14 @@
 		<div class="heading">
 			<div class="spacer" />
 			<div class="heading-text">Stats</div>
-
-			<button class="close-button" on:click={() => (open = false)}><Times /></button>
+			<div class="spacer">
+				<button class="close-button" on:click={() => (open = false)}><Times /></button>
+			</div>
 		</div>
 		<div class="body">
+			<div class="tabs-container">
+				<TabGroup options={taboptions} bind:value={tabvalue} />
+			</div>
 			<div class="chart" style:--bar-maxcount={Math.max(...bars.map((o) => o.count)) || 1}>
 				{#each bars as bar, index}
 					<div class="column" style:--bar-index={index} style:--bar-count={bar.count}>
@@ -46,13 +81,25 @@
 							class:positive={bar.color === 'positive'}
 							class:negative={bar.color === 'negative'}
 						/>
-						<div class="label">{bar.label}</div>
+						<div
+							class="label"
+							class:todaysscore={today &&
+								today.result &&
+								today.result.numberOfGuesses === bar.numberOfGuesses}
+						>
+							{bar.label}
+						</div>
 					</div>
 				{/each}
 			</div>
 			<div class="legend">
-				<div>Your score distribution for</div>
-				<div class="playlist-name">{playlistName}</div>
+				<div>Score distribution for</div>
+				{#if tabvalue === 'local'}
+					<div class="playlist-name">You &bull; {playlistName} &bull; All Time</div>
+				{/if}
+				{#if tabvalue === 'global'}
+					<div class="playlist-name">Everyone &bull; {playlistName} &bull; Today</div>
+				{/if}
 			</div>
 			<div class="summary">
 				<div class="summary-item">
@@ -63,34 +110,43 @@
 					<div class="summary-value">{MMath.percent(summary.totalcorrect, summary.total)}</div>
 					<div class="summary-label">Correct %</div>
 				</div>
-				<div class="summary-item">
-					<div class="summary-value">{summary.currentstreak} : {summary.maxstreak}</div>
-					<div class="summary-label">Current:Max Streak</div>
-				</div>
+
+				{#if summary.streak}
+					{@const streak = summary.streak}
+					<div class="summary-item">
+						<div class="summary-value">{streak.current} : {streak.max}</div>
+						<div class="summary-label">Current:Max Streak</div>
+					</div>
+				{/if}
 			</div>
 			<div class="squares-container">
 				<div class="squares-container-overlay left" />
 				<div class="squares-container-overlay right" />
 				<div class="squares" use:dragscroll>
-					{#each days as day, i}
-						{@const date = getDateFromDaysSinceEpoch(day.daysSinceEpoch)}
-						<div
-							title={date.toLocaleDateString(undefined, {
-								month: 'short',
-								day: 'numeric',
-								year: 'numeric'
-							})}
-							class="square"
-							class:empty={day.result === null || day.result.type === 'unfinished'}
-							class:positive={day.result && day.result.type === 'success'}
-							class:negative={day.result && day.result.type === 'failure'}
-						>
-							{#if i === 0 || date.getDate() === 1}
-								<div class="month">{date.toLocaleDateString(undefined, { month: 'short' })}</div>
-								{date.getDate()}
-							{/if}
-						</div>
-					{/each}
+					{#if tabvalue === 'local'}
+						{#each days as day, i}
+							{@const date = getDateFromDaysSinceEpoch(day.daysSinceEpoch)}
+							<div
+								title={date.toLocaleDateString(undefined, {
+									month: 'short',
+									day: 'numeric',
+									year: 'numeric'
+								})}
+								class="square"
+								class:empty={day.result === null || day.result.type === 'unfinished'}
+								class:positive={day.result && day.result.type === 'success'}
+								class:negative={day.result && day.result.type === 'failure'}
+							>
+								{#if i === 0 || date.getDate() === 1}
+									<div class="month">{date.toLocaleDateString(undefined, { month: 'short' })}</div>
+									{date.getDate()}
+								{/if}
+							</div>
+						{/each}
+					{/if}
+					{#if tabvalue === 'global'}
+						<div class="square" />
+					{/if}
 				</div>
 			</div>
 		</div>
@@ -151,6 +207,11 @@
 		@include absolute-inset-0;
 		background-color: var(--color-overlay);
 	}
+
+	.tabs-container {
+		display: flex;
+		justify-content: center;
+	}
 	.card {
 		@include absolute-inset-0;
 		margin: auto;
@@ -165,12 +226,19 @@
 	}
 	.heading {
 		padding: 24px;
+		padding-bottom: 8px;
 		display: flex;
 		justify-content: space-between;
+		align-items: center;
 		color: var(--color-line);
 		text-transform: uppercase;
 		font-weight: 700;
 		letter-spacing: 1px;
+
+		.spacer {
+			width: 32px;
+		}
+
 		.close-button {
 			cursor: pointer;
 		}
@@ -183,7 +251,6 @@
 		height: var(--height-chart);
 		display: flex;
 		justify-content: space-between;
-		overflow: hidden;
 		align-items: flex-end;
 	}
 	.legend {
@@ -203,7 +270,6 @@
 	}
 	.column {
 		height: 100%;
-		overflow: hidden;
 		width: 20px;
 
 		display: flex;
@@ -238,8 +304,15 @@
 		.label {
 			@include flex-place-center();
 			height: var(--height-label);
+			width: var(--height-label);
 			line-height: 1;
 			color: var(--color-line);
+
+			&.todaysscore {
+				background-color: var(--color-line);
+				color: var(--color-bg);
+				border-radius: 100vw;
+			}
 		}
 	}
 

@@ -16,7 +16,8 @@
 
 	let feedbackModalOpen = false;
 	let supportModalOpen = false;
-	let selectedTab = 'search' as 'search' | 'favourites';
+	const selectedTabOptions = ['search', 'favourites'] as const;
+	let selectedTab = 'search' as typeof selectedTabOptions[number];
 
 	const date = getDateFromURL($page.url);
 	setDateContext(date);
@@ -41,7 +42,7 @@
 <div class="whole-thing">
 	<h1>Heardlify</h1>
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
-	<TabGroup bind:value={selectedTab} />
+	<TabGroup options={selectedTabOptions} bind:value={selectedTab} />
 
 	<div class="tab-panels">
 		{#key selectedTab}
