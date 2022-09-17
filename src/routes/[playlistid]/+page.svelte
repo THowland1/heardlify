@@ -23,7 +23,9 @@
 		stages.some((s) => s.guess.type === 'guessed' && s.guess.isCorrectSong) ||
 		stages.every((s) => s.guess.type !== 'empty');
 
-	$: bgImage = playlist?.playlist ? `url(${playlist.playlist.imageUrl})` : undefined;
+	$: bgImage = playlist?.playlist?.imageUrl
+		? `url(${playlist.playlist.imageUrl})`
+		: 'url(/home-bg-640x422.jpeg)';
 
 	let modalOpen = false;
 	$: {

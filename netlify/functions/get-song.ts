@@ -117,7 +117,7 @@ async function getResultFresh(keys: ICacheKeys): Promise<IResult> {
 		options: allPlaylistTracks,
 		playlist: {
 			name: playlist.name,
-			imageUrl: playlist.images[playlist.images.length - 1].url
+			imageUrl: playlist.images[playlist.images.length - 1]?.url
 		}
 	};
 
