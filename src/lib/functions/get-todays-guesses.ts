@@ -1,15 +1,10 @@
+import { EpochDay } from '$lib/utils/epoch-day';
 import type { IStage } from '../types/IStage';
-
-const DAY_IN_MS = 24 * 60 * 60 * 1000;
 
 const safeLocalStorage: Storage | null = globalThis.localStorage ?? null;
 
-function getFullDaysSinceEpoch(date: Date) {
-	return Math.floor(date.valueOf() / DAY_IN_MS);
-}
-
-function generateKey(playlistId: string, fullDaysSinceEpoch: number) {
-	return `${playlistId}:${fullDaysSinceEpoch}:guesses`;
+function generateKey(playlistId: string, epochday: number) {
+	return `${playlistId}:${epochday}:guesses`;
 }
 
 export function getTodaysGuesses(playlistId: string, date: Date): IStage[] {
@@ -22,7 +17,7 @@ export function getTodaysGuesses(playlistId: string, date: Date): IStage[] {
 }
 
 export function getTodaysGuessesFromCache(playlistId: string, date: Date): IStage[] | null {
-	const key = generateKey(playlistId, getFullDaysSinceEpoch(date));
+	const key = generateKey(playlistId, EpochDay.fromDate(date));
 	const fromCache = safeLocalStorage?.getItem(key);
 	if (fromCache) {
 		return JSON.parse(fromCache) as IStage[];
@@ -46,6 +41,6 @@ function getTodaysGuessesDefault(): IStage[] {
 }
 
 export function setTodaysGuesses(playlistId: string, date: Date, value: IStage[]) {
-	const key = generateKey(playlistId, getFullDaysSinceEpoch(date));
+	const key = generateKey(playlistId, EpochDay.fromDate(date));
 	safeLocalStorage?.setItem(key, JSON.stringify(value));
 }

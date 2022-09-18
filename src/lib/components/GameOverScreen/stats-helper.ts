@@ -7,11 +7,11 @@ import { MMath } from '$lib/utils/math-extend';
 import { z } from 'zod';
 
 export type DayWithoutResult = {
-	daysSinceEpoch: number;
+	epochday: number;
 	result: null;
 };
 export type DayWithResult = {
-	daysSinceEpoch: number;
+	epochday: number;
 	result: IResult;
 };
 export type Day = DayWithoutResult | DayWithResult;
@@ -50,20 +50,20 @@ export function getDaysForPlaylistIdFromLocalStorage(
 	const values = matchingvalues.filter(zz.is(keystagesschema));
 	return values
 		.map(([key, result]) => {
-			const daysSinceEpoch = getDaysSinceEpochFromKey(key);
+			const epochday = getEpochDayFromKey(key);
 			return {
-				daysSinceEpoch,
+				epochday,
 				result: evaluateResult(result)
 			};
 		})
-		.sort((a, b) => a.daysSinceEpoch - b.daysSinceEpoch);
+		.sort((a, b) => a.epochday - b.epochday);
 }
 export function fillInDays(days: DayWithResult[]): Day[] {
-	const [min, max] = MMath.minAndMax(...days.map((d) => d.daysSinceEpoch));
+	const [min, max] = MMath.minAndMax(...days.map((d) => d.epochday));
 	const filledin: Day[] = [];
 	for (let i = min; i <= max; i++) {
-		const found = days.find((d) => d.daysSinceEpoch === i);
-		filledin.push(found ?? { daysSinceEpoch: i, result: null });
+		const found = days.find((d) => d.epochday === i);
+		filledin.push(found ?? { epochday: i, result: null });
 	}
 	return filledin;
 }
@@ -132,6 +132,6 @@ export function getSummaryFromGlobalDayStats(
 	};
 }
 
-function getDaysSinceEpochFromKey(key: string) {
+function getEpochDayFromKey(key: string) {
 	return Number(key.split(':')[1]);
 }

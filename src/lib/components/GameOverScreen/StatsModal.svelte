@@ -17,6 +17,7 @@
 	} from './stats-helper';
 	import HeardlifyApi from '$lib/functions/heardlify-api';
 	import { variables } from '$lib/variables';
+	import { EpochDay } from '$lib/utils/epoch-day';
 
 	export let open: boolean;
 	export let playlistId: string;
@@ -26,20 +27,12 @@
 	let taboptions = ['local', 'global'] as const;
 	let tabvalue = 'local' as typeof taboptions[number];
 
-	function getFullDaysSinceEpoch(date: Date) {
-		return Math.floor(date.valueOf() / (24 * 60 * 60 * 1000));
-	}
-
-	function getDateFromDaysSinceEpoch(daysSinceEpoch: number) {
-		return new Date(daysSinceEpoch * 24 * 60 * 60 * 1000);
-	}
-
 	$: daysWithResults = getDaysForPlaylistIdFromLocalStorage(browser, playlistId);
 	$: days = fillInDays(daysWithResults);
 	$: localsummary = getSummaryFromDays(days);
 	$: localbars = getBarsFromDaysWithResults(open ? daysWithResults : []);
 
-	$: today = days.find((o) => o.daysSinceEpoch === getFullDaysSinceEpoch(date));
+	$: today = days.find((o) => o.epochday === EpochDay.fromDate(date));
 
 	const baseURL = variables.basePath || $page.url.origin;
 	const api = new HeardlifyApi(baseURL);
@@ -125,7 +118,7 @@
 				<div class="squares" use:dragscroll>
 					{#if tabvalue === 'local'}
 						{#each days as day, i}
-							{@const date = getDateFromDaysSinceEpoch(day.daysSinceEpoch)}
+							{@const date = EpochDay.toDate(day.epochday)}
 							<div
 								title={date.toLocaleDateString(undefined, {
 									month: 'short',

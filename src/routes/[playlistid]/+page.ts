@@ -3,12 +3,6 @@ import { getDateFromURL } from '$lib/functions/get-date-from-url';
 import { variables } from '$lib/variables';
 import HeardlifyApi from '$lib/functions/heardlify-api';
 
-function getDate(date = new Date()) {
-	const timestamp = date.getTime() - date.getTimezoneOffset() * 60000;
-	const correctDate = new Date(timestamp);
-	return correctDate;
-}
-
 function isSpotifyId(value: string) {
 	const spotifyIdRegexp = new RegExp(
 		'^[0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz]{22}$'
@@ -25,15 +19,14 @@ export const load: PageLoad = async ({ params, url, fetch }) => {
 	if (!isSpotifyId(playlistId)) {
 		throw new Error('The given id is not a playlist id');
 	}
-	const date = getDate(queryDate ?? new Date());
+	const localdate = queryDate ?? new Date();
 
 	const baseURL = variables.basePath || url.origin;
 	const api = new HeardlifyApi(baseURL, fetch);
-	const playlist = await api.getSong(playlistId, date);
+	const playlist = await api.getSong(playlistId, localdate);
 	return {
 		playlistId,
 		playlist,
-		dateValue: date.valueOf(),
 		timeMachine
 	};
 };

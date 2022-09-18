@@ -12,6 +12,7 @@
 	import StatsModal from './StatsModal.svelte';
 	import { evaluateResult } from '$lib/functions/result-helper';
 	import Stats from './icons/Stats.svelte';
+	import { EpochDay } from '$lib/utils/epoch-day';
 
 	export let playlistId: string;
 	export let playlistName: string;
@@ -21,7 +22,7 @@
 	export let timeMachine: boolean;
 	export let date: Date;
 
-	const DAY_0 = new Date('2022-08-25');
+	const DAY_0 = new Date('2022-08-25T00:00');
 	const DAY_IN_MS = 24 * 60 * 60 * 1000;
 	let statsOpen = false;
 
@@ -29,12 +30,9 @@
 		return String(val).padStart(2, '0');
 	}
 
-	function getFullDaysSinceEpoch(date: Date) {
-		return Math.floor(date.valueOf() / DAY_IN_MS);
-	}
-
 	let now = new Date();
-	const dayIndex = getFullDaysSinceEpoch(date) - getFullDaysSinceEpoch(DAY_0);
+	const epochday = EpochDay.fromDate(date);
+	const dayIndex = epochday - EpochDay.fromDate(DAY_0);
 	let clear: number | null = null;
 	$: {
 		if (clear) clearInterval(clear);
@@ -91,7 +89,7 @@
 			shareFeedback = 'Could not copy!';
 		}
 
-		setTimeout((_) => (shareFeedback = null), 3000);
+		setTimeout(() => (shareFeedback = null), 3000);
 	}
 
 	$: result = evaluateResult(stages);
@@ -103,7 +101,7 @@
 			: `You didn't get today's answer.<br />Better luck tomorrow!`;
 
 	onMount(async () => {
-		const key = `${playlistId}:${getFullDaysSinceEpoch(date)}:recorded`;
+		const key = `${playlistId}:${epochday}:recorded`;
 		const recorded = localStorage.getItem(key);
 		if (!recorded) {
 			const baseURL = variables.basePath || $page.url.origin;

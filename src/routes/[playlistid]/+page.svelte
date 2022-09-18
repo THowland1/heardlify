@@ -4,6 +4,7 @@
 	import GameScreen from '$lib/components/GameScreen/GameScreen.svelte';
 	import Header from '$lib/components/Header/Header.svelte';
 	import PlaylistSearchModal from '$lib/components/PlaylistSearchModal/PlaylistSearchModal.svelte';
+	import { getDateFromURL } from '$lib/functions/get-date-from-url';
 	import { getTodaysGuesses, setTodaysGuesses } from '$lib/functions/get-todays-guesses';
 	import type { IStage } from '$lib/types/IStage';
 	import type { PageData } from './$types';
@@ -12,7 +13,7 @@
 
 	$: playlistId = data.playlistId;
 	$: playlist = data.playlist;
-	const date = new Date(data.dateValue);
+	const date = getDateFromURL($page.url) ?? new Date();
 
 	let stages: IStage[] = getTodaysGuesses(playlistId, date);
 	$: {
