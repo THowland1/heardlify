@@ -1,38 +1,58 @@
-# create-svelte
+# Heardlify
 
-Everything you need to build a Svelte project, powered by [`create-svelte`](https://github.com/sveltejs/kit/tree/master/packages/create-svelte).
+## Description
 
-## Creating a project
+A game for making a guessing game out of any Spotify playlist!
 
-If you're seeing this, you've probably already done this step. Congrats!
+Search for your favourite playlist, or browse based on your favourite artists, genres, and decades, and put your musical knowledge to the test.
 
-```bash
-# create a new project in the current directory
-npm create svelte@latest
+Test yourself or challenge your friends!
 
-# create a new project in my-app
-npm create svelte@latest my-app
-```
+## Screens
 
-## Developing
+<img src="./public/home-screenshot.png" height="320px" />
+<img src="./public/favourites-screenshot.png" height="320px" />
+<img src="./public/game-screenshot.png" height="320px" />
+<img src="./public/win-screenshot.png" height="320px" />
+<img src="./public/local-stats-screenshot.png" height="320px" />
+<img src="./public/global-stats-screenshot.png" height="320px" />
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Tech
 
-```bash
-npm run dev
+The FE is powered by Svelte and SvelteKit, with SCSS and TypeScript.
 
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
+The FE is compiled with Vite.
 
-## Building
+The BE is powered by Netlify
+Functions and MongoDB.
 
-To create a production version of your app:
+Model validation is powered by [zod](https://www.npmjs.com/package/zod)
 
-```bash
-npm run build
-```
+The BE relies on [the public Spotify API](https://developer.spotify.com/documentation/web-api/)
 
-You can preview the production build with `npm run preview`.
+## Financial Contributors
 
-> To deploy your app, you may need to install an [adapter](https://kit.svelte.dev/docs/adapters) for your target environment.
+Become a financial contributor and help me keep making the game even better!  
+<a href="https://www.buymeacoffee.com/tomhowland">
+☕ Buy me a coffee
+</a>
+
+## 🤝 Contributing
+
+Contributions, issues and feature requests are welcome.<br />
+Feel free to check [issues page](https://github.com/THowland1/heardlify/issues) if you want to contribute.<br />
+
+## Author
+
+👤 **Tom Howland**
+
+- Github: [@THowland1](https://github.com/THowland1)
+
+## Show your support
+
+Please ⭐️ this repository if this project helped you!
+
+## 📝 License
+
+Copyright © 2022 [Tom Howland](https://github.com/THowland1).<br />
+This project is [MIT](https://github.com/THowland1/heardlify/blob/master/LICENSE) licensed.
