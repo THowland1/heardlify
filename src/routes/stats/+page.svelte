@@ -9,6 +9,7 @@
 	import ScoresForPlaylistDay from './scores-for-playlist-day.svelte';
 	import SessionHistory from './session-history.svelte';
 	import TopPlaylists from './top-playlists.svelte';
+	import UniqueusersByDay from './uniqueusers-by-day/uniqueusers-by-day.svelte';
 </script>
 
 <svelte:head />
@@ -19,6 +20,10 @@
 	<div>
 		<h2>Activity by day</h2>
 		<ActivityByDay />
+	</div>
+	<div>
+		<h2>UniqueUsers by day</h2>
+		<UniqueusersByDay />
 	</div>
 	<div>
 		<h2>Activity by time</h2>
@@ -91,6 +96,10 @@
 		align-items: center;
 		padding: var(--padding);
 		height: 100%;
+		width: 100%;
 		gap: 12px;
+	}
+	.whole-thing > * {
+		width: 100%;
 	}
 </style>

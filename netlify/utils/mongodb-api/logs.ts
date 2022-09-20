@@ -94,7 +94,6 @@ const getLogs = async ({
 };
 
 const getImportantLogs = async ({
-	query,
 	limit,
 	offset,
 	from,

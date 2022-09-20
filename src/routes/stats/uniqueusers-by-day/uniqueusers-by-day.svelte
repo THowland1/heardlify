@@ -17,8 +17,8 @@
 	let from = new ImmutableDate().setHours(-240, 0, 0, 0).date;
 	let to = new ImmutableDate().setHours(24, 0, 0, 0).date;
 
-	$: queryResult = useQuery(['activity-by-day', { from, to }] as const, async ({ queryKey }) => {
-		return api.getActivityByDay(queryKey[1]);
+	$: queryResult = useQuery(['uniqueusers-by-day', { from, to }] as const, async ({ queryKey }) => {
+		return api.getUniqueUsersByDay(queryKey[1]);
 	});
 
 	function getDate(date = new Date()) {
@@ -30,8 +30,8 @@
 	const xKey = 'myX';
 	const yKey = 'myY';
 	$: data = $queryResult?.data?.map((datum) => ({
-		[xKey]: new Date(datum._id.year, datum._id.month, datum._id.day).valueOf(),
-		[yKey]: datum.totalQuantity
+		[xKey]: new Date(datum._id).valueOf(),
+		[yKey]: datum.totalUniqueUsers
 	})) ?? [{ [xKey]: 1, [yKey]: 1 }];
 
 	const nullAsNumber = null as unknown as number;
@@ -73,14 +73,13 @@
 	{#if $queryResult.data}
 		{#each $queryResult.data as playlist}
 			<tr>
-				<td>{playlist._id.year}</td>
-				<td>{playlist._id.month}</td>
-				<td>{playlist._id.day}</td>
-				<td>{playlist.totalQuantity}</td>
+				<td>{playlist._id}</td>
+				<td>{playlist.totalUniqueUsers}</td>
+				<td>{playlist.totalPlays}</td>
 			</tr>
 		{/each}
 	{:else}
-		<tr><td span="2">Loading...</td></tr>
+		<tr><td span="3">Loading...</td></tr>
 	{/if}
 </table>
 

@@ -228,6 +228,69 @@ const getActivityByTime = async ({ from, to }: { from: Date; to: Date }) => {
 	await client.close();
 	return ActivityByTimeSchema.parse(results);
 };
+const UniqueUsersByDaySchema = z.array(
+	z.object({
+		_id: z.string(),
+		totalPlays: z.number(),
+		totalUniqueUsers: z.number()
+	})
+);
+const getUniqueUsersByDay = async ({ from, to }: { from: Date; to: Date }) => {
+	const client = new MongoClient(process.env.MONGODB_CREDENTIALS || '', {
+		serverApi: ServerApiVersion.v1
+	});
+	await client.connect();
+	const collection = client.db('heardlify').collection<Result>('results');
+
+	const results = await collection
+		.aggregate([
+			{
+				$match: {
+					date: {
+						$gte: new ImmutableDate(from).setHours(0, 0, 0, 0).date,
+						$lt: new ImmutableDate(to).setHours(24, 0, 0, 0).date
+					}
+				}
+			},
+			{
+				$addFields: {
+					eventDate: {
+						$dateToString: {
+							format: '%Y-%m-%d',
+							date: '$date'
+						}
+					}
+				}
+			},
+			{
+				$group: {
+					_id: {
+						eventDate: '$eventDate',
+						sid: '$sid'
+					},
+					count: {
+						$sum: 1
+					}
+				}
+			},
+			{
+				$group: {
+					_id: '$_id.eventDate',
+					totalPlays: {
+						$sum: '$count'
+					},
+					totalUniqueUsers: {
+						$sum: 1
+					}
+				}
+			},
+			{ $sort: { _id: 1 } }
+		])
+		.toArray();
+
+	await client.close();
+	return UniqueUsersByDaySchema.parse(results);
+};
 const ActivityByDaySchema = z.array(
 	z.object({
 		_id: z.object({
@@ -324,6 +387,7 @@ export default {
 	getSessionHistory,
 	getMostActiveSessions,
 	getScoresForPlaylistDay,
+	getUniqueUsersByDay,
 	getActivityByTime,
 	getActivityByDay,
 	ResultSchema
