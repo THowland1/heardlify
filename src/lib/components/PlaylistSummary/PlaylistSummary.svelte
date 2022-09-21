@@ -5,12 +5,14 @@
 		removeFavourite,
 		type IFavourite
 	} from '$lib/stores/favourites';
+	import { addRecent, type IRecent } from '$lib/stores/recents';
 	import StarOutline from './StarOutline.svelte';
 	import StarSolid from './StarSolid.svelte';
 	import { fade } from 'svelte/transition';
 	import CheckCircle from './CheckCircle.svelte';
 	import { browser } from '$app/env';
 	import { getTodaysGuessesFromCache } from '$lib/functions/get-todays-guesses';
+	import { EpochDay } from '$lib/utils/epoch-day';
 	export let date: Date;
 	type IPlaylistSummary = {
 		id: string;
@@ -24,7 +26,7 @@
 
 	export let playlist: IPlaylistSummary;
 
-	function setSrcToFallback({ currentTarget }: { currentTarget: HTMLElement }) {
+	function setSrcToFallback(currentTarget: (EventTarget & HTMLElement) | (EventTarget & Element)) {
 		if (currentTarget instanceof HTMLImageElement) {
 			currentTarget.src = '/default-playlist-300x300.png';
 		}
@@ -47,11 +49,12 @@
 <div class="wrapper" class:playedtoday>
 	<a
 		class="playlist"
+		on:click={() => addRecent({ ...playlist, epochday: EpochDay.fromDate(date) })}
 		href={`/${encodeURIComponent(playlist.name).replace(/%../g, '+')}-${playlist.id}`}
 	>
 		<img
 			class="image"
-			on:error|once={setSrcToFallback}
+			on:error|once={(e) => setSrcToFallback(e.currentTarget)}
 			src={playlist.images[0]?.url}
 			alt={playlist.name}
 			height="80px"

@@ -28,6 +28,11 @@
 				>this Reddit post</a
 			>
 		</p>
+		<p>
+			You can also feel free to open an issue and/or submit a pull request at <a
+				href="https://github.com/THowland1/heardlify">the GitHub repo</a
+			>
+		</p>
 		<p>Thank you!</p>
 		<p class="name">Tom</p>
 	</div>

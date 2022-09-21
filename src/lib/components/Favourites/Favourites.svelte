@@ -31,7 +31,19 @@
 		width: 100%;
 	}
 	.h2 {
-		padding-bottom: 16px;
+		color: var(--color-fg);
+		font-size: 1rem;
+		font-weight: 600;
+		letter-spacing: 0.25px;
 		text-align: center;
+		display: block;
+		margin-top: 8px;
+		margin-bottom: 8px;
+		padding-top: 2px;
+		padding-bottom: 2px;
+		position: sticky;
+		top: 0;
+		background-color: var(--color-mbg);
+		z-index: 1;
 	}
 </style>

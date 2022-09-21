@@ -10,13 +10,14 @@
 	import { getDateFromURL } from '$lib/functions/get-date-from-url';
 	import SupportModal from './SupportModal.svelte';
 	import { fade } from 'svelte/transition';
+	import Recents from '$lib/components/Recents/Recents.svelte';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 	const IMAGE = `${$page.url.origin}/og-image.png`;
 
 	let feedbackModalOpen = false;
 	let supportModalOpen = false;
-	const selectedTabOptions = ['search', 'favourites'] as const;
+	const selectedTabOptions = ['search', 'favourites', 'recents'] as const;
 	let selectedTab = 'search' as typeof selectedTabOptions[number];
 
 	const date = getDateFromURL($page.url);
@@ -52,6 +53,9 @@
 				{/if}
 				{#if selectedTab === 'favourites' && browser}
 					<Favourites {date} />
+				{/if}
+				{#if selectedTab === 'recents' && browser}
+					<Recents {date} />
 				{/if}
 			</div>
 		{/key}
@@ -133,6 +137,7 @@
 		position: relative;
 		flex: 1;
 		width: 100%;
+		overflow: auto;
 	}
 	.tab-panel {
 		position: absolute;

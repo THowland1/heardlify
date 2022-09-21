@@ -50,6 +50,12 @@ h6 {
 	margin: 0;
 }
 
+h2 {
+	all: initial;
+	color: inherit;
+	font-family: inherit;
+}
+
 button {
 	background-color: initial;
 	border: initial;

@@ -2,6 +2,26 @@
 
 <a name="1.0.0"></a>
 
+## 0.1.1 (2022-09-21)
+
+### Added
+
+- ✨ Added 'recents' tab to home screen
+
+### Changed
+
+- 🎨 Removed default styles on h2 tags (will do all, when I become sure I wont break everything)
+
+### Fixed
+
+- _Nothing fixed_
+
+### Miscellaneous
+
+- ✨ Added GitHub link to suppoprt modal
+
+<a name="1.0.0"></a>
+
 ## 0.1.0 (2022-09-18)
 
 ### Added
