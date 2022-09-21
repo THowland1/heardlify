@@ -3,7 +3,6 @@
 	import { EpochDay } from '$lib/utils/epoch-day';
 	import PlaylistSummary from '../PlaylistSummary/PlaylistSummary.svelte';
 	import PlaylistSummarySkeleton from '../PlaylistSummary/PlaylistSummarySkeleton.svelte';
-	import { AArray } from '$lib/utils/array-extend';
 	export let date: Date;
 	$: epochDay = EpochDay.fromDate(date);
 
