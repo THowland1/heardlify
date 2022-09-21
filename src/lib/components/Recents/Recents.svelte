@@ -80,6 +80,7 @@
 		width: 100%;
 	}
 	.h2 {
+		border-radius: 4px;
 		color: var(--color-fg);
 		font-size: 1rem;
 		font-weight: 600;
