@@ -1,8 +1,5 @@
 [functions]
   directory = "netlify/functions"
-[[edge_functions]]
-  path = "/"
-  function = "add-dynamic-og-tags"
 [build]
   command = "npm run build"
   publish = "build"

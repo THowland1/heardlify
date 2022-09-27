@@ -7,6 +7,7 @@
 	import { getDateFromURL } from '$lib/functions/get-date-from-url';
 	import { getTodaysGuesses, setTodaysGuesses } from '$lib/functions/get-todays-guesses';
 	import type { IStage } from '$lib/types/IStage';
+	import { variables } from '$lib/variables';
 	import type { PageData } from './$types';
 
 	export let data: PageData;
@@ -44,11 +45,11 @@
 	<meta property="og:title" content={`Heardlify – ${playlist.playlist.name}`} />
 	<meta
 		property="og:image"
-		content="{$page.url.origin}/images/{encodeURIComponent(playlist.playlist.name)}.png"
+		content="{variables.ogImageApiBasePath}/images/{encodeURIComponent(playlist.playlist.name)}.png"
 	/>
 	<meta
 		name="twitter:image"
-		content="{$page.url.origin}/images/{encodeURIComponent(playlist.playlist.name)}.png"
+		content="{variables.ogImageApiBasePath}/images/{encodeURIComponent(playlist.playlist.name)}.png"
 	/>
 	<meta
 		property="og:description"
