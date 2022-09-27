@@ -1,2 +1,7 @@
 [functions]
   directory = "netlify/functions"
+  external_node_modules = ["mongodb"]
+[[redirects]]
+  from = "/images/:playlistName"
+  to = "/.netlify/functions/generate-og-image?subtitle=:playlistName 200"
+  status = 200
