@@ -1,0 +1,23 @@
+{
+	"name": "search-api",
+	"version": "0.0.1",
+	"devDependencies": {
+		"@netlify/functions": "^1.0.0",
+		"@types/cookie": "^0.5.1",
+		"@types/node": "^14.18.22",
+		"@types/spotify-web-api-node": "^5.0.7",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"cookie": "^0.5.0",
+		"eslint": "^8.16.0",
+		"eslint-config-prettier": "^8.3.0",
+		"node-fetch": "^3.2.9",
+		"prettier": "^2.6.2",
+		"prettier-plugin-svelte": "^2.7.0",
+		"tslib": "^2.4.0",
+		"typescript": "^4.7.4",
+		"mongodb": "^4.9.0",
+		"zod": "^3.18.0"
+	},
+	"type": "module"
+}
