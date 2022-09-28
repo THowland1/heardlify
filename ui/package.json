@@ -1,0 +1,49 @@
+{
+	"name": "my-app",
+	"version": "0.0.1",
+	"scripts": {
+		"dev": "vite dev",
+		"build": "vite build",
+		"package": "svelte-kit package",
+		"preview": "vite preview",
+		"test": "playwright test",
+		"check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+		"lint": "prettier --check . && eslint .",
+		"format": "prettier --write ."
+	},
+	"devDependencies": {
+		"@playwright/test": "^1.25.0",
+		"@sveltejs/adapter-auto": "next",
+		"@sveltejs/adapter-netlify": "^1.0.0-next.72",
+		"@sveltejs/kit": "next",
+		"@sveltejs/vite-plugin-svelte": "^1.0.1",
+		"@tsconfig/svelte": "^3.0.0",
+		"@types/cookie": "^0.5.1",
+		"@types/lodash.debounce": "^4.0.7",
+		"@types/node": "^14.18.22",
+		"@typescript-eslint/eslint-plugin": "^5.27.0",
+		"@typescript-eslint/parser": "^5.27.0",
+		"eslint": "^8.16.0",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-svelte3": "^4.0.0",
+		"prettier": "^2.6.2",
+		"prettier-plugin-svelte": "^2.7.0",
+		"sass": "^1.54.5",
+		"svelte": "^3.49.0",
+		"svelte-check": "^2.8.0",
+		"svelte-preprocess": "^4.10.7",
+		"tslib": "^2.4.0",
+		"typescript": "^4.7.4",
+		"vite": "^3.0.0"
+	},
+	"type": "module",
+	"dependencies": {
+		"@sveltestack/svelte-query": "^1.6.0",
+		"broadcast-channel": "^4.14.0",
+		"layercake": "^7.0.0",
+		"lodash.debounce": "^4.0.8",
+		"svelte-portal": "^2.2.0",
+		"zod": "^3.18.0"
+	}
+}

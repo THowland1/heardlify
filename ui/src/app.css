@@ -1,0 +1,68 @@
+:root {
+	--color-positive: #3d7c22;
+	--color-negative: #b70000;
+	--color-warning: #e3a400;
+	--color-score-positive: #276d15;
+	--color-score-negative: #851212;
+	--color-fg: #ffffff;
+	--color-mg: #444;
+	--color-mbg: #212121;
+	--color-bg: #121212;
+	--color-line: #a7a7a7;
+	--color-shade: rgba(0, 0, 0, 0.1);
+	--color-highlight: rgba(255, 255, 255, 0.05);
+	--color-overlay: rgb(0 0 0 / 75%);
+	--color-overlay-mid: #212121cc;
+
+	--width-game: 640px;
+
+	color: var(--color-fg);
+	font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif,
+		'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol';
+}
+* {
+	box-sizing: border-box;
+}
+
+body,
+html,
+#app {
+	margin: 0;
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+
+	font-size: 14px;
+	touch-action: manipulation;
+}
+html {
+	background-color: var(--color-bg);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0;
+}
+
+h2 {
+	all: initial;
+	color: inherit;
+	font-family: inherit;
+}
+
+button {
+	background-color: initial;
+	border: initial;
+	color: inherit;
+	cursor: pointer;
+}
+
+a {
+	color: inherit;
+}
