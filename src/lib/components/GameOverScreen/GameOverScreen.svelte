@@ -6,13 +6,13 @@
 	import type { IDetailedOption } from '../../types/IOption';
 	import type { IStage } from '../../types/IStage';
 	import { onMount } from 'svelte';
-	import { recordResult } from '$lib/functions/record-result';
 	import { variables } from '$lib/variables';
 	import { page } from '$app/stores';
 	import StatsModal from './StatsModal.svelte';
 	import { evaluateResult } from '$lib/functions/result-helper';
 	import Stats from './icons/Stats.svelte';
 	import { EpochDay } from '$lib/utils/epoch-day';
+	import HeardlifyApi from '$lib/functions/heardlify-api';
 
 	export let playlistId: string;
 	export let playlistName: string;
@@ -21,6 +21,8 @@
 	export let stages: IStage[];
 	export let timeMachine: boolean;
 	export let date: Date;
+
+	const apiClient = new HeardlifyApi(variables.apiBasePath);
 
 	const DAY_0 = new Date('2022-08-25T00:00');
 	const DAY_IN_MS = 24 * 60 * 60 * 1000;
@@ -105,7 +107,7 @@
 		const recorded = localStorage.getItem(key);
 		if (!recorded) {
 			const baseURL = variables.basePath || $page.url.origin;
-			const success = await recordResult(baseURL, {
+			const success = await apiClient.recordResult({
 				date,
 				playlistId,
 				playlistName,

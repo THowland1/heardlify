@@ -250,4 +250,22 @@ export default class HeardlifyApi {
 
 		return body;
 	}
+
+	async recordResult(result: {
+		playlistId: string;
+		playlistName: string;
+		date: Date;
+		numberOfGuesses: number | null;
+	}): Promise<boolean> {
+		const response = await fetch(`${this.baseURL}/record-result`, {
+			method: 'POST',
+			headers: {
+				// 'Content-Type': 'application/json'
+			},
+			credentials: 'include',
+			body: JSON.stringify(result)
+		});
+		const success = response.status >= 200 && response.status < 300;
+		return success;
+	}
 }
