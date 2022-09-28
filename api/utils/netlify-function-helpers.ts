@@ -10,7 +10,8 @@ function getCorsHeaders(event: { headers: { origin?: string } }): Record<string,
 	const ALLOWED_ORIGINS = [
 		'http://localhost:5173',
 		'http://localhost:4173',
-		'https://heardlify.app'
+		'https://heardlify.app',
+		'https://test.heardlify.app'
 	];
 	const origin = event.headers.origin ?? '';
 	if (ALLOWED_ORIGINS.includes(origin)) {
