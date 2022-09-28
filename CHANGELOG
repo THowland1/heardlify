@@ -1,6 +1,24 @@
 # Changelog
 
-<a name="1.0.0"></a>
+<a name="0.1.2"></a>
+
+## 0.1.2 (2022-09-28)
+
+### Added
+
+- \_Nothing added
+
+### Changed
+
+- _Nothing changed_
+
+### Fixed
+
+- _Nothing fixed_
+
+### Miscellaneous
+
+- Separated everything out into separate projects
 
 ## 0.1.1 (2022-09-21)
 
@@ -19,8 +37,6 @@
 ### Miscellaneous
 
 - ✨ Added GitHub link to suppoprt modal
-
-<a name="1.0.0"></a>
 
 ## 0.1.0 (2022-09-18)
 
