@@ -2,6 +2,6 @@
   directory = "netlify/functions"
   external_node_modules = ["mongodb"]
 [[redirects]]
-  from = "/search-playlists"
-  to = "/.netlify/functions/search-playlists"
+  from = "/*"
+  to = "/.netlify/functions/:splat"
   status = 200
