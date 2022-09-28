@@ -2,7 +2,7 @@
 	import { page } from '$app/stores';
 	import { useInfiniteQuery } from '@sveltestack/svelte-query';
 	import { onMount } from 'svelte';
-	import { searchPlaylists, type IPlaylistSummary } from '../../functions/search-playlists';
+	import { searchPlaylists } from '../../functions/search-playlists';
 	import Search from '../icons/Search.svelte';
 	import Times from '../icons/Times.svelte';
 	import Button from '../shared/Button.svelte';
@@ -23,7 +23,7 @@
 
 	let helpmodalOpen = false;
 
-	const baseURL = variables.basePath || $page.url.origin;
+	const baseURL = variables.searchApiBasePath;
 
 	let input: HTMLInputElement | null = null;
 	const textvalue = persistedWritable('search', 'All Out');

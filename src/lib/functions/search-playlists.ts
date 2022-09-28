@@ -21,7 +21,7 @@ export async function searchPlaylists(
 	offset: number,
 	limit: number
 ): Promise<ISearchPlaylistsResponse> {
-	const url = new URL(`${baseURL}/.netlify/functions/search-playlists`);
+	const url = new URL(`${baseURL}/search-playlists`);
 	url.searchParams.append('q', query);
 	url.searchParams.append('offset', String(offset));
 	url.searchParams.append('limit', String(limit));
