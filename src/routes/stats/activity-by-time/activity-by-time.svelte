@@ -1,17 +1,16 @@
 <script lang="ts">
 	import HeardlifyApi from '$lib/functions/heardlify-api';
 	import { variables } from '$lib/variables';
-	import { page } from '$app/stores';
 	import { LayerCake, Svg } from 'layercake';
 
-	import { useQuery } from '@sveltestack/svelte-query';
 	import { ImmutableDate } from '$lib/utils/immutable-date';
+	import { useQuery } from '@sveltestack/svelte-query';
+	import Area from './Area.svelte';
 	import AxisX from './AxisX.svelte';
 	import AxisY from './AxisY.svelte';
 	import Line from './Line.svelte';
-	import Area from './Area.svelte';
 
-	const baseURL = variables.basePath || $page.url.origin;
+	const baseURL = variables.apiBasePath;
 	const api = new HeardlifyApi(baseURL);
 
 	let from = new ImmutableDate().setHours(0, 0, 0, 0).date;

@@ -68,7 +68,7 @@ export default class HeardlifyApi {
 		from: Date;
 		to: Date;
 	}) {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-logs');
+		const url = new URL(this.baseURL + '/stats--get-logs');
 		url.searchParams.append('query', query);
 		url.searchParams.append('offset', String(offset));
 		url.searchParams.append('limit', String(limit));
@@ -93,7 +93,7 @@ export default class HeardlifyApi {
 		from: Date;
 		to: Date;
 	}) {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-top-playlists');
+		const url = new URL(this.baseURL + '/stats--get-top-playlists');
 		url.searchParams.append('offset', String(offset));
 		url.searchParams.append('limit', String(limit));
 		url.searchParams.append('from', from.toISOString());
@@ -115,7 +115,7 @@ export default class HeardlifyApi {
 		from: Date;
 		to: Date;
 	}) {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-most-active-sessions');
+		const url = new URL(this.baseURL + '/stats--get-most-active-sessions');
 		url.searchParams.append('offset', String(offset));
 		url.searchParams.append('limit', String(limit));
 		url.searchParams.append('from', from.toISOString().split('Z')[0]);
@@ -127,7 +127,7 @@ export default class HeardlifyApi {
 		return body;
 	}
 	async getUniqueUsersByDay({ from, to }: { from: Date; to: Date }) {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-uniqueusers-by-day');
+		const url = new URL(this.baseURL + '/stats--get-uniqueusers-by-day');
 		url.searchParams.append('from', from.toISOString());
 		url.searchParams.append('to', to.toISOString());
 
@@ -137,7 +137,7 @@ export default class HeardlifyApi {
 		return body;
 	}
 	async getActivityByTime({ from, to }: { from: Date; to: Date }) {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-activity-by-time');
+		const url = new URL(this.baseURL + '/stats--get-activity-by-time');
 		url.searchParams.append('from', from.toISOString());
 		url.searchParams.append('to', to.toISOString());
 
@@ -147,7 +147,7 @@ export default class HeardlifyApi {
 		return body;
 	}
 	async getActivityByDay({ from, to }: { from: Date; to: Date }) {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-activity-by-day');
+		const url = new URL(this.baseURL + '/stats--get-activity-by-day');
 		url.searchParams.append('from', from.toISOString());
 		url.searchParams.append('to', to.toISOString());
 
@@ -169,7 +169,7 @@ export default class HeardlifyApi {
 		from: Date;
 		to: Date;
 	}) {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-session-history');
+		const url = new URL(this.baseURL + '/stats--get-session-history');
 		url.searchParams.append('sessionId', sessionId);
 		url.searchParams.append('offset', String(offset));
 		url.searchParams.append('limit', String(limit));
@@ -188,7 +188,7 @@ export default class HeardlifyApi {
 		playlistId: string;
 		date: Date;
 	}): Promise<{ numberOfGuesses: number | null; totalQuantity: number }[]> {
-		const url = new URL(this.baseURL + '/.netlify/functions/stats--get-scores-for-playlist-day');
+		const url = new URL(this.baseURL + '/stats--get-scores-for-playlist-day');
 		url.searchParams.append('playlistId', playlistId);
 		url.searchParams.append('date', date.toISOString());
 
@@ -215,7 +215,7 @@ export default class HeardlifyApi {
 		return reshaped;
 	}
 	async sendFeedback(feedback: { content: string }) {
-		const url = new URL(this.baseURL + '/.netlify/functions/send-feedback');
+		const url = new URL(this.baseURL + '/send-feedback');
 
 		const response = await fetch(url, {
 			method: 'POST',
@@ -240,7 +240,7 @@ export default class HeardlifyApi {
 			};
 		};
 
-		const url = new URL(`${this.baseURL}/.netlify/functions/get-song`);
+		const url = new URL(`${this.baseURL}/get-song`);
 		url.search = new URLSearchParams({
 			'playlist-id': playlistId,
 			date: date.toISOString().split('T')[0]

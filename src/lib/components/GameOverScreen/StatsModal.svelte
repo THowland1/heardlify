@@ -1,8 +1,10 @@
 <script lang="ts">
 	import { browser } from '$app/env';
 
-	import { page } from '$app/stores';
+	import HeardlifyApi from '$lib/functions/heardlify-api';
+	import { EpochDay } from '$lib/utils/epoch-day';
 	import { MMath } from '$lib/utils/math-extend';
+	import { variables } from '$lib/variables';
 	import { useQuery } from '@sveltestack/svelte-query';
 	import Times from '../icons/Times.svelte';
 	import TabGroup from '../TabGroup/TabGroup.svelte';
@@ -10,14 +12,11 @@
 	import {
 		fillInDays,
 		getBarsFromDaysWithResults,
+		getBarsFromGlobalDayStats,
 		getDaysForPlaylistIdFromLocalStorage,
 		getSummaryFromDays,
-		getBarsFromGlobalDayStats,
 		getSummaryFromGlobalDayStats
 	} from './stats-helper';
-	import HeardlifyApi from '$lib/functions/heardlify-api';
-	import { variables } from '$lib/variables';
-	import { EpochDay } from '$lib/utils/epoch-day';
 
 	export let open: boolean;
 	export let playlistId: string;
@@ -34,7 +33,7 @@
 
 	$: today = days.find((o) => o.epochday === EpochDay.fromDate(date));
 
-	const baseURL = variables.basePath || $page.url.origin;
+	const baseURL = variables.apiBasePath;
 	const api = new HeardlifyApi(baseURL);
 
 	$: queryResult = useQuery(

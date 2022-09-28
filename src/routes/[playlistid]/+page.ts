@@ -21,7 +21,7 @@ export const load: PageLoad = async ({ params, url, fetch }) => {
 	}
 	const localdate = queryDate ?? new Date();
 
-	const baseURL = variables.basePath || url.origin;
+	const baseURL = variables.apiBasePath;
 	const api = new HeardlifyApi(baseURL, fetch);
 	const playlist = await api.getSong(playlistId, localdate);
 	return {

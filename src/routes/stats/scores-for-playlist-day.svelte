@@ -1,12 +1,11 @@
 <script lang="ts">
 	import HeardlifyApi from '$lib/functions/heardlify-api';
 	import { variables } from '$lib/variables';
-	import { page } from '$app/stores';
 
 	import { useQuery } from '@sveltestack/svelte-query';
 	import { ImmutableDate } from '$lib/utils/immutable-date';
 
-	const baseURL = variables.basePath || $page.url.origin;
+	const baseURL = variables.apiBasePath;
 	const api = new HeardlifyApi(baseURL);
 
 	let date = new ImmutableDate().setHours(24, 0, 0, 0).date;

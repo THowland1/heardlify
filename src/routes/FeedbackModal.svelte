@@ -1,14 +1,13 @@
 <script lang="ts">
-	import HeardlifyApi from '$lib/functions/heardlify-api';
-	import { variables } from '$lib/variables';
-	import { page } from '$app/stores';
-	import { useMutation } from '@sveltestack/svelte-query';
-	import Button from '$lib/components/shared/Button.svelte';
 	import AnimatedEllipsis from '$lib/components/Header/AnimatedEllipsis.svelte';
 	import Modal from '$lib/components/Modal/Modal.svelte';
+	import Button from '$lib/components/shared/Button.svelte';
+	import HeardlifyApi from '$lib/functions/heardlify-api';
+	import { variables } from '$lib/variables';
+	import { useMutation } from '@sveltestack/svelte-query';
 
 	export let open = true;
-	const baseURL = variables.basePath || $page.url.origin;
+	const baseURL = variables.apiBasePath;
 	const api = new HeardlifyApi(baseURL);
 
 	let content = '';
