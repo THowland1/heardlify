@@ -1,7 +1,3 @@
 [functions]
   directory = "netlify/functions"
   external_node_modules = ["mongodb"]
-[[redirects]]
-  from = "/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
