@@ -3,17 +3,24 @@
 
 	export let open: boolean;
 	export let title: string;
+	export let hideheading = false;
+
+	export let close = () => {
+		open = false;
+	};
 </script>
 
 <div class="whole-thing" class:hidden={!open}>
-	<div class="overlay" on:click={() => (open = false)} />
+	<div class="overlay" on:click={close} />
 	<div class="card">
-		<div class="heading">
-			<div class="spacer" />
-			<div class="heading-text">{title}</div>
+		{#if !hideheading}
+			<div class="heading">
+				<div class="spacer" />
+				<div class="heading-text">{title}</div>
 
-			<button class="close-button" on:click={() => (open = false)}><Times /></button>
-		</div>
+				<button class="close-button" on:click={close}><Times /></button>
+			</div>
+		{/if}
 		<div class="body">
 			<slot />
 		</div>

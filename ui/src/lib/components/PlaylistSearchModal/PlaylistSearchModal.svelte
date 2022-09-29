@@ -16,7 +16,7 @@
 		<div class="container">
 			<div class="title">
 				<h1>Search playlists</h1>
-				<Button color="tertiary" on:click={close}><Times /></Button>
+				<Button color="transparent" on:click={close}><Times /></Button>
 			</div>
 
 			<PlaylistSearch {date} />

@@ -2,6 +2,7 @@
 	import '../app.css';
 	import { QueryClient, QueryClientProvider } from '@sveltestack/svelte-query';
 	import { navigating, page } from '$app/stores';
+	import PortalContextProvider from '$lib/context/PortalContextProvider.svelte';
 
 	const queryClient = new QueryClient();
 
@@ -20,9 +21,11 @@
 </svelte:head>
 
 <QueryClientProvider client={queryClient}>
-	<div class="fill" class:navigating={Boolean($navigating)}>
-		<slot />
-	</div>
+	<PortalContextProvider>
+		<div class="fill" class:navigating={Boolean($navigating)}>
+			<slot />
+		</div>
+	</PortalContextProvider>
 </QueryClientProvider>
 
 <style>

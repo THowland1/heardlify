@@ -18,9 +18,11 @@
 	import { browser } from '$app/env';
 	import HelpModal from './HelpModal.svelte';
 	import Portal from 'svelte-portal/src/Portal.svelte';
+	import { getPortalContext } from '$lib/context/PortalContextProvider.svelte';
 
 	export let date: Date;
 
+	const portal = getPortalContext();
 	let helpmodalOpen = false;
 
 	const baseURL = variables.searchApiBasePath;
@@ -78,7 +80,6 @@
 	}
 	$: {
 		if ($textvalue === '/time') {
-			$textvalue = '';
 			let message = '';
 			const currentTimeMachine = $page.url.searchParams.get('time-machine');
 			if (currentTimeMachine) {
@@ -88,8 +89,11 @@
 				$page.url.searchParams.set('time-machine', String(true));
 				message = 'Time Machine Activated';
 			}
-			window.location.href = $page.url.toString();
-			alert(message);
+
+			portal.addAlert(message).then((o) => {
+				$textvalue = '';
+				window.location.href = $page.url.toString();
+			});
 		} else if ($textvalue === '/stats') {
 			goto('/stats');
 		}
@@ -97,12 +101,6 @@
 	const handleInput = debounce((newvalue: string) => {
 		$textvalue = newvalue;
 	}, 600);
-
-	function setSrcToFallback({ currentTarget }: { currentTarget: HTMLElement }) {
-		if (currentTarget instanceof HTMLImageElement) {
-			currentTarget.src = '/default-playlist-300x300.png';
-		}
-	}
 </script>
 
 <Portal target="body">
@@ -121,7 +119,7 @@
 				on:keyup={load}
 			/>
 			{#if $textvalue}
-				<Button color="tertiary" nopadding on:click={clear}><Times /></Button>
+				<Button color="transparent" nopadding on:click={clear}><Times /></Button>
 			{/if}
 		</div>
 		<button class="help-link" on:click={() => (helpmodalOpen = true)}
