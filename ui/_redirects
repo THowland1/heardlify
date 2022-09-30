@@ -1,1 +1,3 @@
+/api/og-image/* https://og-image-api.heardlify.app/:splat 200
+/api/search/* https://search-api.heardlify.app/:splat 200
 /api/* https://api.heardlify.app/:splat 200
