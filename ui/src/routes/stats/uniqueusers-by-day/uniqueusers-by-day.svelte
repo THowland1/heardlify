@@ -1,14 +1,11 @@
 <script lang="ts">
 	import HeardlifyApi from '$lib/functions/heardlify-api';
 	import { variables } from '$lib/variables';
-	import { LayerCake, Svg } from 'layercake';
 
 	import { ImmutableDate } from '$lib/utils/immutable-date';
 	import { useQuery } from '@sveltestack/svelte-query';
-	import Area from './Area.svelte';
-	import AxisX from './AxisX.svelte';
-	import AxisY from './AxisY.svelte';
-	import Line from './Line.svelte';
+
+	import Line from '../Line/Line.svelte';
 
 	const baseURL = variables.apiBasePath;
 	const api = new HeardlifyApi(baseURL);
@@ -26,17 +23,27 @@
 		return correctDate;
 	}
 
-	const xKey = 'myX';
-	const yKey = 'myY';
-	$: data = $queryResult?.data?.map((datum) => ({
-		[xKey]: new Date(datum._id).valueOf(),
-		[yKey]: datum.totalUniqueUsers
-	})) ?? [{ [xKey]: 1, [yKey]: 1 }];
-
-	const nullAsNumber = null as unknown as number;
+	function splitDataIntoAxes(
+		datapoints: {
+			_id: string;
+			totalPlays: number;
+			totalUniqueUsers: number;
+		}[]
+	) {
+		const dataa = datapoints;
+		const xData: string[] = [];
+		const yData1: number[] = [];
+		const yData2: number[] = [];
+		for (const datum of dataa) {
+			xData.push(new Date(datum._id).toLocaleDateString(undefined, { day: '2-digit' }));
+			yData1.push(datum.totalPlays);
+			yData2.push(datum.totalUniqueUsers);
+		}
+		return { xData, yDatas: [yData1, yData2] };
+	}
+	$: axes = splitDataIntoAxes($queryResult?.data ?? []);
 </script>
 
-<svelte:head />
 <input
 	type="datetime-local"
 	value={getDate(from).toISOString().split('Z')[0]}
@@ -48,26 +55,9 @@
 	on:change={(e) => (to = new Date(e.currentTarget.value))}
 />
 <div class="chart-container">
-	<LayerCake
-		padding={{ right: 10, bottom: 20, left: 25 }}
-		x={xKey}
-		y={yKey}
-		yDomain={[0, nullAsNumber]}
-		{data}
-	>
-		<Svg>
-			<AxisX
-				formatTick={(d) => {
-					const asDate = new Date(d);
-					return asDate.getDate();
-				}}
-			/>
-			<AxisY ticks={4} />
-			<Line />
-			<Area />
-		</Svg>
-	</LayerCake>
+	<Line xData={axes.xData} yDatas={axes.yDatas} />
 </div>
+
 <table>
 	{#if $queryResult.data}
 		{#each $queryResult.data as playlist}

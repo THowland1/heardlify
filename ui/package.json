@@ -41,8 +41,10 @@
 	"dependencies": {
 		"@sveltestack/svelte-query": "^1.6.0",
 		"broadcast-channel": "^4.14.0",
+		"chart.js": "^3.9.1",
 		"layercake": "^7.0.0",
 		"lodash.debounce": "^4.0.8",
+		"svelte-chartjs": "^3.0.1",
 		"svelte-portal": "^2.2.0",
 		"zod": "^3.18.0"
 	}
