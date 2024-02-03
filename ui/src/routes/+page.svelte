@@ -43,6 +43,7 @@
 <div class="whole-thing">
 	<h1>Heardlify</h1>
 	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
+	<p class="subheading">🚧 The site appears to be slow! I don't know why, but I'm on it! 🚧</p>
 	<TabGroup options={selectedTabOptions} bind:value={selectedTab} />
 
 	<div class="tab-panels">
