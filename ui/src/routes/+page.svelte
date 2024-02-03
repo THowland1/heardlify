@@ -9,6 +9,7 @@
 	import { setDateContext } from './date-context';
 	import { getDateFromURL } from '$lib/functions/get-date-from-url';
 	import SupportModal from './SupportModal.svelte';
+	import SunsetModal from './SunsetModal.svelte';
 	import { fade } from 'svelte/transition';
 	import Recents from '$lib/components/Recents/Recents.svelte';
 	const TITLE = 'Heardlify';
@@ -17,6 +18,7 @@
 
 	let feedbackModalOpen = false;
 	let supportModalOpen = false;
+	let sunsetModalOpen = false;
 	const selectedTabOptions = ['search', 'favourites', 'recents'] as const;
 	let selectedTab = 'search' as typeof selectedTabOptions[number];
 
@@ -42,8 +44,13 @@
 <div class="bg-blur" />
 <div class="whole-thing">
 	<h1>Heardlify</h1>
-	<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
-	<p class="subheading">🚧 The site appears to be slow! I don't know why, but I'm on it! 🚧</p>
+	<div class="messages">
+		<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
+		<div class="subheading">🌅 Heardlify is sunsetting  🌅</div>
+		<button class="button support" on:click={() => (sunsetModalOpen = true)}>
+			What does this mean?
+		</button>
+	</div>
 	<TabGroup options={selectedTabOptions} bind:value={selectedTab} />
 
 	<div class="tab-panels">
@@ -70,6 +77,7 @@
 </div>
 <FeedbackModal bind:open={feedbackModalOpen} />
 <SupportModal bind:open={supportModalOpen} />
+<SunsetModal bind:open={sunsetModalOpen} />
 
 <style>
 	:root {
@@ -105,6 +113,12 @@
 	h1 {
 		text-align: center;
 		font-size: 3rem;
+	}
+	.messages {
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		gap: 2px;
 	}
 	.subheading {
 		font-size: 1.25rem;
