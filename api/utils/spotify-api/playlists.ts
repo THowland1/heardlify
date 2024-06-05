@@ -1,5 +1,6 @@
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
 import { IDetailedOption } from '../option';
+import pushoverApi from '$/utils/pushover-api';
 
 function isNotNull<T>(value: T | null): value is T {
 	return value !== null;
@@ -12,6 +13,21 @@ function propertyIsNotNull<T, TPropKey extends keyof T>(propKey: TPropKey) {
 	};
 }
 
+async function parseResponse<TBody>(res: Response): Promise<TBody> {
+	try {
+		const json = await res.json();
+		return json as TBody;
+	} catch (e) {
+		if (e instanceof SyntaxError) {
+			const text = await res.text();
+			await pushoverApi.trySendNotification(text);
+			const ee = new Error(text);
+			throw ee;
+		}
+		throw e;
+	}
+}
+
 async function getOne(
 	playlistId: string,
 	bearerToken: string
@@ -21,8 +37,7 @@ async function getOne(
 		Authorization: `Bearer ${bearerToken}`
 	};
 	const response = await fetch(url.toString(), { headers });
-	const data = (await response.json()) as SpotifyApi.PlaylistObjectFull;
-	return data;
+	return await parseResponse<SpotifyApi.PlaylistObjectFull>(response);
 }
 
 async function getTracksPaged(
@@ -39,8 +54,7 @@ async function getTracksPaged(
 	};
 
 	const response = await fetch(url.toString(), { headers });
-	const data = (await response.json()) as SpotifyApi.PlaylistTrackResponse;
-	return data;
+	return await parseResponse<SpotifyApi.PlaylistTrackResponse>(response);
 }
 
 // function mapTrackToDetailedOption(

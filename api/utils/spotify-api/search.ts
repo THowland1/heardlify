@@ -1,4 +1,20 @@
-import fetch from 'node-fetch';
+import fetch, { Response } from 'node-fetch';
+import pushoverApi from '$/utils/pushover-api';
+
+async function parseResponse<TBody>(res: Response): Promise<TBody> {
+	try {
+		const json = await res.json();
+		return json as TBody;
+	} catch (e) {
+		if (e instanceof SyntaxError) {
+			const text = await res.text();
+			await pushoverApi.trySendNotification(text);
+			const ee = new Error(text);
+			throw ee;
+		}
+		throw e;
+	}
+}
 
 async function searchPlaylists(
 	bearerToken: string,
@@ -15,9 +31,7 @@ async function searchPlaylists(
 		Authorization: `Bearer ${bearerToken}`
 	};
 	const response = await fetch(url.toString(), { headers });
-	const data = (await response.json()) as SpotifyApi.PlaylistSearchResponse;
-
-	return data as SpotifyApi.PlaylistSearchResponse;
+	return await parseResponse<SpotifyApi.PlaylistSearchResponse>(response);
 }
 
 export default {
