@@ -1,3 +1,4 @@
+import pushoverApi from '$/utils/pushover-api';
 import fetch from 'node-fetch';
 
 async function searchPlaylists(
@@ -15,7 +16,15 @@ async function searchPlaylists(
 		Authorization: `Bearer ${bearerToken}`
 	};
 	const response = await fetch(url.toString(), { headers });
-	const data = (await response.json()) as SpotifyApi.PlaylistSearchResponse;
+
+	let data: SpotifyApi.PlaylistSearchResponse;
+	try {
+		data = (await response.json()) as SpotifyApi.PlaylistSearchResponse;
+	} catch (e) {
+		const text = await response.text();
+		await pushoverApi.trySendNotification(`(${url.toString()}) ${text}`);
+		throw e;
+	}
 
 	return data as SpotifyApi.PlaylistSearchResponse;
 }
