@@ -1,9 +1,9 @@
-import { Handler } from '@netlify/functions';
-import spotifyApi from '$/utils/spotify-api';
-import logs from '$/utils/mongodb-api/logs';
 import jsonifyError from '$/utils/jsonify-error';
-import spotifyAccountApi from '$/utils/spotify-account-api';
+import logs from '$/utils/mongodb-api/logs';
 import NetlifyFunctionHelpers from '$/utils/netlify-function-helpers';
+import spotifyAccountApi from '$/utils/spotify-account-api';
+import spotifyApi from '$/utils/spotify-api';
+import { Handler } from '@netlify/functions';
 
 export type IPlaylistSummary = {
 	id: string;
@@ -110,7 +110,7 @@ export const handler: Handler = async (event, { awsRequestId }) => {
 			);
 			results = {
 				playlists: {
-					items: searchResult.playlists.items.map(mapSpotifyObjectToDto),
+					items: searchResult.playlists.items.filter(Boolean).map(mapSpotifyObjectToDto),
 					offset: searchResult.playlists.offset,
 					total: searchResult.playlists.total
 				}
