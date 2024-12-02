@@ -1,26 +1,10 @@
 <script lang="ts">
-	import PlaylistSearch from '$lib/components/PlaylistSearch/PlaylistSearch.svelte';
-	import type { PageData } from '.svelte-kit/types/src/routes/$types';
 	import { page } from '$app/stores';
-	import { browser } from '$app/env';
-	import FeedbackModal from './FeedbackModal.svelte';
-	import TabGroup from '$lib/components/TabGroup/TabGroup.svelte';
-	import Favourites from '$lib/components/Favourites/Favourites.svelte';
-	import { setDateContext } from './date-context';
 	import { getDateFromURL } from '$lib/functions/get-date-from-url';
-	import SupportModal from './SupportModal.svelte';
-	import SunsetModal from './SunsetModal.svelte';
-	import { fade } from 'svelte/transition';
-	import Recents from '$lib/components/Recents/Recents.svelte';
+	import { setDateContext } from './date-context';
 	const TITLE = 'Heardlify';
 	const DESCRIPTION = 'Make a guessing game from your favourite playlist!';
 	const IMAGE = `${$page.url.origin}/og-image.png`;
-
-	let feedbackModalOpen = false;
-	let supportModalOpen = false;
-	let sunsetModalOpen = false;
-	const selectedTabOptions = ['search', 'favourites', 'recents'] as const;
-	let selectedTab = 'search' as typeof selectedTabOptions[number];
 
 	const date = getDateFromURL($page.url);
 	setDateContext(date);
@@ -43,42 +27,22 @@
 <div class="bg" />
 <div class="bg-blur" />
 <div class="whole-thing">
-	<h1>Heardlify</h1>
 	<div class="messages">
-		<p class="subheading">Look up any Spotify playlist and turn it into a guessing game</p>
-		<div class="subheading">🌅 Heardlify is sunsetting  🌅</div>
-		<button class="button support" on:click={() => (sunsetModalOpen = true)}>
-			What does this mean?
-		</button>
+		<h1>Heardlify</h1>
+		<br>
+		<div class="subheading">So long and goodnight!</div>
+		<br>
+		<div class="subheading">In November 2024, Spotify announced their API will no longer provide the 30-second previews that were the lifeblood of this project</div>
+		<br>
+		<div class="subheading">I can't state enough how honoured I am that people have enjoyed the app with their friends and families</div>
+		<br>
+		<div class="subheading">I am glad I brought you all joy</div>
+		<br>
+		<div class="subheading">Thank you for all your kind messages over the years</div>
+		<p class="name">Tom</p>
 	</div>
-	<TabGroup options={selectedTabOptions} bind:value={selectedTab} />
-
-	<div class="tab-panels">
-		{#key selectedTab}
-			<div class="tab-panel" transition:fade>
-				{#if selectedTab === 'search'}
-					<PlaylistSearch {date} />
-				{/if}
-				{#if selectedTab === 'favourites' && browser}
-					<Favourites {date} />
-				{/if}
-				{#if selectedTab === 'recents' && browser}
-					<Recents {date} />
-				{/if}
-			</div>
-		{/key}
-	</div>
-	<div class="buttons">
-		<button class="button support" on:click={() => (supportModalOpen = true)}
-			>Support the app</button
-		>
-		<button class="button feedback" on:click={() => (feedbackModalOpen = true)}>Feedback</button>
-	</div>
+	
 </div>
-<FeedbackModal bind:open={feedbackModalOpen} />
-<SupportModal bind:open={supportModalOpen} />
-<SunsetModal bind:open={sunsetModalOpen} />
-
 <style>
 	:root {
 		--padding: 32px 8px;
@@ -129,33 +93,21 @@
 	}
 	.whole-thing {
 		max-width: var(--width-game);
+		min-height: 100vh;
 		margin: auto;
-		display: flex;
-		flex-direction: column;
+		display: grid;
+		place-items: center;
+		justify-content: center;
 		align-items: center;
 		padding: var(--padding);
 		height: 100%;
 		gap: 12px;
 	}
-	.buttons {
-		display: flex;
-		justify-content: space-around;
-		width: 100%;
-	}
-	.button {
-		border: none;
-		background: transparent;
-		text-decoration: underline;
-		color: var(--color-line);
-	}
-	.tab-panels {
-		position: relative;
-		flex: 1;
-		width: 100%;
-		overflow: auto;
-	}
-	.tab-panel {
-		position: absolute;
-		inset: 0;
-	}
+
+	.name {
+			font-family: cursive;
+			font-style: italic;
+			font-size: 1.5em;
+			text-align: right;
+		}
 </style>
